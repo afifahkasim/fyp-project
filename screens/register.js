@@ -3,7 +3,7 @@ import { Text, View, ImageBackground, TextInput, KeyboardAvoidingView, Touchable
 import { globalStyles } from '../styles/global';
 import RegisterButton from "../shared/buttonRegister";
 import SubtitleButton from "../shared/buttonSubtitle";
-import { Formik } from 'formik';
+import { Formik, ErrorMessage } from 'formik';
 import * as yup from 'yup';
 import firebase from 'firebase/compat/app';
 import 'firebase/compat/firestore';
@@ -44,46 +44,47 @@ export default function Register({ navigation }) {
 
             {(formikProps) => (
 
-                  <View>
-                    <Text style={globalStyles.textRegister}>Register</Text>
+              <View>
+                <Text style={globalStyles.textRegister}>Register</Text>
 
-                    <TextInput
-                      placeholder='Full Name'
-                      placeholderTextColor='lightgrey'
-                      style={globalStyles.inputRegister}
-                      onChangeText={formikProps.handleChange('name')}
-                      value={formikProps.values.name}
-                      onBlur={formikProps.handleBlur('name')} />
-                    <Text style={globalStyles.errorText}>
-                      {formikProps.touched.name && formikProps.errors.name}
-                    </Text>
+                <TextInput
+                  placeholder='Full Name'
+                  placeholderTextColor='lightgrey'
+                  style={globalStyles.inputRegister}
+                  onChangeText={formikProps.handleChange('name')}
+                  value={formikProps.values.name}
+                  onBlur={formikProps.handleBlur('name')} />
 
-                    <TextInput
-                      placeholder='Siswamail / Personal Mail'
-                      placeholderTextColor='lightgrey'
-                      style={globalStyles.inputRegister}
-                      onChangeText={formikProps.handleChange('email')}
-                      value={formikProps.values.email}
-                      onBlur={formikProps.handleBlur('email')} />
-                    <Text style={globalStyles.errorText}>
-                      {formikProps.touched.email && formikProps.errors.email}
-                    </Text>
+                <Text style={globalStyles.errorText}>
+                  {formikProps.touched.name && formikProps.errors.name}
+                </Text>
 
-                    <TextInput
-                      placeholder='Password'
-                      placeholderTextColor='lightgrey'
-                      style={globalStyles.inputRegister}
-                      onChangeText={formikProps.handleChange('password')}
-                      value={formikProps.values.password}
-                      onBlur={formikProps.handleBlur('password')} />
-                    <Text style={globalStyles.errorText}>
-                      {formikProps.touched.password && formikProps.errors.password}
-                    </Text>
+                <TextInput
+                  placeholder='Siswamail / Personal Mail'
+                  placeholderTextColor='lightgrey'
+                  style={globalStyles.inputRegister}
+                  onChangeText={formikProps.handleChange('email')}
+                  value={formikProps.values.email}
+                  onBlur={formikProps.handleBlur('email')} />
+                <Text style={globalStyles.errorText}>
+                  {formikProps.touched.email && formikProps.errors.email}
+                </Text>
 
-                    <RegisterButton text='Register' onPress={formikProps.handleSubmit} />
+                <TextInput
+                  placeholder='Password'
+                  placeholderTextColor='lightgrey'
+                  style={globalStyles.inputRegister}
+                  onChangeText={formikProps.handleChange('password')}
+                  value={formikProps.values.password}
+                  onBlur={formikProps.handleBlur('password')} />
+                <Text style={globalStyles.errorText}>
+                  {formikProps.touched.password && formikProps.errors.password}
+                </Text>
 
-                    <SubtitleButton text1='Already a Member?' text2='Login' onPress={pressLogin} />
-                  </View>
+                <RegisterButton text='Register' onPress={formikProps.handleSubmit} />
+
+                <SubtitleButton text1='Already a Member?' text2='Login' onPress={pressLogin} />
+              </View>
 
 
             )}

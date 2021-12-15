@@ -1,18 +1,19 @@
 import React, { useLayoutEffect, useState, useContext, useEffect } from 'react'
 import { StyleSheet, Text, View, ScrollView } from 'react-native'
-import CenterButton from '../shared/buttonCenter'
-import Card from '../shared/card'
-import { globalStyles } from '../styles/global'
+import CenterButton from '../../shared/buttonCenter'
+import Card from '../../shared/card'
+import Header from '../../shared/header'
+import { globalStyles } from '../../styles/global'
 import { Input } from 'react-native-elements'
 import { FontAwesome } from '@expo/vector-icons';
-import Apikey from "../database/apiKey";
+import Apikey from "../../database/apiKey";
 import firebase from 'firebase/compat/app';
 import 'firebase/compat/firestore';
 import { Formik } from 'formik';
-import { AuthContext } from '../routes/authProvider'
+import { AuthContext } from '../../routes/authProvider'
 
 //check if firebase not init,so init from config file
-if (!firebase.apps.length) {firebase.initializeApp(Apikey.firebaseConfig);}
+if (!firebase.apps.length) { firebase.initializeApp(Apikey.firebaseConfig); }
 const db = firebase.firestore();
 
 const joinGroup = ({ navigation }) => {
@@ -31,7 +32,7 @@ const joinGroup = ({ navigation }) => {
     //     memberStatus: 'member'
     // }]);
 
-  
+
 
 
     const [memberList, setMemberList] = useState({
@@ -49,11 +50,11 @@ const joinGroup = ({ navigation }) => {
     }, [navigation]);
 
     useEffect(() => {
-        const unsubscribe = db.collection('groups').onSnapshot((snapshot) => 
+        const unsubscribe = db.collection('groups').onSnapshot((snapshot) =>
             setGroups(
                 snapshot.docs.map(doc => ({
-                id: doc.id, // the group id, second column
-                data: doc.data() // the third column
+                    id: doc.id, // the group id, second column
+                    data: doc.data() // the third column
                 }))
             )
         );
@@ -75,7 +76,7 @@ const joinGroup = ({ navigation }) => {
     //       .get()
     //       .then(snapshot => snapshot.docs.map(x => x.data()))
     //   }
-      
+
     //   ;
     //   (async () => {
     //     const arr = await docsArr(db, 'groups')
@@ -88,7 +89,7 @@ const joinGroup = ({ navigation }) => {
     //     data: doc.data() // the third column
     //     }))
     // );
-    
+
     // const updateLah = () => {
     //     console.log('-----------'),
     //     groups.map(({id, data: { member } }) =>
@@ -153,57 +154,53 @@ const joinGroup = ({ navigation }) => {
 
     // sini update groups.id with member
     const joinGroup = async () => {
-    // db.collection("groups").doc(input)
-    // .get()
-    // .then(function(doc) {
-    //     console.log("Before, ", doc.data().member),
-    //     console.log("Memberlist, ", memberList),
-    //     db.collection('groups').doc(input).update(
-    //          {
-    //             member: firebase.firestore.FieldValue.arrayUnion()
-    //          }
-    //     ).then(() => {
-    //          navigation.goBack()
-    //       })
-    //     .catch((error) => alert(error.message));
+        // db.collection("groups").doc(input)
+        // .get()
+        // .then(function(doc) {
+        //     console.log("Before, ", doc.data().member),
+        //     console.log("Memberlist, ", memberList),
+        //     db.collection('groups').doc(input).update(
+        //          {
+        //             member: firebase.firestore.FieldValue.arrayUnion()
+        //          }
+        //     ).then(() => {
+        //          navigation.goBack()
+        //       })
+        //     .catch((error) => alert(error.message));
 
-    // }).catch(function(error) {
-    //   console.log("Error getting document:", error);
-    // });
+        // }).catch(function(error) {
+        //   console.log("Error getting document:", error);
+        // });
 
-    // LeiwPA6DqVtHKB2lPrKK
+        // LeiwPA6DqVtHKB2lPrKK
         await db.collection('groups').doc(input).update({
             member: firebase.firestore.FieldValue.arrayUnion(memberList)
         }).then(() => {
             navigation.goBack()
         })
-        .catch((error) => alert(error.message));
+            .catch((error) => alert(error.message));
     }
 
 
     return (
         console.log('--------------'),
         // console.log(profile),
-        console.log('wazzup ni joinGroup.js'),
+        console.log('[This is joinGroup.js]'),
         console.log(memberList),
         <View style={globalStyles.container}>
-            <View style={styles.header}>
-                <View style={styles.headerContainer}>
-                    <Text style={styles.headerText}>Join Group</Text>
-                </View>
-            </View>
+            <Header text='Join Group' />
             <ScrollView>
                 <Card>
-                    <Input 
+                    <Input
                         placeholder="Enter the group ID"
                         value={input}
                         onChangeText={(text) => setInput(text)}
                         leftIcon={
-                            <FontAwesome style={{marginRight: 5}} name="users" size={24} color="black" />
+                            <FontAwesome style={{ marginRight: 5 }} name="users" size={24} color="black" />
                         }
                     />
                 </Card>
-                <CenterButton text='Submit' onPress={joinGroup}/>
+                <CenterButton text='Submit' onPress={joinGroup} />
             </ScrollView>
         </View>
     )
@@ -212,19 +209,5 @@ const joinGroup = ({ navigation }) => {
 export default joinGroup
 
 const styles = StyleSheet.create({
-    header:{
-        backgroundColor: "#C4C4C4",
-        height: 80,
-      },
-    headerContainer:{
-        padding: 40,
-        alignContent: 'center',
-        alignItems: 'center'
-    },
-    headerText:{
-        fontFamily: 'nunito-bold',
-        fontWeight: '900',
-        fontSize: 20,
-        color: "black"
-    }
+
 })

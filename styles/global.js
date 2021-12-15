@@ -1,4 +1,4 @@
-import { StyleSheet } from 'react-native';
+import { StyleSheet, Dimensions } from 'react-native';
 
 export const globalStyles = StyleSheet.create({
     container: {
@@ -13,7 +13,9 @@ export const globalStyles = StyleSheet.create({
     },
     
     logo: {
-  
+      marginTop: -(0.05 * Dimensions.get("window").width),
+      width: 0.2 * Dimensions.get("window").width,
+      height: 0.2 * Dimensions.get("window").width
     },
 
     containerCenter: {
@@ -23,19 +25,18 @@ export const globalStyles = StyleSheet.create({
     },
   
     containerSubtitles: {
-        marginTop: 170,
-        marginLeft: 40,
-        paddingTop: 30
+        marginTop: 0.325 * Dimensions.get("window").height,
+        marginLeft: 0.08 * Dimensions.get("window").width
     },
 
     containerButton: {
-        marginLeft: 250,
-        marginTop: 160,
-        marginRight: 30
+        marginLeft: 0.6 * Dimensions.get("window").width,
+        marginTop: 0.225 * Dimensions.get("window").height,
+        marginRight: 0.07 * Dimensions.get("window").width
     },
 
     gapBetweenButton: {
-        paddingTop: 15
+        paddingTop: 0.02 * Dimensions.get("window").height,
     },
   
     textTitle: {
@@ -68,13 +69,33 @@ export const globalStyles = StyleSheet.create({
       textAlign: "left"
     },
 
+    errorText: {
+      fontFamily: "nunito-light",
+      color: "red",
+      paddingLeft: 10,
+      fontSize: 12,
+      fontStyle: 'italic',
+    },
+
     inputRegister: {
       borderRadius: 10,
       borderColor: "white",
       borderWidth: 1,
       padding: 10,
+      marginTop: 10,
+      width: "100%",
+      height: 50,
+      color: "white"
+    },
+
+    inputLogin: {
+      borderRadius: 10,
+      borderColor: "white",
+      borderWidth: 1,
+      padding: 10,
       marginVertical: 10,
-      width: 309,
+      marginRight: 10,
+      width: "100%",
       height: 50,
       color: "white"
     },
@@ -87,8 +108,9 @@ export const globalStyles = StyleSheet.create({
 
     containerLogin: {
       marginTop: 350,
-      marginLeft: 40,
-      paddingRight: 63
+      paddingLeft: 40,
+      paddingRight: 40,
+      paddingBottom: 50
     },
   
   });

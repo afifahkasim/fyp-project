@@ -17,7 +17,7 @@ const reviewSchema = yup.object({
 
 export default function Login({ navigation }) {
   console.log('[login.js] Login page loaded.');
-  const {Login} = useContext(AuthContext)
+  const { Login } = useContext(AuthContext)
 
   const pressRegister = () => {
     navigation.navigate('Register')
@@ -26,57 +26,57 @@ export default function Login({ navigation }) {
   const [email, setEmail] = useState();
   const [password, setPassword] = useState();
 
-    return (
-        <View style={globalStyles.container}>
-        <ImageBackground source={image} style={globalStyles.image}>
-          <View style={globalStyles.containerLogin}>
+  return (
+    <View style={globalStyles.container}>
+      <ImageBackground source={image} style={globalStyles.image}>
+        <View style={globalStyles.containerLogin}>
           <Formik
-           initialValues={{ email: '', password: ''}}
-           validationSchema={reviewSchema}
-           onSubmit={(values, actions) => {
-             // actions contain some methods to call on form
-             actions.resetForm();
-             Login(values.email,values.password);
-           }}>
-           {/* Formik provides these props automatically (any name accepted) */}
-           {(formikProps) => (
-             <View>
-            <Text style={globalStyles.textRegister}>Login</Text>
+            initialValues={{ email: '', password: '' }}
+            validationSchema={reviewSchema}
+            onSubmit={(values, actions) => {
+              // actions contain some methods to call on form
+              actions.resetForm();
+              Login(values.email, values.password);
+            }}>
+            {/* Formik provides these props automatically (any name accepted) */}
+            {(formikProps) => (
+              <View>
+                <Text style={globalStyles.textRegister}>Login</Text>
 
-            <TextInput 
-              placeholder='Siswamail / Personal Mail'
-              placeholderTextColor='lightgrey'
-              style={globalStyles.inputRegister}
-              // this handles/changes the state behind the scenes for us
-              onChangeText={formikProps.handleChange('email')}
-              // this
-              value={formikProps.values.email}
-              onBlur={formikProps.handleBlur('email')} />
+                <TextInput
+                  placeholder='Siswamail / Personal Mail'
+                  placeholderTextColor='lightgrey'
+                  style={globalStyles.inputLogin}
+                  // this handles/changes the state behind the scenes for us
+                  onChangeText={formikProps.handleChange('email')}
+                  // this
+                  value={formikProps.values.email}
+                  onBlur={formikProps.handleBlur('email')} />
 
-              <TextInput 
-              placeholder='Password'
-              placeholderTextColor='lightgrey'
-              style={globalStyles.inputRegister}
-              secureTextEntry={true}
-              onChangeText={formikProps.handleChange('password')}
-              value={formikProps.values.password}
-              onBlur={formikProps.handleBlur('password')} />
-              
-              <RegisterButton text='Login' onPress={formikProps.handleSubmit} />
+                <TextInput
+                  placeholder='Password'
+                  placeholderTextColor='lightgrey'
+                  style={globalStyles.inputLogin}
+                  secureTextEntry={true}
+                  onChangeText={formikProps.handleChange('password')}
+                  value={formikProps.values.password}
+                  onBlur={formikProps.handleBlur('password')} />
 
-              <SubtitleButton text1='New Here?' text2='Register' onPress={pressRegister} />
+                <RegisterButton text='Login' onPress={formikProps.handleSubmit} />
+
+                <SubtitleButton text1='New Here?' text2='Register' onPress={pressRegister} />
               </View>
             )}
-           </Formik>
+          </Formik>
 
-      {/* <Text style={globalStyles.textSubtitle}>E-mail: {email}</Text> */}
-          </View>
+          {/* <Text style={globalStyles.textSubtitle}>E-mail: {email}</Text> */}
+        </View>
 
-        </ImageBackground>
-  
-      </View>
-  
-    )
+      </ImageBackground>
+
+    </View>
+
+  )
 }
 
 const image = require("../assets/registerPage/backgroundLogin.png");

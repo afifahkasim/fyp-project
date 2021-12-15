@@ -1,16 +1,18 @@
 import React, { useEffect, useState, useContext } from 'react'
-import { StyleSheet, Text, View, ScrollView, Button, TouchableOpacity, Alert } from 'react-native'
-import CenterButton from '../shared/buttonCenter'
-import Card from '../shared/card'
-import { globalStyles } from '../styles/global'
-import Apikey from "../database/apiKey";
+import { StyleSheet, Text, View, ScrollView, Button, TouchableOpacity, Alert, Dimensions } from 'react-native'
+import CenterButton from '../../shared/buttonCenter'
+import BlueButton from '../../shared/buttonBlue'
+import Card from '../../shared/card'
+import Header from '../../shared/header'
+import { globalStyles } from '../../styles/global'
+import Apikey from "../../database/apiKey";
 import { FontAwesome } from '@expo/vector-icons';
 import firebase from 'firebase/compat/app';
 import 'firebase/compat/firestore';
 import { Formik } from 'formik';
 import { MaterialIcons } from '@expo/vector-icons';
 import * as Clipboard from 'expo-clipboard';
-import { AuthContext } from '../routes/authProvider'
+import { AuthContext } from '../../routes/authProvider'
 
 
 //check if firebase not init,so init from config file
@@ -64,12 +66,13 @@ const Group = ({ navigation }) => {
 
     return (
         <View style={globalStyles.container}>
-            <View style={styles.header}>
-                <View style={styles.headerContainer}>
-                    <Text style={styles.headerText}>Groups</Text>
-                </View>
-            </View>
-            <ScrollView>
+            <Header text='Group' />
+            <ScrollView
+                contentContainerStyle={{
+                    paddingHorizontal: 24,
+                    paddingBottom: 150
+                }}
+            >
 
                 {/* For every group, want to render something. Destructure group into id & data */}
                 {groups.map(({ id, data: { groupName, member } }) => (
@@ -81,7 +84,14 @@ const Group = ({ navigation }) => {
                         {/* {groups.map(({id, data: { member }}) =>  */}
                         <Card>
                             <View>
-                                <Text style={{textAlign: "center"}}>Admin | {member[0].memberName}</Text>
+                                <View style={{ paddingLeft: Dimensions.get('window').width / 3, alignItems: 'flex-start' }}>
+                                    <Text style={{ alignSelf: 'flex-start' }}>
+                                        Admin | {member[0].memberName}
+                                        {"\n"} Member | {member.length}
+                                    </Text>
+                                </View>
+                                <BlueButton text='Join by ID' onPress={pressJoinGroup} />
+                                <BlueButton text='Join by Request' />
                             </View>
 
                             {
@@ -132,7 +142,6 @@ const Group = ({ navigation }) => {
 
 
                 <CenterButton text='Add Group' onPress={pressAddGroup} />
-                <CenterButton text='Join Group' onPress={pressJoinGroup} />
             </ScrollView>
         </View>
     )
@@ -141,19 +150,5 @@ const Group = ({ navigation }) => {
 export default Group
 
 const styles = StyleSheet.create({
-    header: {
-        backgroundColor: "#C4C4C4",
-        height: 80,
-    },
-    headerContainer: {
-        padding: 40,
-        alignContent: 'center',
-        alignItems: 'center'
-    },
-    headerText: {
-        fontFamily: 'nunito-bold',
-        fontWeight: '900',
-        fontSize: 20,
-        color: "black"
-    }
+
 })

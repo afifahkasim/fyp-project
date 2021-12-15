@@ -21,8 +21,12 @@ export default function Homepage({ navigation }) {
       navigation.navigate('Group')
     }
 
-    const pressDashboard = () => {
+    const pressMyDashboard = () => {
       navigation.navigate('MyDashboard')
+    }
+
+    const pressGroupDashboard = () => {
+      navigation.navigate('GroupDashboard')
     }
   
       return (
@@ -33,9 +37,8 @@ export default function Homepage({ navigation }) {
                 </Text>
                 <CenterButton text='Profile' onPress={pressProfile} />
                 <CenterButton text='Group' onPress={pressGroup} />
-                <CenterButton text='My Dashboard' onPress={pressDashboard} />
-                <CenterButton text='Group Dashboard'/>
-                <CenterButton text='Submit Feedback' />
+                <CenterButton text='My Dashboard' onPress={pressMyDashboard} />
+                <CenterButton text='Group Dashboard' onPress={pressGroupDashboard}/>
             </View>    
         </View>
     

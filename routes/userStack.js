@@ -6,12 +6,13 @@ import Register from "../screens/register";
 import Login from "../screens/login";
 import Verification from "../screens/verification";
 import Homepage from "../screens/homepage";
-import Profile from "../screens/profile";
-import editProfile from "../screens/editProfile";
-import Group from "../screens/group";
-import addGroup from "../screens/addGroup";
-import joinGroup from "../screens/joinGroup";
-import myDashboard from "../screens/myDashboard"
+import Profile from "../screens/profilePage/profile";
+import editProfile from "../screens/profilePage/editProfile";
+import Group from "../screens/groupPage/group";
+import addGroup from "../screens/groupPage/addGroup";
+import joinGroup from "../screens/groupPage/joinGroup";
+import myDashboard from "../screens/dashboardPage/myDashboard";
+import groupDashboard from "../screens/dashboardPage/groupDashboard";
 
 const { Navigator, Screen } = createStackNavigator();
 
@@ -25,6 +26,8 @@ const UserStack = () => (
     <Screen name="AddGroup" component={addGroup} />
     <Screen name="JoinGroup" component={joinGroup} />
     <Screen name="MyDashboard" component={myDashboard} />
+    <Screen name="GroupDashboard" component={groupDashboard} />
+
 
   </Navigator>
 );

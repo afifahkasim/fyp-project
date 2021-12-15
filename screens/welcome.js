@@ -5,44 +5,44 @@ import FlatButton from "../shared/button";
 
 export default function Welcome({ navigation }) {
 
-    const pressRegister = () => {
-        navigation.navigate('Register')
-    }
+  const pressRegister = () => {
+    navigation.navigate('Register')
+  }
 
-    const pressLogin = () => {
-        navigation.navigate('Login')
-    }
+  const pressLogin = () => {
+    navigation.navigate('Login')
+  }
 
-    return (
+  return (
+    <View style={globalStyles.container}>
+      <ImageBackground source={image} style={globalStyles.image}>
+
+
         <View style={globalStyles.container}>
-        <ImageBackground source={image} style={globalStyles.image}>
-          
-          
-          <View style={globalStyles.container}>
           <View style={globalStyles.containerSubtitles}>
             <Image source={logo} style={globalStyles.logo} />
             <Text style={globalStyles.textTitle}>Data-U</Text>
             <Text style={globalStyles.textSubtitle}>
               view your results, {"\n"}
-              schedule your results, {"\n"}
+              schedule your subjects, {"\n"}
               calculate your CGPA {"\n"}
             </Text>
           </View>
-          </View>
+        </View>
 
-          <View style={globalStyles.container}>
+        <View style={globalStyles.container}>
           <View style={globalStyles.containerButton}>
-          <FlatButton text='Register' onPress={pressRegister} />
-          <View style={globalStyles.gapBetweenButton}>
-          <FlatButton text='Login' style={globalStyles.gapBetweenButton} onPress={pressLogin} />
-          </View></View>
-          </View>
-          
-        </ImageBackground>
-  
-      </View>
-  
-    )
+            <FlatButton text='Register' onPress={pressRegister} />
+            <View style={globalStyles.gapBetweenButton}>
+              <FlatButton text='Login' style={globalStyles.gapBetweenButton} onPress={pressLogin} />
+            </View></View>
+        </View>
+
+      </ImageBackground>
+
+    </View>
+
+  )
 }
 
 const image = require("../assets/welcomePage/background.png");

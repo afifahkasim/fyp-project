@@ -1,7 +1,7 @@
 import React from 'react';
 import { StyleSheet, Text, View } from 'react-native';
 
-export default function Card(props) {
+export default function DashboardCard(props) {
   return (
     <View style={styles.card}>
       <View style={styles.cardContent}>{props.children}</View>
@@ -11,17 +11,16 @@ export default function Card(props) {
 
 const styles = StyleSheet.create({
   card: {
-    backgroundColor: '#fff',
-    borderRadius: 6,
+    borderRadius: 8,
     elevation: 3,
-    shadowOffset: { width: 1, height: 1 },
-    shadowColor: '#333',
-    shadowOpacity: 0.3,
-    shadowRadius: 2,
+    backgroundColor: '#B6D0E2',
+    shadowOffset: { width: 4, height: 10 },
+    shadowColor: '#000000',
+    shadowOpacity: 0.6,
+    shadowRadius: 10,
     marginHorizontal: 4,
     marginVertical: 6,
     padding: 12,
   },
-  cardContent: {
-  },
+  cardContent: {},
 });

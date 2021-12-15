@@ -17,19 +17,24 @@ export default function CenterButton({ text, onPress }) {
 const styles = StyleSheet.create({
   button: {
     borderRadius: 10,
-    borderColor: "black",
-    borderWidth: 1,
     paddingVertical: 20,
-    paddingHorizontal: 1
+    backgroundColor: '#6F8FAF',
+    paddingHorizontal: 1,
+    elevation: 3,
+    shadowOffset: { width: 1, height: 1 },
+    shadowColor: '#333',
+    shadowOpacity: 0.3,
+    shadowRadius: 2,
   },
   buttonText: {
     color: 'black',
-    fontFamily: "nunito-regular",
-    fontSize: 18,
+    fontFamily: "nunito-bold",
+    fontSize: 20,
     textAlign: 'center',
   },
   container: {
     marginTop: 10,
+    marginBottom: 20,
     marginHorizontal: 20,
     alignContent: 'center'
   }

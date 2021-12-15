@@ -23,6 +23,7 @@
     "firebase": "^9.4.0",
     "firebase-admin": "^9.9.0",
     "formik": "^2.2.8",
+    "lodash": "^4.17.21",
     "react": "17.0.1",
     "react-copy-to-clipboard": "^5.0.3",
     "react-dom": "17.0.1",
@@ -39,6 +40,8 @@
     "react-native-web": "0.17.1",
     "react-navigation": "^4.4.4",
     "react-navigation-stack": "^2.10.4",
+    "victory": "^36.2.0",
+    "victory-native": "^36.2.0",
     "yup": "^0.32.9"
   },
   "devDependencies": {

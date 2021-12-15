@@ -1,15 +1,16 @@
 import React, { useLayoutEffect, useState, useContext } from 'react'
 import { StyleSheet, Text, View, ScrollView } from 'react-native'
-import CenterButton from '../shared/buttonCenter'
-import Card from '../shared/card'
-import { globalStyles } from '../styles/global'
+import CenterButton from '../../shared/buttonCenter'
+import Card from '../../shared/card'
+import Header from '../../shared/header'
+import { globalStyles } from '../../styles/global'
 import { Input } from 'react-native-elements'
 import { FontAwesome } from '@expo/vector-icons';
-import Apikey from "../database/apiKey";
+import Apikey from "../../database/apiKey";
 import firebase from 'firebase/compat/app';
 import 'firebase/compat/firestore';
 import { Formik } from 'formik';
-import { AuthContext } from '../routes/authProvider'
+import { AuthContext } from '../../routes/authProvider'
 
 //check if firebase not init,so init from config file
 if (!firebase.apps.length) {firebase.initializeApp(Apikey.firebaseConfig);}
@@ -45,14 +46,10 @@ const addGroup = ({ navigation }) => {
     return (
         console.log('---------------'),
         console.log(profile),
-        console.log('yo ni addGroup.js'),
+        console.log('[Listing out the backend of addGroup.js]'),
         console.log(memberList),
         <View style={globalStyles.container}>
-            <View style={styles.header}>
-                <View style={styles.headerContainer}>
-                    <Text style={styles.headerText}>Header text</Text>
-                </View>
-            </View>
+            <Header text='Add Group' />
             <ScrollView>
                 <Card>
                     <Input 
@@ -73,19 +70,5 @@ const addGroup = ({ navigation }) => {
 export default addGroup
 
 const styles = StyleSheet.create({
-    header:{
-        backgroundColor: "#C4C4C4",
-        height: 80,
-      },
-    headerContainer:{
-        padding: 40,
-        alignContent: 'center',
-        alignItems: 'center'
-    },
-    headerText:{
-        fontFamily: 'nunito-bold',
-        fontWeight: '900',
-        fontSize: 20,
-        color: "black"
-    }
+
 })
