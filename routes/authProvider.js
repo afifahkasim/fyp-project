@@ -1,4 +1,5 @@
 import React, { createContext, useState} from 'react';
+import { Alert } from 'react-native';
 import Apikey from "../database/apiKey";
 import firebase from 'firebase/compat/app';
 import 'firebase/compat/auth';
@@ -24,7 +25,9 @@ export const AuthProvider = ({children}) =>{
                 try{
                     await firebase.auth().signInWithEmailAndPassword(email, password);
                     console.log('[authProvider.js] Logging in successful.')
+                    
                 }catch(e){
+                    Alert.alert("Login failed. Please check for any errors in your email.")
                     console.log('[authProvider.js] Logging in failed.');
                     console.log(e);
                 }
@@ -46,9 +49,12 @@ export const AuthProvider = ({children}) =>{
                   },
                   
                   console.log('[authProvider.js] Registration successful.'))
+                  Alert.alert("Registration successful!")
                 }catch(e){
                     console.log('[authProvider.js] Registration failed.');
                     console.log(e);
+                    Alert.alert("Registration failed. Your email has already been used to create an account.")
+
                 }
             },
             Logout: async() =>{
@@ -59,7 +65,15 @@ export const AuthProvider = ({children}) =>{
                     console.log(e);
 
                 }
-            }
+            },
+            ResetPassword: async (email) => {
+                try {
+                    await firebase.auth().sendPasswordResetEmail(email)
+                } catch(e) {
+                    console.log("[authProvider.js Error resetting password.");
+                    console.log(e)
+                }
+            },
          }}
         > 
             {children}
