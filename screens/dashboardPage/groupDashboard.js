@@ -401,10 +401,12 @@ export default function groupDashboard({ navigation }) {
             var totalGradePoints = (item.results.reduce((a, b) => a + (b.GradePoints || 0), 0)).toFixed(0)
             var totalCreditHours = item.results.reduce((a, b) => a + (b.CreditHours || 0), 0)
             var cumulativeGPA = (totalGradePoints / totalCreditHours).toFixed(2)
+
             console.log("Testing")
             console.log(totalGradePoints)
             console.log(totalCreditHours)
             console.log(cumulativeGPA)
+
             if (cumulativeGPA >= 3.70) { cgpacat = "3.70 - 4.00" }
             else if (cumulativeGPA >= 3.30 && cumulativeGPA <= 3.69) { cgpacat = "3.30 - 3.69" }
             else if (cumulativeGPA >= 2.70 && cumulativeGPA <= 3.29) { cgpacat = "2.70 - 3.29" }

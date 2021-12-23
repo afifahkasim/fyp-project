@@ -99,7 +99,7 @@ export default function Homepage({ navigation }) {
               <ScrollView horizontal={true}
                 showsHorizontalScrollIndicator={false}>
 
-                <Pressable onPress={pressSelfReminder}>
+                <Pressable onPress={() => Logout()}>
                   <View style={style.containerModules}>
                     <View style={{ flex: 2 }}>
                       <Image source={require('../assets/homePage/reminder.png')}
@@ -380,7 +380,6 @@ const style = StyleSheet.create({
   },
 
   containerFontLink: {
-    flex: 1,
     paddingTop: 80,
     alignItems: 'center'
   },

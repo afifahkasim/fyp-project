@@ -20,10 +20,6 @@ const reviewSchema = yup.object({
 export default function Register({ navigation }) {
   const { Register } = useContext(AuthContext)
 
-  const pressRegister2 = () => {
-    navigation.navigate('Verification')
-  }
-
   const pressLogin = () => {
     navigation.navigate('Login')
   }

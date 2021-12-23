@@ -39,6 +39,10 @@ export default function Profile({ navigation }) {
     navigation.navigate('EditProfile')
   }
 
+  const pressResetPassword = () => {
+    navigation.navigate('ResetPassword')
+  }
+
   function renderProfileCard() {
     return (
       <View
@@ -169,7 +173,7 @@ export default function Profile({ navigation }) {
         <ProfileCard
           icon={department}
           label="Department"
-          value={profile.matricsid}
+          value={profile.department}
         />
 
         <LineDivider />
@@ -198,7 +202,7 @@ export default function Profile({ navigation }) {
         <ProfileCard2
           icon={reset_password}
           value="Reset Password"
-          onPress={pressEditProfile}
+          onPress={pressResetPassword}
         />
 
         <LineDivider />

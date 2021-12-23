@@ -3,18 +3,21 @@ import {
     View,
     Text,
     Image,
+    TouchableOpacity
 } from 'react-native';
 
-const GroupCard = ({ icon, label, value }) => {
+const GroupCard2 = ({ icon, label, value, onPress }) => {
     return (
-        <View
+        <TouchableOpacity
             style={{
                 flexDirection: 'row',
-                height: 50,
-                marginHorizontal: 8,
-                marginVertical: 2,
-                alignItems: 'center'
+                height: 45,
+                marginTop: 12,
+                alignItems: 'center',
+                backgroundColor: "lightgray",
+                borderRadius: 10,
             }}
+            onPress={onPress}
         >
 
             {/* Icon */}
@@ -32,8 +35,8 @@ const GroupCard = ({ icon, label, value }) => {
                     source={icon}
                     resizeMode="contain"
                     style={{
-                        width: 30,
-                        height: 30,                    }}
+                        width: 20,
+                        height: 20,                    }}
                 />
             </View>
 
@@ -63,10 +66,20 @@ const GroupCard = ({ icon, label, value }) => {
                     {value}
                 </Text>
             </View>
-        </View>
+
+            {/* Icon
+            <Image
+                source={right_arrow}
+                style={{
+                    width: 10,
+                    height: 10
+                }}
+            /> */}
+
+        </TouchableOpacity>
     )
 }
 
-export default GroupCard;
+export default GroupCard2;
 
 const right_arrow = require("../assets/icons/right-arrow.png");

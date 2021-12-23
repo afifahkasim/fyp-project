@@ -10,6 +10,7 @@ import * as yup from 'yup';
 import Apikey from "../../database/apiKey";
 import firebase from 'firebase/compat/app';
 import 'firebase/compat/firestore';
+import 'firebase/compat/storage';
 import { AuthContext } from "../../routes/authProvider";
 import { Ionicons } from '@expo/vector-icons';
 
@@ -33,7 +34,7 @@ const editProfile = ({ navigation }) => {
   const { profile } = useContext(AuthContext)
   const [transferred, setTransferred] = useState(0);
 
-  let genderChoice = [[{
+  let genderChoice = [{
     label: 'Female',
     value: 'Female',
   },
@@ -41,7 +42,7 @@ const editProfile = ({ navigation }) => {
     label: 'Male',
     value: 'Male',
   }
-  ]]
+  ]
 
   let intakeChoice = [{
     label: '2020/2021',
@@ -73,27 +74,27 @@ const editProfile = ({ navigation }) => {
 
   let departmentChoice = [{
     label: 'Artificial Intelligence',
-    value: 'Department of Artificial Intelligence',
+    value: 'Artificial Intelligence',
   },
   {
     label: 'Information Systems',
-    value: 'Department of Information Systems',
+    value: 'Information Systems',
   },
   {
     label: 'Computer System and Network',
-    value: 'Department of Computer System & Network',
+    value: 'Computer System & Network',
   },
   {
     label: 'Software Engineering',
-    value: 'Department of Software Engineering',
+    value: 'Software Engineering',
   },
   {
     label: 'Multimedia',
-    value: 'Department of Multimedia',
+    value: 'Multimedia',
   },
   {
     label: 'Data Science',
-    value: 'Department of Data Science',
+    value: 'Data Science',
   },
   ]
 
@@ -156,8 +157,8 @@ const editProfile = ({ navigation }) => {
       quality: 1,
     });
 
-    //console.log(result);
-
+    console.log("Did it get here?")
+    
     if (!result.cancelled) {
       setImage(result.uri);
       uploadImage(result.uri)
@@ -249,7 +250,7 @@ const editProfile = ({ navigation }) => {
                   }}
                 />
 
-                <Text>Session:</Text>
+                <Text>Intake Session:</Text>
                 <RNPickerSelect
                   placeholder={
                     {

@@ -3,10 +3,10 @@ import { StyleSheet, Text, View, ImageBackground, TextInput } from 'react-native
 import { globalStyles } from '../styles/global';
 import RegisterButton from "../shared/buttonRegister";
 import SubtitleButton from "../shared/buttonSubtitle";
-import { Formik } from 'formik';
-import * as yup from 'yup';
 import 'firebase/compat/firestore';
 import { AuthContext } from "../routes/authProvider";
+import { Formik } from 'formik';
+import * as yup from 'yup';
 
 const reviewSchema = yup.object({
   email: yup.string().required().min(4),
