@@ -13,13 +13,18 @@ import groupDashboard from "../screens/dashboardPage/groupDashboard";
 import Calculator from "../screens/calculatorPage/calculator";
 import CGPA from "../screens/calculatorPage/CGPA";
 import GPA from "../screens/calculatorPage/GPA";
+import SelfReminder from "../screens/reminderPage/selfReminder";
+//import Taskreminder from "../screens/reminderPage/taskReminder";
+import Coursescheduler from "../screens/schedulerPage/courseScheduler";
+import Mycourse from "../screens/schedulerPage/myCourse";
+import Timetable from "../screens/timetablePage/timetable";
 
 const { Navigator, Screen } = createStackNavigator();
 
 const UserStack = () => (
   <Navigator headerMode="none">
  {/* // other options: "float", "screen" */}
-    <Screen name="Homepage" component={Homepage} />
+ <Screen name="Homepage" component={Homepage} />
     <Screen name="Profile" component={Profile} />
     <Screen name="EditProfile" component={editProfile} />
     <Screen name="ResetPassword" component={resetPassword} />
@@ -31,7 +36,11 @@ const UserStack = () => (
     <Screen name="Calculator" component={Calculator} />
     <Screen name="CGPA" component={CGPA} />
     <Screen name="GPA" component={GPA} />
-    
+    <Screen name="SelfReminder" component={SelfReminder} />
+    <Screen name="Coursescheduler" component={Coursescheduler} />
+    <Screen name="Mycourse" component={Mycourse} /> 
+    <Screen name="Timetable" component={Timetable} />
+
 
   </Navigator>
 );
