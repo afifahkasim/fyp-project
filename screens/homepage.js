@@ -45,15 +45,15 @@ export default function Homepage({ navigation }) {
   }
 
   const pressSelfReminder = () => {
-    navigation.navigate('Calculator')
+    navigation.navigate('SelfReminder')
   }
 
   const pressTimetable = () => {
-    navigation.navigate('Calculator')
+    navigation.navigate('Timetable')
   }
 
   const pressScheduler = () => {
-    navigation.navigate('Calculator')
+    navigation.navigate('Coursescheduler')
   }
 
   const pressHomepage = () => {
@@ -99,7 +99,7 @@ export default function Homepage({ navigation }) {
               <ScrollView horizontal={true}
                 showsHorizontalScrollIndicator={false}>
 
-                <Pressable onPress={() => Logout()}>
+                <Pressable onPress={pressSelfReminder}>
                   <View style={style.containerModules}>
                     <View style={{ flex: 2 }}>
                       <Image source={require('../assets/homePage/reminder.png')}
@@ -435,14 +435,14 @@ const style = StyleSheet.create({
     alignSelf: 'flex-end',
     marginRight: 25,
     marginBottom: 4,
-    paddingLeft: 280
+    paddingLeft: 270
   },
 
   arrow2Button: {
     alignSelf: 'flex-end',
     marginRight: 25,
     marginBottom: 4,
-    paddingLeft: 310
+    paddingLeft: 300
   },
 
 
