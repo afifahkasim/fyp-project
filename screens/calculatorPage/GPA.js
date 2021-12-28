@@ -207,71 +207,93 @@ LogBox.ignoreLogs(['Setting a timer for a long period of time'])
       },
 
     ]
+    
+  const [semester, setSemester] = useState(null);
+  const [dataList, setDataList] = useState(data)   
 
-  const [semester, setSemester] = useState('All');
-  const [dataList, setDataList] = useState(data)
+  //total grade points
+  const totalGradePoints = dataList.reduce(
+  (previousScore, currentScore)=>previousScore+currentScore.GradePoints, 0).toFixed(2);
+  //console.log("Grade Point:", totalGradePoints);
+  
+  //total credit hours
+  const totalCreditHours = dataList.reduce(
+  (p, c)=>p+c.CreditHours, 0);
+  //console.log("Credit Hours:",totalCreditHours);
+  
+  //GPA total
+  const GPAtotal = (totalGradePoints / totalCreditHours).toFixed(2); 
+  //console.log("GPA:", GPAtotal);
 
   const setStatusFilter = Semester => {
    
-    setDataList([...data.filter(e => e.Semester === Semester)])
- 
+    setDataList([...data.filter(e => e.Semester === Semester)]);
     setSemester(Semester)
-  };
+  }
 
   const renderItem = ({item, index}) => {
+
     return (
       <ScrollView>
       <View key={index} style={style.itemContainer}>
         <View style={style.subjectBody}>
-          
-          <Text style={style.subjectFont}>{item.Subject}</Text>
+          <Text style={style.subjectFont}>{item.CourseCode}  {item.Subject}</Text>
           <Text style={style.gradeFont}> {item.Grades}</Text>
-          
         </View>
-
       </View>
       </ScrollView>
     )
-    
   }
-
+ 
       return(
-    <SafeAreaView style={style.container}>
-    <Header text="GPA Result" />
-      <View style={style.resultcontainer}>
-        <Text style={style.resultfont}>
-          GPA result for selected semester:</Text>
-      </View>
+        <SafeAreaView style={style.container}>
+        <Header text="GPA Result" />
+          <View style ={style.resultcontainer}>
+            <Text style={style.resultfont}>
+              GPA result for selected semester</Text>
+              <Text style={style.Gpafont}>{GPAtotal}</Text>
 
-      <ScrollView horizontal={true}
-                    showsHorizontalScrollIndicator={false}>
-        <View style={style.listTab}>
-          {
-            listTab.map(e =>(
-              <TouchableOpacity 
-              style={[style.btnTab, semester === e.Semester && style.btnTabActive]}
-              onPress={() => setStatusFilter(e.Semester)}
-              >
-                <Text style={style.textTab}>
-                  {e.Semester}</Text>
-              </TouchableOpacity>
-            ))
-          }
-        </View>
-      </ScrollView>
+              <View style={style.congratscontainer}>
+                <Text style={style.congratsfont}>Congratulations!</Text>
+                <Icon
+                        style={{paddingTop: 17, paddingRight:20}}
+                        name='trophy'
+                        type='font-awesome-5'
+                        color='steelblue' 
+                        size={15}
+                        
+                        />
+              </View>
+          </View>
 
-      <FlatList
-      data = {dataList}
-      keyExtractor={(e, i) => i.toString()}
-      renderItem={renderItem}
-      />
-    </SafeAreaView>
+          <ScrollView horizontal={true}
+                        showsHorizontalScrollIndicator={false}>
+            <View style={style.listTab}>
+              {
+                listTab.map(e =>(
+                  <TouchableOpacity 
+                  style={[style.btnTab, semester === e.Semester && style.btnTabActive]}
+                  onPress={() => setStatusFilter(e.Semester)}
+                  >
+                    <Text style={style.textTab}>
+                      {e.Semester}</Text>
+                  </TouchableOpacity>
+                ))
+              }
+            </View>
+          </ScrollView>
 
+          <FlatList
+          data = {dataList}
+          keyExtractor={(e, i) => i.toString()}
+          renderItem={renderItem}
+          />
+        </SafeAreaView>
     )
 }
 
 const style = StyleSheet.create({
-
+  
   container:{
     flex: 1,
     marginBottom:30,
@@ -279,6 +301,7 @@ const style = StyleSheet.create({
 
   listTab:{
     flexDirection:'row',
+    marginBottom:30,
   },
 
   btnTab:{
@@ -311,6 +334,7 @@ const style = StyleSheet.create({
 
   subjectFont:{
     fontSize:12,
+    width:'80%'
   },
   
   subjectBody:{
@@ -332,11 +356,37 @@ const style = StyleSheet.create({
   resultfont:{
     fontWeight:'bold',
     fontSize:15,
-    paddingVertical:30,
-    paddingHorizontal:30,
+    paddingTop:20,
+    paddingBottom:10,
+    color:'white'
   },
+
+  Gpafont:{
+    fontWeight:'bold',
+    fontSize:25,
+    paddingBottom:20,
+    color:'lightgreen'
+  },
+
   resultcontainer:{
-    
+    backgroundColor:'steelblue',
+    borderRadius:20,
+    margin:20,
+    alignItems:'center',
+  },
+
+  congratscontainer:{
+    backgroundColor:'white',
+    borderRadius:20,
+    borderWidth:0.5,
+    borderColor:'darkblue',
+    marginBottom:20,
+    flexDirection:'row'
+  },
+
+  congratsfont:{
+    paddingHorizontal: 15,
+    paddingVertical:15,
   },
   
   })
