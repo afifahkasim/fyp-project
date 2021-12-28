@@ -131,14 +131,10 @@ LogBox.ignoreLogs(['Setting a timer for a long period of time'])
           flex: 1
         },
       tasksWrapper:{
-        //paddingTop: 5,
         paddingHorizontal: 20,
       },
   
-      sectionTitle:{
-        //fontSize: 20,
-        //fontWeight: 'bold',
-      },
+      sectionTitle:{},
   
       items:{
         marginTop:5,
