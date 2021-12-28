@@ -1,12 +1,20 @@
 import React from 'react';
 import {StyleSheet, View, Text} from 'react-native';
+import { Icon } from 'react-native-elements';
   
   const Taskreminder = (props) => {
 
     return (
         <View style={style.item}>
             <View style={style.itemLeft}>
-                <View style={style.square}></View>
+                <View style={style.square}>
+                    <Icon
+                        name='star'
+                        type='font-awesome-5'
+                        color='steelblue' 
+                        size={15}
+                        />
+                </View>
                 <Text style={style.tasktext}>{props.text}</Text>
             </View>
         </View>
@@ -28,14 +36,13 @@ import {StyleSheet, View, Text} from 'react-native';
         flexDirection:'row',
         alignItems:'center',
         flexWrap:'wrap',
-        
     },
 
     square:{
-        width:24,
-        height:24,
-        backgroundColor:'lightblue',
-        borderRadius:10,
+        //width:24,
+        //height:24,
+        //backgroundColor:'lightblue',
+        //borderRadius:10,
         marginRight:20,
     },
     tasktext:{
