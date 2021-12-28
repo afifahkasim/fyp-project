@@ -17,7 +17,6 @@ import { AuthContext } from "../routes/authProvider";
 import HomepageHeader from "../shared/headerHomepage";
 import Footer from "../shared/footer";
 
-
 LogBox.ignoreLogs(['Setting a timer for a long period of time'])
 
 export default function Homepage({ navigation }) {
@@ -60,12 +59,25 @@ export default function Homepage({ navigation }) {
     navigation.navigate('Homepage')
   }
 
+  const data = [
+    {id: 1, quote: 'You don’t have to be great to start, but you have to start to be great.'},
+    {id: 4, quote: 'The expert in everything was once a beginner.'},
+    {id: 3, quote: 'Don’t wish it were easier; wish you were better. – Jim Rohn'},
+    {id: 5, quote: 'Success is the sum of small efforts, repeated day in and day out. – Robert Collier'},
+    {id: 2, quote: 'There is no substitute for hard work. – Thomas Edison'},
+    {id: 6, quote: 'The difference between ordinary and extraordinary is that little “extra.”'},
+    {id: 7, quote: 'It’s not going to be easy, but it’s going to be worth it.'},
+  ];
+  
+  const randIndex = Math.floor(Math.random() * data.length);
+
   return (
     <View style={style.container}>
       <HomepageHeader text="Welcome to Data-U!" />
       <ScrollView style={{ paddingTop: 10 }}>
-        <View >
-          <Text style={{ fontSize: 15, paddingLeft: 20, paddingTop: 5, paddingBottom: 5 }}>Hi! How was your day today?</Text>
+        <View>
+          <Text style={{ fontSize: 15, paddingLeft: 20, paddingTop: 5, paddingBottom: 5 }}>
+            Hi! How was your day today?</Text>
         </View>
 
         <View style={style.RBcontainer}>
@@ -74,7 +86,8 @@ export default function Homepage({ navigation }) {
 
         <TouchableOpacity>
           <View style={style.Rcontainer}>
-            <Text style={{ fontSize: 15, paddingLeft: 20, paddingTop: 20 }}>These is motivational words will inspire you!</Text>
+            <Text style={style.quoteFont}>
+            {data[randIndex].quote}</Text>
           </View>
         </TouchableOpacity>
 
@@ -361,7 +374,16 @@ const style = StyleSheet.create({
     borderRadius: 10,
     marginBottom: 5,
     alignSelf: 'center',
+    alignItems:'center'
 
+  },
+
+  quoteFont:{
+    fontSize: 15, 
+    //paddingTop: 40, 
+    fontWeight:'bold',
+    fontStyle:'italic',
+    margin:30
   },
 
   RBcontainer: {
