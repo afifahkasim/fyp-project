@@ -527,17 +527,8 @@ const [modalOpen,  setModalOpenz] = useState(false);
                         onChangeText={(text) => setTarget(text)}
                         placeholder="4.00"
                         keyboardType="numeric"
-                        value={target}/>   
-                </View>
-                <View style={style.caltarget}>
-                        <Icon
-                        raised
-                        name='calculator'
-                        type='font-awesome-5'
-                        color='steelblue' 
-                        size={15}
-                        //onPress={() => }
-                        />
+                        value={target}
+                        maxLength={4}/>   
                 </View>
             </View>
           </View>
