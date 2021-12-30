@@ -220,7 +220,6 @@ const style = StyleSheet.create({
         <View style={style.Calboxsemester} >
             <Text style={{fontSize: 15, paddingLeft: 27, paddingTop: 10}}>Semester 1</Text>
         </View>
-
         <View style={style.Calboxgrade} >
             <Text style={{fontSize: 15, paddingTop: 10}}> 4.0</Text>
         </View>
