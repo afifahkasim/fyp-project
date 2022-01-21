@@ -59,15 +59,21 @@ export default function myDashboard({ navigation }) {
   };
 
   const GPAbySem = {
+    // labels: [SGPAlabels[0], SGPAlabels[1]],
+    // labels: semesterGPA.map(key => key.Semester),
     labels: ['Sem 1', 'Sem 2', 'Sem 3', 'Sem 4', 'Sem 5'],
     datasets: [
       {
 
+        // data: [SGPAdata[0], SGPAdata[1]],
+        // data: semesterGPA.map(key => key.GPA),
         data: [4.00, 2.89, 3.75, 3.94, 4.00],
         strokeWidth: 3, // optional
       },
     ],
   };
+
+  const [testData, setTestData] = useState({ labels: [], data: [] })
 
   // Semester, Course Code, Subject, Grades, Credit Hours, Grade Points
 
@@ -79,6 +85,7 @@ export default function myDashboard({ navigation }) {
     "CreditHours",
     "GradePoints"
   ])
+
   const [cosmeticColumns, setCosmeticColumns] = useState([
     "Sem",
     "Course\nCode",
@@ -87,8 +94,22 @@ export default function myDashboard({ navigation }) {
     "Credit\nHours",
     "Grade\nPoints"
   ])
+
   const [direction, setDirection] = useState(null)
+
   const [selectedColumn, setSelectedColumn] = useState(null)
+
+  const [semesterGPA, setSemesterGPA] = useState([
+    {
+      Semester: "Sem 1",
+      GPA: 3.74
+    },
+    {
+      Semester: "Sem 2",
+      GPA: 2.69
+    }
+  ])
+
   const [results, setResults] = useState([
     {
       Semester: 1,
@@ -190,6 +211,8 @@ export default function myDashboard({ navigation }) {
 
   const renderHeader = () => (
     <View style={styles.cardContainer}>
+
+      {/* [MyDashboard] Filter */}
       <View style={styles.filterInner}>
         <Card>
           <View style={{
@@ -213,31 +236,44 @@ export default function myDashboard({ navigation }) {
           </View></Card>
       </View>
 
+      {/* [MyDashboard] Card for Total Credit Hours, CGPA, Total Grade Points */}
       <View style={styles.cardInner}>
         <DashboardCard>
-          <Text style={styles.cardText}>91</Text>
+          <Text style={styles.cardText}>{totalCreditHours.toFixed(0)}</Text>
           <Text style={styles.cardSubtext}>Total Credit Hours</Text>
         </DashboardCard>
       </View>
 
       <View style={styles.cardInner}>
         <DashboardCard>
-          <Text style={styles.cardText}>3.89</Text>
+          <Text style={styles.cardText}>{cummulativeGPA.toFixed(2)}</Text>
           <Text style={styles.cardSubtext}>CGPA</Text>
         </DashboardCard>
       </View>
 
       <View style={styles.cardInner}>
         <DashboardCard>
-          <Text style={styles.cardText}>326.90</Text>
+          <Text style={styles.cardText}>{renderGradePoints.toFixed(2)}</Text>
           <Text style={styles.cardSubtext}>Total Grade Points</Text>
         </DashboardCard>
       </View>
 
+      {/* [MyDashboard] Line Chart for GPA vs Semester */}
       <DashboardCard>
         <Text style={styles.chartTitle}>GPA vs Semester</Text>
         <LineChart
-          data={GPAbySem}
+          data={{
+            labels: SGPAlabels,
+            datasets: [{
+              data: SGPAdata
+            },
+            {
+              // to set max value
+              data: [4.00],
+              withDots: false
+            }
+          ]
+          }}
           width={Dimensions.get('window').width - 40} // from react-native
           height={220}
           fromZero={true}
@@ -305,12 +341,18 @@ export default function myDashboard({ navigation }) {
         />
       </DashboardCard>
 
+      {/* [MyDashboard] Bar Chart for # of Subjects vs Grade */}
       <DashboardCard>
 
         <Text style={styles.chartTitle}># of Subjects vs Grade</Text>
         <ScrollView horizontal={true}>
           <BarChart
-            data={SubjectbyGrade}
+            data={{
+              labels: GradeFreqlabels,
+              datasets: [{
+                data: GradeFreqdata
+              }]
+            }}
             width={Dimensions.get('window').width - 50} // from react-native
             height={220}
             fromZero={true}
@@ -345,21 +387,21 @@ export default function myDashboard({ navigation }) {
 
       <View style={styles.cardInner}>
         <DashboardCard>
-          <Text style={styles.cardText}>WIE2002</Text>
+          <Text style={styles.cardText}>{listOfSubjects[0]}</Text>
           <Text style={styles.cardSubtext}>Best Subject</Text>
         </DashboardCard>
       </View>
 
       <View style={styles.cardInner}>
         <DashboardCard>
-          <Text style={styles.cardText}>32</Text>
+          <Text style={styles.cardText}>{listOfSubjects.length}</Text>
           <Text style={styles.cardSubtext}>Total Subjects</Text>
         </DashboardCard>
       </View>
 
       <View style={styles.cardInner}>
         <DashboardCard>
-          <Text style={styles.cardText}>WIA1002</Text>
+          <Text style={styles.cardText}>{listOfSubjects[listOfSubjects.length-1]}</Text>
           <Text style={styles.cardSubtext}>Worst Subject</Text>
         </DashboardCard>
       </View>
@@ -410,26 +452,45 @@ export default function myDashboard({ navigation }) {
     </View>
   )
 
-  const renderCreditHours = results.map(resultSum => resultSum.CreditHours).reduce((a, b) => a + b)
 
-  const renderGradePoints2 = results.map(resultSum => resultSum.GradePoints).reduce((a, b) => a + b)
+  const renderGradePoints = results.map(resultSum => resultSum.GradePoints).reduce((a, b) => a + b)
+  const totalCreditHours = results.reduce((a, b) => a + (b.CreditHours || 0), 0)
+  const cummulativeGPA = renderGradePoints / totalCreditHours
+  const SGPAdata = semesterGPA.map(key => key.GPA)
+  const SGPAlabels = semesterGPA.map(key => key.Semester)
 
-  const renderGradePoints1 = results.reduce((total, currentValue) => total = total + currentValue.GradePoints)
+  const countGradeFreq = _.countBy(results.map(key => key.Grades))
+  const GradeFreqdata = _.values(countGradeFreq)
+  const GradeFreqlabels = _.keys(countGradeFreq)
 
-  const renderGradePoints = (
-    Object.keys(results).map((key) => {
-      return (
-        <Text>{results[key].GradePoints}</Text>
-      )
-    }
-    )
-  )
+  const listOfSubjects = results.map(key => key.CourseCode)
+
+
+
+
 
   return (
 
     // console.log(Object.keys(results)), just to see the array of keys 
     // console.log(renderGradePoints2), this one is working
+    console.log(renderGradePoints.toFixed(2)), // working. used for the card "Total Grade Points"
+    console.log(totalCreditHours.toFixed(0)), // working. used for the card "Total Credit Hours"
+    console.log(cummulativeGPA.toFixed(2)), // working. used for the card "CGPA"
 
+    // testing working value to be inserted into line chart data
+    // console.log(semesterGPA[0].GPA), // returns one value but not in const
+    // console.log(Object.keys(semesterGPA).map(key => semesterGPA[key])), // doesn't work, returns array of objects
+    console.log(semesterGPA.map(key => key.GPA)), // returns array value so this is most ideal, but not in const "GPABySem". solution is to put this directly into linechart data={{}} instead
+
+    // testing working value to be inserted into bar chart data
+    console.log(results.map(key => key.Grades)), // returns sorted array of available grades. prob usable for bar chart labels
+    console.log(_.keys(countGradeFreq)), // _.keys(array), returns in array all the key (unique values) of array. working. used.
+    console.log(_.values(countGradeFreq)), // _.values(array), returns in array all the key freq of array+. working. used.
+
+    // testing working value to be inserted into cards before table
+    console.log(listOfSubjects[0]), // return the first value of a descending order array. working. used for the card "Best Subject"
+    console.log(listOfSubjects.length), // return length of array. working. used for the card "Total Subjects"
+    console.log(listOfSubjects[listOfSubjects.length-1]), // return the last value of a descending order array. working. used for the card "Worst Subject"
 
     <View style={globalStyles.container}>
 
