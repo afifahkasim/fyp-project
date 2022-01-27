@@ -43,6 +43,10 @@ export default function Profile({ navigation }) {
     navigation.navigate('ResetPassword')
   }
 
+  const pressSubmitFeedback = () => {
+    navigation.navigate('SubmitFeedback')
+  }
+
   function renderProfileCard() {
     return (
       <View
@@ -209,7 +213,7 @@ export default function Profile({ navigation }) {
         <ProfileCard2
           icon={submit_feedback}
           value="Submit Feedback"
-          onPress={pressEditProfile}
+          onPress={pressSubmitFeedback}
         />
 
         <LineDivider />

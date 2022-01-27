@@ -1,4 +1,4 @@
-import React, { useState, useContext, useEffect } from 'react';
+import React, { useState, useContext, useEffect, useCallback, useRef } from 'react';
 import {
   Text,
   TouchableOpacity,
@@ -32,9 +32,10 @@ import Tooltip from '../../shared/header';
 import { Ionicons } from '@expo/vector-icons';
 import { Rect, Text as TextSVG, Svg } from "react-native-svg";
 import { MaterialCommunityIcons } from '@expo/vector-icons';
-import _ from "lodash";
+import _, { isNull, xorBy } from "lodash";
 import { StatusBar } from 'expo-status-bar';
-
+import SelectDropdown from 'react-native-select-dropdown';
+import FontAwesome from "react-native-vector-icons/FontAwesome";
 
 
 //check if firebase not init,so init from config file
@@ -49,31 +50,34 @@ export default function myDashboard({ navigation }) {
   let [tooltipPos, setTooltipPos] = useState({ x: 0, y: 0, visible: false, value: 0 })
 
 
-  const SubjectbyGrade = {
-    labels: ['A+', 'A', 'A-', 'B+', 'B', 'B-', 'C+', 'C', 'C-', 'D+', 'D', 'F'],
-    datasets: [
-      {
-        data: [3, 12, 5, 3, 1, 1, 1, 0, 1, 0, 0, 0],
-      },
-    ],
-  };
 
-  const GPAbySem = {
-    // labels: [SGPAlabels[0], SGPAlabels[1]],
-    // labels: semesterGPA.map(key => key.Semester),
-    labels: ['Sem 1', 'Sem 2', 'Sem 3', 'Sem 4', 'Sem 5'],
-    datasets: [
-      {
+  // all here is for filter category (filter semester, grades, graph)
+  // const [selectedCategoryId, setSelectedCategoryId] = React.useState(1)
+  // const [selectedMenuType, setSelectedMenuType] = React.useState(1)
+  // const [menuList, setMenuList] = React.useState([])
 
-        // data: [SGPAdata[0], SGPAdata[1]],
-        // data: semesterGPA.map(key => key.GPA),
-        data: [4.00, 2.89, 3.75, 3.94, 4.00],
-        strokeWidth: 3, // optional
-      },
-    ],
-  };
+  // React.useEffect(() => {
+  //   handleChangeCategory(selectedCategoryId, selectedMenuType)
+  // }, [])
 
-  const [testData, setTestData] = useState({ labels: [], data: [] })
+  // // Handler
+
+  // function handleChangeCategory(semId, menuTypeId) {
+  //   // Find the menu based on the menuTypeId
+  //   let selectedSem = dummyData.menu.find(a => a.id == menuTypeId)
+
+  //   // Set the menu based on the categoryId
+  //   setMenuList(selectedSem?.list.filter(a => a.results.
+  //     includes(semId)))
+
+  // }
+
+  // <TouchableOpacity onPress={() => {
+  //   setSelectedMenuType(item.id)
+  //   handleChangeCategory(selectedCategoryId, item.id)
+  // }}>
+
+  // </TouchableOpacity>
 
   // Semester, Course Code, Subject, Grades, Credit Hours, Grade Points
 
@@ -95,17 +99,15 @@ export default function myDashboard({ navigation }) {
     "Grade\nPoints"
   ])
 
-  const [direction, setDirection] = useState(null)
-
-  const [selectedColumn, setSelectedColumn] = useState(null)
-
-  const [semesterGPA, setSemesterGPA] = useState([
+  const [sgpa, setSGPA] = useState([
     {
-      Semester: "Sem 1",
+      Semester: 1,
+      Label: "Sem 1",
       GPA: 3.74
     },
     {
-      Semester: "Sem 2",
+      Semester: 2,
+      Label: "Sem 2",
       GPA: 2.69
     }
   ])
@@ -201,62 +203,381 @@ export default function myDashboard({ navigation }) {
     },
   ])
 
+  const Semester = [
+    {
+      id: 1,
+      item: "Sem 1",
+      GPA: 3.74
+    },
+    {
+      id: 2,
+      item: "Sem 2",
+      GPA: 2.69
+    }
+  ]
+
+  const [direction, setDirection] = useState(null)
+
+  const [selectedColumn, setSelectedColumn] = useState(null)
+
+  const [sem, setSem] = useState(null);
+  const [resultsList, setResultsList] = useState(results)
+  const [resultsTable, setResultsTable] = useState(results)
+  const [sgpaList, setSGPAList] = useState(sgpa)
+
+  const listTab = sgpa.map(key => _.pick(key, ['Semester']))
+  // will return a similar format to listTab dalam GPA.js
+
+  const [graphStatus, setGraphStatus] = useState(false);
+  const [cards, setCards] = useState(false);
+  const toggleCards = () => {
+    setCards(!cards);
+  };
+
+  const [barChart, setBarChart] = useState(false);
+  const toggleBarChart = () => {
+    setBarChart(!barChart);
+  };
+
+  const [lineChart, setLineChart] = useState(false);
+  const toggleLineChart = () => {
+    setLineChart(!lineChart);
+  };
+
+  const [table, setTable] = useState(false);
+  const toggleTable = () => {
+    setTable(!table);
+  };
+
+  const listTab2 = [
+    {
+      Graph: "Cards"
+    },
+    {
+      Graph: "Bar Chart"
+    },
+    {
+      Graph: "Line Chart"
+    },
+    {
+      Graph: "Table"
+    },
+  ]
+
   const sortTable = (column) => {
     const newDirection = direction === "desc" ? "asc" : "desc"
-    const sortedData = _.orderBy(results, [column], [newDirection])
+    const sortedData = _.orderBy(resultsTable, [column], [newDirection])
     setSelectedColumn(column)
     setDirection(newDirection)
-    setResults(sortedData)
+    setResultsTable(sortedData)
+  }
+
+  const setStatusFilter = Semester => {
+    setResultsList([...results.filter(e => e.Semester === Semester)]);
+    setResultsTable([...results.filter(e => e.Semester === Semester)]);
+    setSGPAList([...sgpa.filter(e => e.Semester === Semester)]);
+    setSem(Semester)
+  }
+
+  const resetStatusFilter = () => {
+    setResultsList(results);
+    setSGPAList(sgpa);
+    setSem(null)
+  }
+
+  const setGraphFilter = Graph => {
+    if (Graph === "Cards") {
+      toggleCards();
+    }
+    if (Graph === "Bar Chart") {
+      toggleBarChart();
+    }
+    if (Graph === "Line Chart") {
+      toggleLineChart();
+    }
+    if (Graph === "Table") {
+      toggleTable();
+    }
+    setGraphStatus(true)
+  }
+
+  const resetGraphFilter = () => {
+    setCards(false);
+    setBarChart(false);
+    setLineChart(false);
+    setTable(false);
+    setGraphStatus(false)
   }
 
   const renderHeader = () => (
+
     <View style={styles.cardContainer}>
 
       {/* [MyDashboard] Filter */}
-      <View style={styles.filterInner}>
-        <Card>
-          <View style={{
-            flexDirection: 'row',
-            alignItems: 'center'
-          }}>
-            <Text style={styles.filterText}>Select Semester</Text>
-            <Ionicons name="arrow-down" size={20} color="black" style={{ alignContent: 'flex-end' }} />
+      {/* For "Select Semester", single-select dropdown list with values "All Semester", "Semester 1", "Semester 2", and so on */}
+      {/* For "Filter Graph", multiselect dropdown list with values "Remove Bar Chart", "Remove First 3 Cards", "Remove Last 3 Cards", and so on */}
+
+
+      {/* [MyDashboard] Select Semester Filter */}
+      <View>
+        <ScrollView horizontal={true}
+          showsHorizontalScrollIndicator={false}>
+          <View style={styles.listTab}>
+            <View style={styles.listIcon}>
+              <Ionicons name="filter-sharp" size={20} color="steelblue" style={{ alignContent: 'flex-end' }} />
+            </View>
+
+
+            {/* For when you wake up later, */}
+            {/* Sini letak butang untuk reset filter, use resetStatusFilter() */}
+            {/* Default value */}
+            <TouchableOpacity
+              style={[
+                styles.btnTabActive,
+                {
+                  width: Dimensions.get('window').width / listTab.length - 50,
+                  maxWidth: Dimensions.get('window').width / 3.5
+                },
+                sem !== null && styles.btnTab
+              ]}
+              onPress={() => resetStatusFilter()}
+            >
+
+              {/* By default, active tab style, if unselected, normal tab style */}
+              <Text style={[styles.textTabActive, sem !== null && styles.textTab]}>
+                All Sem
+              </Text>
+
+              {/* By default, display icon */}
+              {sem !== null ?
+                <View></View>
+                :
+                <Ionicons name="checkmark-circle-sharp" size={20} color="black" style={{ alignContent: 'flex-end' }} />
+              }
+
+              {/* Filtered value */}
+            </TouchableOpacity>
+            {
+              listTab.map((e, index) => (
+                <TouchableOpacity
+                  key={index}
+                  style={[
+                    styles.btnTab,
+                    {
+                      width: Dimensions.get('window').width / listTab.length - 50,
+                      maxWidth: Dimensions.get('window').width / 3.5
+                    },
+                    sem === e.Semester && styles.btnTabActive]}
+                  onPress={() => setStatusFilter(e.Semester)}
+                >
+
+                  {/* If unselected, normal tab style, if selected, active tab style */}
+                  <Text style={[styles.textTab, sem === e.Semester && styles.textTabActive]}>
+                    Sem {e.Semester}
+                  </Text>
+
+                  {/* If selected, display icon */}
+                  {sem === e.Semester ?
+                    <Ionicons name="checkmark-circle-sharp" size={20} color="black" style={{ alignContent: 'flex-end' }} />
+                    :
+                    <View></View>}
+                </TouchableOpacity>
+              ))
+            }
           </View>
-        </Card>
+        </ScrollView>
+      </View>
+
+      {/* [MyDashboard] Remove Graph Filter */}
+      <View>
+        <ScrollView horizontal={true}
+          showsHorizontalScrollIndicator={false}>
+          <View style={styles.listTab}>
+            <View style={styles.listIcon}>
+              <Ionicons name="filter-sharp" size={20} color="steelblue" style={{ alignContent: 'flex-end' }} />
+            </View>
+
+
+            {/* For when you wake up later, */}
+            {/* Sini letak butang untuk reset filter, use resetGraphFilter() */}
+            {/* Default value */}
+            <TouchableOpacity
+              style={[
+                styles.btnTabActive,
+                {
+                  width: Dimensions.get('window').width / listTab.length - 50,
+                  maxWidth: Dimensions.get('window').width / 3
+                },
+                graphStatus === true && styles.btnTab
+              ]}
+              onPress={() => resetGraphFilter()}
+            >
+
+              {/* By default, active tab style, if unselected, normal tab style */}
+              <Text style={[styles.textTabActive, graphStatus === true && styles.textTab]}>
+                All Graphs
+              </Text>
+
+              {/* By default, display icon */}
+              {graphStatus === true ?
+                <View></View>
+                :
+                <Ionicons name="checkmark-circle-sharp" size={20} color="black" style={{ alignContent: 'flex-end' }} />
+              }
+
+              {/* Filtered value */}
+            </TouchableOpacity>
+            {
+              listTab2.map((e, index) => (
+                <TouchableOpacity
+                  key={index}
+                  style={[
+                    styles.btnTab,
+                    {
+                      width: Dimensions.get('window').width / listTab.length - 50,
+                      maxWidth: Dimensions.get('window').width / 3.5
+                    },
+                    (e.Graph === "Cards" && cards === true) && styles.btnTabActive,
+                    (e.Graph === "Bar Chart" && barChart === true) && styles.btnTabActive,
+                    (e.Graph === "Line Chart" && lineChart === true) && styles.btnTabActive,
+                    (e.Graph === "Table" && table === true) && styles.btnTabActive]}
+                  onPress={() => setGraphFilter(e.Graph)}
+                >
+
+                  {/* If unselected, normal tab style, if selected, active tab style */}
+                  <Text style={[styles.textTab, sem === e.Semester && styles.textTabActive]}>
+                    {e.Graph}
+                  </Text>
+
+                  {/* If selected, display icon */}
+                  {(e.Graph === "Cards" && cards === true)
+                    || (e.Graph === "Bar Chart" && barChart === true)
+                    || (e.Graph === "Line Chart" && lineChart === true)
+                    || (e.Graph === "Table" && table === true) ?
+                    <Ionicons name="close-circle-sharp" size={20} color="black" style={{ alignContent: 'flex-end' }} />
+                    :
+                    <View></View>}
+                </TouchableOpacity>
+              ))
+            }
+          </View>
+        </ScrollView>
+      </View>
+
+      {/* 
+
+      <View style={styles.filterInner}>
+        <View style={{
+          flexDirection: 'row',
+          alignItems: 'center',
+          padding: "5%",
+        }}>
+          <SelectDropdown
+            data={Semester}
+            // defaultValueByIndex={1} // use default value by index or default value
+            // defaultValue={'Canada'} // use default value by index or default value
+            onSelect={(selectedItem, index) => {
+              console.log(selectedItem, index);
+            }}
+            buttonTextAfterSelection={(selectedItem, index) => {
+              return selectedItem.item;
+            }}
+            rowTextForSelection={(item, index) => {
+              return item.item;
+            }}
+            defaultButtonText={"Select Semester"}
+            buttonStyle={styles.dropdown1BtnStyle}
+            buttonTextStyle={styles.dropdown1BtnTxtStyle}
+            renderDropdownIcon={(isOpened) => {
+              return (
+                <FontAwesome
+                  name={isOpened ? "chevron-up" : "chevron-down"}
+                  color={"#444"}
+                  size={18}
+                />
+              );
+            }}
+            dropdownIconPosition={"right"}
+            dropdownStyle={styles.dropdown1DropdownStyle}
+            rowStyle={styles.dropdown1RowStyle}
+            rowTextStyle={styles.dropdown1RowTxtStyle}
+          />
+        </View>
       </View>
 
       <View style={styles.filterInner}>
-        <Card>
-          <View style={{
-            flexDirection: 'row',
-            alignItems: 'center'
-          }}>
-            <Text style={styles.filterText}>Filter by Grades</Text>
-            <Ionicons name="arrow-down" size={20} color="black" style={{ alignContent: 'flex-end' }} />
-          </View></Card>
-      </View>
+        <View style={{
+          flexDirection: 'row',
+          alignItems: 'center',
+          padding: "5%",
+        }}>
+          <SelectDropdown
+            data={Semester}
+            // defaultValueByIndex={1} // use default value by index or default value
+            // defaultValue={'Canada'} // use default value by index or default value
+            onSelect={(selectedItem, index) => {
+              console.log(selectedItem, index);
+            }}
+            buttonTextAfterSelection={(selectedItem, index) => {
+              return selectedItem.item;
+            }}
+            rowTextForSelection={(item, index) => {
+              return item.item;
+            }}
+            defaultButtonText={"Filter Graphs"}
+            buttonStyle={styles.dropdown2BtnStyle}
+            buttonTextStyle={styles.dropdown2BtnTxtStyle}
+            renderDropdownIcon={(isOpened) => {
+              return (
+                <FontAwesome
+                  name={isOpened ? "chevron-up" : "chevron-down"}
+                  color={"#FFF"}
+                  size={18}
+                />
+              );
+            }}
+            dropdownIconPosition={"right"}
+            dropdownStyle={styles.dropdown2DropdownStyle}
+            rowStyle={styles.dropdown2RowStyle}
+            rowTextStyle={styles.dropdown2RowTxtStyle}
+          />
+        </View>
+      </View> */}
 
       {/* [MyDashboard] Card for Total Credit Hours, CGPA, Total Grade Points */}
-      <View style={styles.cardInner}>
-        <DashboardCard>
-          <Text style={styles.cardText}>{totalCreditHours.toFixed(0)}</Text>
-          <Text style={styles.cardSubtext}>Total Credit Hours</Text>
-        </DashboardCard>
-      </View>
+      {console.log(graphStatus)}
+      {(cards === true || graphStatus === false) ?
+        <View style={{flexDirection: 'row'}}>
+          <View style={styles.cardInner}>
+            <DashboardCard>
+              <Text style={styles.cardText}>{totalCreditHours.toFixed(0)}</Text>
+              <Text style={styles.cardSubtext}>Total Credit Hours</Text>
+            </DashboardCard>
+          </View>
 
-      <View style={styles.cardInner}>
-        <DashboardCard>
-          <Text style={styles.cardText}>{cummulativeGPA.toFixed(2)}</Text>
-          <Text style={styles.cardSubtext}>CGPA</Text>
-        </DashboardCard>
-      </View>
+          <View style={styles.cardInner}>
+            <DashboardCard>
+              <Text style={styles.cardText}>{cummulativeGPA.toFixed(2)}</Text>
+              {sem === null ?
+                <Text style={styles.cardSubtext}>CGPA</Text>
+                :
+                <Text style={styles.cardSubtext}>GPA</Text>
+              }
 
-      <View style={styles.cardInner}>
-        <DashboardCard>
-          <Text style={styles.cardText}>{renderGradePoints.toFixed(2)}</Text>
-          <Text style={styles.cardSubtext}>Total Grade Points</Text>
-        </DashboardCard>
-      </View>
+            </DashboardCard>
+          </View>
+
+          <View style={styles.cardInner}>
+            <DashboardCard>
+              <Text style={styles.cardText}>{renderGradePoints.toFixed(2)}</Text>
+              <Text style={styles.cardSubtext}>Total Grade Points</Text>
+            </DashboardCard>
+          </View>
+        </View>
+        : <View></View>
+      }
+
+
 
       {/* [MyDashboard] Line Chart for GPA vs Semester */}
       <DashboardCard>
@@ -264,15 +585,16 @@ export default function myDashboard({ navigation }) {
         <LineChart
           data={{
             labels: SGPAlabels,
-            datasets: [{
-              data: SGPAdata
-            },
-            {
-              // to set max value
-              data: [4.00],
-              withDots: false
-            }
-          ]
+            datasets: [
+              {
+                data: SGPAdata
+              },
+              {
+                // to set max value
+                data: [4.00],
+                withDots: false
+              }
+            ]
           }}
           width={Dimensions.get('window').width - 40} // from react-native
           height={220}
@@ -401,7 +723,7 @@ export default function myDashboard({ navigation }) {
 
       <View style={styles.cardInner}>
         <DashboardCard>
-          <Text style={styles.cardText}>{listOfSubjects[listOfSubjects.length-1]}</Text>
+          <Text style={styles.cardText}>{listOfSubjects[listOfSubjects.length - 1]}</Text>
           <Text style={styles.cardSubtext}>Worst Subject</Text>
         </DashboardCard>
       </View>
@@ -453,19 +775,17 @@ export default function myDashboard({ navigation }) {
   )
 
 
-  const renderGradePoints = results.map(resultSum => resultSum.GradePoints).reduce((a, b) => a + b)
-  const totalCreditHours = results.reduce((a, b) => a + (b.CreditHours || 0), 0)
+  const renderGradePoints = resultsList.map(resultSum => resultSum.GradePoints).reduce((a, b) => a + b)
+  const totalCreditHours = resultsList.reduce((a, b) => a + (b.CreditHours || 0), 0)
   const cummulativeGPA = renderGradePoints / totalCreditHours
-  const SGPAdata = semesterGPA.map(key => key.GPA)
-  const SGPAlabels = semesterGPA.map(key => key.Semester)
+  const SGPAdata = sgpaList.map(key => key.GPA)
+  const SGPAlabels = sgpaList.map(key => key.Label)
 
-  const countGradeFreq = _.countBy(results.map(key => key.Grades))
+  const countGradeFreq = _.countBy(resultsList.map(key => key.Grades))
   const GradeFreqdata = _.values(countGradeFreq)
   const GradeFreqlabels = _.keys(countGradeFreq)
 
-  const listOfSubjects = results.map(key => key.CourseCode)
-
-
+  const listOfSubjects = resultsList.map(key => key.CourseCode)
 
 
 
@@ -478,26 +798,29 @@ export default function myDashboard({ navigation }) {
     console.log(cummulativeGPA.toFixed(2)), // working. used for the card "CGPA"
 
     // testing working value to be inserted into line chart data
-    // console.log(semesterGPA[0].GPA), // returns one value but not in const
-    // console.log(Object.keys(semesterGPA).map(key => semesterGPA[key])), // doesn't work, returns array of objects
-    console.log(semesterGPA.map(key => key.GPA)), // returns array value so this is most ideal, but not in const "GPABySem". solution is to put this directly into linechart data={{}} instead
+    // console.log(Semester[0].GPA), // returns one value but not in const
+    // console.log(Object.keys(Semester).map(key => Semester[key])), // doesn't work, returns array of objects
+    console.log(Semester.map(key => key.GPA)), // returns array value so this is most ideal, but not in const "GPABySem". solution is to put this directly into linechart data={{}} instead
 
     // testing working value to be inserted into bar chart data
     console.log(results.map(key => key.Grades)), // returns sorted array of available grades. prob usable for bar chart labels
+    console.log(listTab),
+
     console.log(_.keys(countGradeFreq)), // _.keys(array), returns in array all the key (unique values) of array. working. used.
     console.log(_.values(countGradeFreq)), // _.values(array), returns in array all the key freq of array+. working. used.
 
     // testing working value to be inserted into cards before table
     console.log(listOfSubjects[0]), // return the first value of a descending order array. working. used for the card "Best Subject"
     console.log(listOfSubjects.length), // return length of array. working. used for the card "Total Subjects"
-    console.log(listOfSubjects[listOfSubjects.length-1]), // return the last value of a descending order array. working. used for the card "Worst Subject"
+    console.log(listOfSubjects[listOfSubjects.length - 1]), // return the last value of a descending order array. working. used for the card "Worst Subject"
 
-    <View style={globalStyles.container}>
+    <View style={globalStyles.container, { height: Dimensions.get('window').height } + 100}>
 
       <Header text='My Dashboard' />
+
       <View style={styles.cardContainer}>
         <FlatList
-          data={results}
+          data={resultsTable}
           style={{ maxHeight: Dimensions.get('window').height - 100, width: "90%" }}
           horizontal={false}
           keyExtractor={(item, index) => index + ""}
@@ -530,6 +853,105 @@ const styles = StyleSheet.create({
     color: "black",
     flex: 1,
   },
+
+
+  saveAreaViewContainer: { flex: 1, backgroundColor: "#000", },
+  viewContainer: { flex: 1, width: Dimensions.get('window').width, backgroundColor: "#FFF" },
+  dropdown1BtnStyle: {
+    flex: 1,
+    height: 50,
+    backgroundColor: "#FFF",
+    borderRadius: 8,
+    borderWidth: 1,
+    borderColor: "#444",
+  },
+  dropdown1BtnTxtStyle: { color: "#444", textAlign: "left" },
+  dropdown1DropdownStyle: { backgroundColor: "#EFEFEF" },
+  dropdown1RowStyle: {
+    backgroundColor: "#EFEFEF",
+    borderBottomColor: "#C5C5C5",
+  },
+  dropdown1RowTxtStyle: { color: "#444", textAlign: "left" },
+
+  dropdown2BtnStyle: {
+    width: "100%",
+    height: 50,
+    backgroundColor: "#444",
+    borderRadius: 8,
+  },
+  dropdown2BtnTxtStyle: {
+    color: "#FFF",
+    textAlign: "center",
+    fontWeight: "bold",
+  },
+  dropdown2DropdownStyle: { backgroundColor: "#444" },
+  dropdown2RowStyle: { backgroundColor: "#444", borderBottomColor: "#C5C5C5" },
+  dropdown2RowTxtStyle: {
+    color: "#FFF",
+    textAlign: "center",
+    fontWeight: "bold",
+  },
+
+
+
+  listTab: {
+    flexDirection: 'row',
+    margin: 5,
+    alignItems: 'center',
+    backgroundColor: 'white',
+    borderRadius: 20,
+    elevation: 3,
+    shadowOffset: { width: 1, height: 1 },
+    shadowColor: '#333',
+    shadowOpacity: 0.3,
+    shadowRadius: 2,
+  },
+  listIcon: {
+    marginLeft: 20,
+    marginHorizontal: 10,
+  },
+  btnTab: {
+    backgroundColor: 'white',
+    flexDirection: 'row',
+    alignItems: 'center',
+    // borderWidth: 1,
+    // borderColor: '#444',
+    padding: 10,
+    borderRadius: 20,
+    margin: 5,
+    height: 45,
+  },
+  textTab: {
+    fontFamily: 'nunito-regular',
+    fontWeight: '900',
+    fontSize: 16,
+    textAlign: 'center',
+    color: "black",
+    flex: 1,
+
+  },
+  btnTabActive: {
+    backgroundColor: 'steelblue',
+    flexDirection: 'row',
+    alignItems: 'center',
+    // borderWidth: 1,
+    // borderColor: '#444',
+    padding: 10,
+    borderRadius: 20,
+    margin: 5,
+    height: 45,
+  },
+  textTabActive: {
+    fontFamily: 'nunito-bold',
+    fontWeight: '900',
+    fontSize: 16,
+    textAlign: 'center',
+    color: "black",
+    flex: 1,
+
+  },
+
+
 
   cardInner: {
     width: Dimensions.get('window').width / 3,

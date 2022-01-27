@@ -5,6 +5,7 @@ import Homepage from "../screens/homepage";
 import Profile from "../screens/profilePage/profile";
 import editProfile from "../screens/profilePage/editProfile";
 import resetPassword from "../screens/profilePage/resetPassword";
+import submitFeedback from "../screens/profilePage/submitFeedback";
 import Group from "../screens/groupPage/group";
 import addGroup from "../screens/groupPage/addGroup";
 import joinGroup from "../screens/groupPage/joinGroup";
@@ -28,6 +29,7 @@ const UserStack = () => (
     <Screen name="Profile" component={Profile} />
     <Screen name="EditProfile" component={editProfile} />
     <Screen name="ResetPassword" component={resetPassword} />
+    <Screen name="SubmitFeedback" component={submitFeedback} />
     <Screen name="Group" component={Group} />
     <Screen name="AddGroup" component={addGroup} />
     <Screen name="JoinGroup" component={joinGroup} />
