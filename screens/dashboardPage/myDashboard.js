@@ -249,15 +249,17 @@ export default function myDashboard({ navigation }) {
     setTable(!table);
   };
 
+
+
   const listTab2 = [
     {
-      Graph: "Cards"
+      Graph: "Line Chart"
     },
     {
       Graph: "Bar Chart"
     },
     {
-      Graph: "Line Chart"
+      Graph: "Cards"
     },
     {
       Graph: "Table"
@@ -281,6 +283,7 @@ export default function myDashboard({ navigation }) {
 
   const resetStatusFilter = () => {
     setResultsList(results);
+    setResultsTable(results);
     setSGPAList(sgpa);
     setSem(null)
   }
@@ -336,7 +339,7 @@ export default function myDashboard({ navigation }) {
                 styles.btnTabActive,
                 {
                   width: Dimensions.get('window').width / listTab.length - 50,
-                  maxWidth: Dimensions.get('window').width / 3.5
+                  // maxWidth: Dimensions.get('window').width / 3.5
                 },
                 sem !== null && styles.btnTab
               ]}
@@ -345,7 +348,7 @@ export default function myDashboard({ navigation }) {
 
               {/* By default, active tab style, if unselected, normal tab style */}
               <Text style={[styles.textTabActive, sem !== null && styles.textTab]}>
-                All Sem
+                All Semesters
               </Text>
 
               {/* By default, display icon */}
@@ -364,8 +367,8 @@ export default function myDashboard({ navigation }) {
                   style={[
                     styles.btnTab,
                     {
-                      width: Dimensions.get('window').width / listTab.length - 50,
-                      maxWidth: Dimensions.get('window').width / 3.5
+                      width: Dimensions.get('window').width / listTab.length - 100,
+                      // maxWidth: Dimensions.get('window').width / 3.5
                     },
                     sem === e.Semester && styles.btnTabActive]}
                   onPress={() => setStatusFilter(e.Semester)}
@@ -397,7 +400,6 @@ export default function myDashboard({ navigation }) {
               <Ionicons name="filter-sharp" size={20} color="steelblue" style={{ alignContent: 'flex-end' }} />
             </View>
 
-
             {/* For when you wake up later, */}
             {/* Sini letak butang untuk reset filter, use resetGraphFilter() */}
             {/* Default value */}
@@ -405,8 +407,8 @@ export default function myDashboard({ navigation }) {
               style={[
                 styles.btnTabActive,
                 {
-                  width: Dimensions.get('window').width / listTab.length - 50,
-                  maxWidth: Dimensions.get('window').width / 3
+                  width: Dimensions.get('window').width / listTab2.length + 30,
+                  // maxWidth: Dimensions.get('window').width / 3
                 },
                 graphStatus === true && styles.btnTab
               ]}
@@ -434,8 +436,8 @@ export default function myDashboard({ navigation }) {
                   style={[
                     styles.btnTab,
                     {
-                      width: Dimensions.get('window').width / listTab.length - 50,
-                      maxWidth: Dimensions.get('window').width / 3.5
+                      width: Dimensions.get('window').width / listTab2.length + 25,
+                      // maxWidth: Dimensions.get('window').width / 3.5
                     },
                     (e.Graph === "Cards" && cards === true) && styles.btnTabActive,
                     (e.Graph === "Bar Chart" && barChart === true) && styles.btnTabActive,
@@ -445,7 +447,11 @@ export default function myDashboard({ navigation }) {
                 >
 
                   {/* If unselected, normal tab style, if selected, active tab style */}
-                  <Text style={[styles.textTab, sem === e.Semester && styles.textTabActive]}>
+                  <Text style={[styles.textTab,
+                  (e.Graph === "Cards" && cards === true) && styles.textTabActive,
+                  (e.Graph === "Bar Chart" && barChart === true) && styles.textTabActive,
+                  (e.Graph === "Line Chart" && lineChart === true) && styles.textTabActive,
+                  (e.Graph === "Table" && table === true) && styles.textTabActive]}>
                     {e.Graph}
                   </Text>
 
@@ -547,7 +553,7 @@ export default function myDashboard({ navigation }) {
       {/* [MyDashboard] Card for Total Credit Hours, CGPA, Total Grade Points */}
       {console.log(graphStatus)}
       {(cards === true || graphStatus === false) ?
-        <View style={{flexDirection: 'row'}}>
+        <View style={{ flexDirection: 'row' }}>
           <View style={styles.cardInner}>
             <DashboardCard>
               <Text style={styles.cardText}>{totalCreditHours.toFixed(0)}</Text>
@@ -580,120 +586,36 @@ export default function myDashboard({ navigation }) {
 
 
       {/* [MyDashboard] Line Chart for GPA vs Semester */}
-      <DashboardCard>
-        <Text style={styles.chartTitle}>GPA vs Semester</Text>
-        <LineChart
-          data={{
-            labels: SGPAlabels,
-            datasets: [
-              {
-                data: SGPAdata
-              },
-              {
-                // to set max value
-                data: [4.00],
-                withDots: false
-              }
-            ]
-          }}
-          width={Dimensions.get('window').width - 40} // from react-native
-          height={220}
-          fromZero={true}
-          chartConfig={{
-            color: "black",
-            backgroundColor: '#B6D0E2',
-            backgroundGradientFrom: '#B6D0E2',
-            backgroundGradientTo: '#B6D0E2',
-            decimalPlaces: 2, // optional, defaults to 2dp
-            color: (opacity = 1) => `rgba(0, 0, 0, ${opacity})`,
-            style: {
-              borderRadius: 16
-            },
-
-          }}
-          bezier
-          style={{
-            marginTop: 15,
-            marginRight: 10,
-            borderRadius: 0
-          }}
-
-          decorator={() => {
-            return tooltipPos.visible ? <View>
-              <Svg>
-                <Rect x={tooltipPos.x - 15}
-                  y={tooltipPos.y + 10}
-                  width="40"
-                  height="30"
-                  rx={5}
-                  fill="black"
-                  opacity="0.5" />
-                <TextSVG
-                  x={tooltipPos.x + 5}
-                  y={tooltipPos.y + 30}
-                  fill="white"
-                  fontSize="16"
-                  fontWeight="bold"
-                  textAnchor="middle">
-                  {tooltipPos.value.toFixed(2)}
-                </TextSVG>
-              </Svg>
-            </View> : null
-          }}
-
-          onDataPointClick={(data) => {
-
-            // check if we have clicked on the same point again
-            let isSamePoint = (tooltipPos.x === data.x
-              && tooltipPos.y === data.y)
-
-            // if clicked on the same point again toggle visibility
-            // else,render tooltip to new position and update its value
-            isSamePoint ? setTooltipPos((previousState) => {
-              return {
-                ...previousState,
-                value: data.value,
-                visible: !previousState.visible
-              }
-            })
-              :
-              setTooltipPos({ x: data.x, value: data.value, y: data.y, visible: true });
-
-          }}
-        />
-      </DashboardCard>
-
-      {/* [MyDashboard] Bar Chart for # of Subjects vs Grade */}
-      <DashboardCard>
-
-        <Text style={styles.chartTitle}># of Subjects vs Grade</Text>
-        <ScrollView horizontal={true}>
-          <BarChart
+      {((lineChart === true || graphStatus === false) && sem === null) ?
+        <DashboardCard>
+          <Text style={styles.chartTitle}>GPA vs Semester</Text>
+          <LineChart
             data={{
-              labels: GradeFreqlabels,
-              datasets: [{
-                data: GradeFreqdata
-              }]
+              labels: SGPAlabels,
+              datasets: [
+                {
+                  data: SGPAdata
+                },
+                {
+                  // to set max value
+                  data: [4.00],
+                  withDots: false
+                }
+              ]
             }}
-            width={Dimensions.get('window').width - 50} // from react-native
+            width={Dimensions.get('window').width - 40} // from react-native
             height={220}
             fromZero={true}
-            showValuesOnTopOfBars={true}
-
             chartConfig={{
+              color: "black",
               backgroundColor: '#B6D0E2',
               backgroundGradientFrom: '#B6D0E2',
               backgroundGradientTo: '#B6D0E2',
-              fillShadowGradient: 'black',
-              fillShadowGradientOpacity: 1,
-              barPercentage: 0.5,
               decimalPlaces: 2, // optional, defaults to 2dp
               color: (opacity = 1) => `rgba(0, 0, 0, ${opacity})`,
               style: {
-                borderRadius: 0,
-
+                borderRadius: 16
               },
-
 
             }}
             bezier
@@ -703,53 +625,158 @@ export default function myDashboard({ navigation }) {
               borderRadius: 0
             }}
 
+            decorator={() => {
+              return tooltipPos.visible ? <View>
+                <Svg>
+                  <Rect x={tooltipPos.x - 15}
+                    y={tooltipPos.y + 10}
+                    width="40"
+                    height="30"
+                    rx={5}
+                    fill="black"
+                    opacity="0.5" />
+                  <TextSVG
+                    x={tooltipPos.x + 5}
+                    y={tooltipPos.y + 30}
+                    fill="white"
+                    fontSize="16"
+                    fontWeight="bold"
+                    textAnchor="middle">
+                    {tooltipPos.value.toFixed(2)}
+                  </TextSVG>
+                </Svg>
+              </View> : null
+            }}
+
+            onDataPointClick={(data) => {
+
+              // check if we have clicked on the same point again
+              let isSamePoint = (tooltipPos.x === data.x
+                && tooltipPos.y === data.y)
+
+              // if clicked on the same point again toggle visibility
+              // else,render tooltip to new position and update its value
+              isSamePoint ? setTooltipPos((previousState) => {
+                return {
+                  ...previousState,
+                  value: data.value,
+                  visible: !previousState.visible
+                }
+              })
+                :
+                setTooltipPos({ x: data.x, value: data.value, y: data.y, visible: true });
+
+            }}
           />
-        </ScrollView>
-      </DashboardCard>
-
-      <View style={styles.cardInner}>
-        <DashboardCard>
-          <Text style={styles.cardText}>{listOfSubjects[0]}</Text>
-          <Text style={styles.cardSubtext}>Best Subject</Text>
         </DashboardCard>
-      </View>
+        :
+        <View></View>}
 
-      <View style={styles.cardInner}>
+
+
+      {/* [MyDashboard] Bar Chart for # of Subjects vs Grade */}
+      {(barChart === true || graphStatus === false) ?
+
         <DashboardCard>
-          <Text style={styles.cardText}>{listOfSubjects.length}</Text>
-          <Text style={styles.cardSubtext}>Total Subjects</Text>
-        </DashboardCard>
-      </View>
 
-      <View style={styles.cardInner}>
-        <DashboardCard>
-          <Text style={styles.cardText}>{listOfSubjects[listOfSubjects.length - 1]}</Text>
-          <Text style={styles.cardSubtext}>Worst Subject</Text>
-        </DashboardCard>
-      </View>
+          <Text style={styles.chartTitle}># of Subjects vs Grade</Text>
+          <ScrollView horizontal={true}>
+            <BarChart
+              data={{
+                labels: GradeFreqlabels,
+                datasets: [{
+                  data: GradeFreqdata
+                }]
+              }}
+              width={Dimensions.get('window').width - 50} // from react-native
+              height={220}
+              fromZero={true}
+              showValuesOnTopOfBars={true}
 
-      <View style={styles.tableHeader}>
-        {
-          columns.map((column, index) => {
-            {
-              return (
-                <TouchableOpacity
-                  key={index}
-                  style={styles.columnHeader}
-                  onPress={() => sortTable(column)}>
-                  <Text style={styles.columnHeaderTxt}>
-                    {cosmeticColumns[index] + " "}
-                    {selectedColumn === column && <MaterialCommunityIcons
-                      name={direction === "desc" ? "arrow-down-drop-circle" : "arrow-up-drop-circle"}
-                    />
-                    }
-                  </Text>
-                </TouchableOpacity>
-              )
-            }
-          })
-        }
-      </View>
+              chartConfig={{
+                backgroundColor: '#B6D0E2',
+                backgroundGradientFrom: '#B6D0E2',
+                backgroundGradientTo: '#B6D0E2',
+                fillShadowGradient: 'black',
+                fillShadowGradientOpacity: 1,
+                barPercentage: 0.5,
+                decimalPlaces: 2, // optional, defaults to 2dp
+                color: (opacity = 1) => `rgba(0, 0, 0, ${opacity})`,
+                style: {
+                  borderRadius: 0,
+
+                },
+
+
+              }}
+              bezier
+              style={{
+                marginTop: 15,
+                marginRight: 10,
+                borderRadius: 0
+              }}
+
+            />
+          </ScrollView>
+        </DashboardCard>
+        :
+        <View></View>}
+
+      {/* [myDashboard] Cards for Best Subject, Total Subjects and Worst Subject */}
+      {(cards === true || graphStatus === false) ?
+        <View style={{ flexDirection: 'row' }}>
+          <View style={styles.cardInner}>
+            <DashboardCard>
+              <Text style={styles.cardText}>{listOfSubjects[0]}</Text>
+              <Text style={styles.cardSubtext}>Best Subject</Text>
+            </DashboardCard>
+          </View>
+
+          <View style={styles.cardInner}>
+            <DashboardCard>
+              <Text style={styles.cardText}>{listOfSubjects.length}</Text>
+              <Text style={styles.cardSubtext}>Total Subjects</Text>
+            </DashboardCard>
+          </View>
+
+          <View style={styles.cardInner}>
+            <DashboardCard>
+              <Text style={styles.cardText}>{listOfSubjects[listOfSubjects.length - 1]}</Text>
+              <Text style={styles.cardSubtext}>Worst Subject</Text>
+            </DashboardCard>
+          </View>
+        </View>
+        :
+        <View></View>}
+
+
+      {/* [myDashboard] Table headers for list of subjects */}
+      {(table === true || graphStatus === false) ?
+        <View style={styles.tableHeader}>
+          {
+            columns.map((column, index) => {
+              {
+                return (
+                  <TouchableOpacity
+                    key={index}
+                    style={styles.columnHeader}
+                    onPress={() => sortTable(column)}>
+                    <Text style={styles.columnHeaderTxt}>
+                      {cosmeticColumns[index] + " "}
+                      {selectedColumn === column && <MaterialCommunityIcons
+                        name={direction === "desc" ? "arrow-down-drop-circle" : "arrow-up-drop-circle"}
+                      />
+                      }
+                    </Text>
+                  </TouchableOpacity>
+                )
+              }
+            })
+          }
+        </View>
+        :
+        <View></View>}
+
 
     </View>
   )
@@ -827,7 +854,8 @@ export default function myDashboard({ navigation }) {
           ListHeaderComponent={renderHeader}
           ListFooterComponent={renderFooter}
           // stickyHeaderIndices={[0]}
-          renderItem={renderTable}
+          // if table selected or 'all graphs' selected, render table
+          renderItem={(table === true || graphStatus === false) && renderTable}
         />
         <StatusBar style="auto" />
       </View>
