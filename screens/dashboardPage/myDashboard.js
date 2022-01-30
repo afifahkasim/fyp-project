@@ -117,7 +117,7 @@ export default function myDashboard({ navigation }) {
       Semester: 1,
       CourseCode: "GIG1001",
       Subject: "THE ISLAMIC AND ASIAN CIVILIZATION",
-      Grades: "A",
+      Grades: "A+",
       CreditHours: 2,
       GradePoints: 8
     },
@@ -249,8 +249,6 @@ export default function myDashboard({ navigation }) {
     setTable(!table);
   };
 
-
-
   const listTab2 = [
     {
       Graph: "Line Chart"
@@ -266,12 +264,36 @@ export default function myDashboard({ navigation }) {
     },
   ]
 
+  const gradeRank = {
+    'A+': 1,
+    'A': 2,
+    'A-': 3,
+    'B+': 4,
+    'B': 5,
+    'B-': 6,
+    'C+': 7,
+    'C': 8,
+    'C-': 9,
+    'D+': 10,
+    'D': 11,
+    'F': 12
+  }
+
   const sortTable = (column) => {
     const newDirection = direction === "desc" ? "asc" : "desc"
-    const sortedData = _.orderBy(resultsTable, [column], [newDirection])
+    const sortedData1 = _.orderBy(resultsTable, [column], [newDirection])
+    const sortedData2 = _.orderBy(resultsTable, function (obj) {
+      return gradeRank[obj.Grades]
+    }, [newDirection])
+    
     setSelectedColumn(column)
     setDirection(newDirection)
-    setResultsTable(sortedData)
+    if (column === "Grades") {
+      setResultsTable(sortedData2)
+    }
+    else {
+      setResultsTable(sortedData1)
+    }
   }
 
   const setStatusFilter = Semester => {

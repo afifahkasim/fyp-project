@@ -32,11 +32,9 @@ import Tooltip from '../../shared/header';
 import { Ionicons } from '@expo/vector-icons';
 import { Rect, Text as TextSVG, Svg } from "react-native-svg";
 import { MaterialCommunityIcons } from '@expo/vector-icons';
-import _ from "lodash";
+import _, { isUndefined } from "lodash";
 import { StatusBar } from 'expo-status-bar';
 import { VictoryPie, VictoryLegend } from 'victory-native';
-
-
 
 //check if firebase not init,so init from config file
 if (!firebase.apps.length) { firebase.initializeApp(Apikey.firebaseConfig); }
@@ -72,6 +70,23 @@ export default function groupDashboard({ navigation }) {
 
 
 
+    const groupData = [
+        {
+            GroupID: 1,
+            GroupName: "WIX3003",
+        },
+        {
+            GroupID: 2,
+            GroupName: "IS Students",
+        },
+        {
+            GroupID: 3,
+            GroupName: "3rd Year Students"
+        }
+    ]
+
+
+
     // GPA = totalGradePoints / totalCreditHours for one sem
     // CGPA = totalGradePoints / totalCreditHours for all sem
     // Semester, Course Code, Subject, Grades, Credit Hours, Grade Points
@@ -83,11 +98,22 @@ export default function groupDashboard({ navigation }) {
 
     let studentsData = [
         {
+            StudentID: 1,
+            GroupID: [1, 2, 3],
             StudentName: "Afifah",
             Gender: "Female",
             Department: "Information Systems",
-            TotalSemester: 2,
-            CGPA: 3.8,
+            CGPA: 3.17,
+            SGPA: [
+                {
+                    Semester: 1,
+                    GPA: 3.74,
+                },
+                {
+                    Semester: 2,
+                    GPA: 2.76,
+                }
+            ],
             results: [
                 {
                     Semester: 1,
@@ -179,11 +205,22 @@ export default function groupDashboard({ navigation }) {
                 }],
         },
         {
+            StudentID: 2,
+            GroupID: [1, 2],
             StudentName: "Nat",
             Gender: "Female",
             Department: "Information Systems",
-            TotalSemester: 2,
-            CGPA: 3.9,
+            CGPA: 3.75,
+            SGPA: [
+                {
+                    Semester: 1,
+                    GPA: 3.74,
+                },
+                {
+                    Semester: 2,
+                    GPA: 2.76,
+                }
+            ],
             results: [
                 {
                     Semester: 1,
@@ -205,30 +242,153 @@ export default function groupDashboard({ navigation }) {
                     Semester: 1,
                     CourseCode: "WIX1001",
                     Subject: "COMPUTING MATHEMATICS I",
-                    Grades: "A-",
+                    Grades: "A",
                     CreditHours: 3,
-                    GradePoints: 11.1
+                    GradePoints: 12
                 },
                 {
                     Semester: 1,
                     CourseCode: "WIX1002",
                     Subject: "FUNDAMENTALS OF PROGRAMMING",
-                    Grades: "A-",
+                    Grades: "A",
                     CreditHours: 5,
-                    GradePoints: 18.5
+                    GradePoints: 20
                 },
                 {
                     Semester: 1,
                     CourseCode: "WIX1003",
                     Subject: "COMPUTER SYSTEMS AND ORGANIZATION",
-                    Grades: "A-",
+                    Grades: "A",
                     CreditHours: 3,
-                    GradePoints: 11.1
+                    GradePoints: 12
                 },
                 {
                     Semester: 2,
                     CourseCode: "GIG1002",
                     Subject: "ETHNIC RELATIONS",
+                    Grades: "A",
+                    CreditHours: 2,
+                    GradePoints: 8
+                },
+                {
+                    Semester: 2,
+                    CourseCode: "GIG1005",
+                    Subject: "SOCIAL ENGAGEMENT",
+                    Grades: "A+",
+                    CreditHours: 2,
+                    GradePoints: 8
+                },
+                {
+                    Semester: 2,
+                    CourseCode: "WIA1002",
+                    Subject: "DATA STRUCTURE",
+                    Grades: "B-",
+                    CreditHours: 5,
+                    GradePoints: 13.5
+                },
+                {
+                    Semester: 2,
+                    CourseCode: "WIA1003",
+                    Subject: "COMPUTER SYSTEM ARCHITECTURE",
+                    Grades: "A",
+                    CreditHours: 3,
+                    GradePoints: 12,
+                },
+                {
+                    Semester: 2,
+                    CourseCode: "WIA1004",
+                    Subject: "FUNDAMENTALS OF ARTIFICIAL INTELLIGENCE",
+                    Grades: "A",
+                    CreditHours: 3,
+                    GradePoints: 12
+                },
+                {
+                    Semester: 2,
+                    CourseCode: "WIA1005",
+                    Subject: "NETWORK TECHNOLOGY FOUNDATION",
+                    Grades: "A-",
+                    CreditHours: 4,
+                    GradePoints: 14.8
+                }],
+        },
+        {
+            StudentID: 3,
+            GroupID: [1, 3],
+            StudentName: "Zak",
+            Gender: "Male",
+            Department: "Software Engineering",
+            CGPA: 3.82,
+            SGPA: [
+                {
+                    Semester: 1,
+                    GPA: 3.88,
+                },
+                {
+                    Semester: 2,
+                    GPA: 3.76,
+                }
+            ],
+            results: [
+                {
+                    Semester: 1,
+                    CourseCode: "WIA1005",
+                    Subject: "NETWORK TECHNOLOGY FOUNDATION",
+                    Grades: "A",
+                    CreditHours: 4,
+                    GradePoints: 16.00
+                },
+                {
+                    Semester: 1,
+                    CourseCode: "WIA1001",
+                    Subject: "INFORMATION SYSTEMS",
+                    Grades: "B+",
+                    CreditHours: 3,
+                    GradePoints: 9.90
+                },
+                {
+                    Semester: 1,
+                    CourseCode: "WIX1001",
+                    Subject: "COMPUTING MATHEMATICS I",
+                    Grades: "A",
+                    CreditHours: 3,
+                    GradePoints: 12.0
+                },
+                {
+                    Semester: 1,
+                    CourseCode: "WIX1002",
+                    Subject: "FUNDAMENTALS OF PROGRAMMING",
+                    Grades: "A+",
+                    CreditHours: 5,
+                    GradePoints: 20.0
+                },
+                {
+                    Semester: 1,
+                    CourseCode: "WIX1003",
+                    Subject: "COMPUTER SYSTEMS AND ORGANIZATION",
+                    Grades: "A",
+                    CreditHours: 3,
+                    GradePoints: 12.0
+                },
+                {
+                    Semester: 2,
+                    CourseCode: "GIG1001",
+                    Subject: "THE ISLAMIC AND ASIAN CIVILIZATION",
+                    Grades: "A",
+                    CreditHours: 2,
+                    GradePoints: 8
+                },
+                {
+                    Semester: 2,
+                    CourseCode: "GIG1002",
+                    Subject: "ETHNIC RELATIONS",
+                    Grades: "A+",
+                    CreditHours: 2,
+                    GradePoints: 8
+                },
+                {
+                    Semester: 2,
+                    CourseCode: "GIG1004",
+                    Subject: "INFORMATION LITERACY",
                     Grades: "A",
                     CreditHours: 2,
                     GradePoints: 8
@@ -245,35 +405,29 @@ export default function groupDashboard({ navigation }) {
                     Semester: 2,
                     CourseCode: "WIA1002",
                     Subject: "DATA STRUCTURE",
-                    Grades: "C-",
+                    Grades: "A-",
                     CreditHours: 5,
-                    GradePoints: 8.5
+                    GradePoints: 18.5
                 },
                 {
                     Semester: 2,
                     CourseCode: "WIA1003",
                     Subject: "COMPUTER SYSTEM ARCHITECTURE",
-                    Grades: "C",
+                    Grades: "B",
                     CreditHours: 3,
-                    GradePoints: 6,
+                    GradePoints: 9,
                 },
                 {
                     Semester: 2,
                     CourseCode: "WIA1004",
                     Subject: "FUNDAMENTALS OF ARTIFICIAL INTELLIGENCE",
-                    Grades: "B+",
+                    Grades: "A",
                     CreditHours: 3,
-                    GradePoints: 9.9
+                    GradePoints: 12
                 },
-                {
-                    Semester: 2,
-                    CourseCode: "WIA1005",
-                    Subject: "NETWORK TECHNOLOGY FOUNDATION",
-                    Grades: "B-",
-                    CreditHours: 4,
-                    GradePoints: 10.8
-                }],
-        }
+            ],
+        },
+
     ]
 
     let studentsDataTable = [
@@ -347,7 +501,7 @@ export default function groupDashboard({ navigation }) {
             Subject: "COMPUTER SYSTEM ARCHITECTURE",
             CreditHours: 3,
             Passed: 15,
-            Failed: 3       
+            Failed: 3
         },
         {
             Semester: 2,
@@ -355,7 +509,7 @@ export default function groupDashboard({ navigation }) {
             Subject: "FUNDAMENTALS OF ARTIFICIAL INTELLIGENCE",
             CreditHours: 3,
             Passed: 17,
-            Failed: 1        
+            Failed: 1
         },
         {
             Semester: 2,
@@ -384,7 +538,7 @@ export default function groupDashboard({ navigation }) {
         "Credit\nHours",
         "Passed",
         "Failed"
-      ])
+    ])
     const [direction, setDirection] = useState(null)
     const [selectedColumn, setSelectedColumn] = useState(null)
     const [studentsTable, setStudentsTable] = useState(studentsDataTable)
@@ -402,10 +556,10 @@ export default function groupDashboard({ navigation }) {
             var totalCreditHours = item.results.reduce((a, b) => a + (b.CreditHours || 0), 0)
             var cumulativeGPA = (totalGradePoints / totalCreditHours).toFixed(2)
 
-            console.log("Testing")
-            console.log(totalGradePoints)
-            console.log(totalCreditHours)
-            console.log(cumulativeGPA)
+            // console.log("Testing")
+            // console.log(totalGradePoints)
+            // console.log(totalCreditHours)
+            // console.log(cumulativeGPA)
 
             if (cumulativeGPA >= 3.70) { cgpacat = "3.70 - 4.00" }
             else if (cumulativeGPA >= 3.30 && cumulativeGPA <= 3.69) { cgpacat = "3.30 - 3.69" }
@@ -434,8 +588,8 @@ export default function groupDashboard({ navigation }) {
         ]
 
         var numOfStudents = chartData.length
-        console.log("Testing lagi")
-        console.log(numOfStudents)
+        // console.log("Testing lagi")
+        // console.log(numOfStudents)
 
         let finalChartData = chartData.map((item) => {
             var numOfCategory = chartData.filter(a => a.category === item.category).length
@@ -453,8 +607,8 @@ export default function groupDashboard({ navigation }) {
     const renderPieChart = () => {
         let chartData = processCategoryDataToDisplay()
         let totalStudentCount = chartData.reduce((a, b) => a + (b.count || 0), 0)
-        console.log("Check Chart")
-        console.log(chartData)
+        // console.log("Check Chart")
+        // console.log(chartData)
 
         return (
             <View style={{ flex: 1, flexDirection: "row" }}>
@@ -485,20 +639,20 @@ export default function groupDashboard({ navigation }) {
                         width={Dimensions.get('window').width - 42}
                         height={Dimensions.get('window').width - 42}
                         colorScale="blue"
-                        // events={[{
-                        //     target: "data",
-                        //     eventHandlers: {
-                        //         onPress: () => {
-                        //             return [{
-                        //                 target: "labels",
-                        //                 mutation: (props) => {
-                        //                     let columnName = chartData[props.index].y
-                        //                     setSelectColumnByName(columnName)
-                        //                 }
-                        //             }]
-                        //         }
-                        //     }
-                        // }]}
+                    // events={[{
+                    //     target: "data",
+                    //     eventHandlers: {
+                    //         onPress: () => {
+                    //             return [{
+                    //                 target: "labels",
+                    //                 mutation: (props) => {
+                    //                     let columnName = chartData[props.index].y
+                    //                     setSelectColumnByName(columnName)
+                    //                 }
+                    //             }]
+                    //         }
+                    //     }
+                    // }]}
 
 
 
@@ -590,7 +744,7 @@ export default function groupDashboard({ navigation }) {
             <View style={{ alignContent: 'center', flexDirection: 'row' }}>
                 <View style={styles.cardInner}>
                     <DashboardCard>
-                        <Text style={styles.cardText}>18</Text>
+                        <Text style={styles.cardText}>{numOfStudents}</Text>
                         <Text style={styles.cardSubtext}>Total Students</Text>
                     </DashboardCard>
                 </View>
@@ -688,37 +842,37 @@ export default function groupDashboard({ navigation }) {
             <DashboardCard>
 
                 <Text style={styles.chartTitle}># of Subjects vs Grade</Text>
-                    <BarChart
-                        data={SubjectbyGrade}
-                        width={Dimensions.get('window').width - 50} // from react-native
-                        height={220}
-                        fromZero={true}
-                        showValuesOnTopOfBars={true}
+                <BarChart
+                    data={SubjectbyGrade}
+                    width={Dimensions.get('window').width - 50} // from react-native
+                    height={220}
+                    fromZero={true}
+                    showValuesOnTopOfBars={true}
 
-                        chartConfig={{
-                            backgroundColor: '#B6D0E2',
-                            backgroundGradientFrom: '#B6D0E2',
-                            backgroundGradientTo: '#B6D0E2',
-                            fillShadowGradient: 'black',
-                            fillShadowGradientOpacity: 1,
-                            barPercentage: 0.5,
-                            decimalPlaces: 2, // optional, defaults to 2dp
-                            color: (opacity = 1) => `rgba(0, 0, 0, ${opacity})`,
-                            style: {
-                                borderRadius: 0,
+                    chartConfig={{
+                        backgroundColor: '#B6D0E2',
+                        backgroundGradientFrom: '#B6D0E2',
+                        backgroundGradientTo: '#B6D0E2',
+                        fillShadowGradient: 'black',
+                        fillShadowGradientOpacity: 1,
+                        barPercentage: 0.5,
+                        decimalPlaces: 2, // optional, defaults to 2dp
+                        color: (opacity = 1) => `rgba(0, 0, 0, ${opacity})`,
+                        style: {
+                            borderRadius: 0,
 
-                            },
+                        },
 
 
-                        }}
-                        bezier
-                        style={{
-                            marginTop: 15,
-                            marginRight: 10,
-                            borderRadius: 0
-                        }}
+                    }}
+                    bezier
+                    style={{
+                        marginTop: 15,
+                        marginRight: 10,
+                        borderRadius: 0
+                    }}
 
-                    />
+                />
             </DashboardCard>
 
             <View style={styles.cardInner}>
@@ -789,26 +943,201 @@ export default function groupDashboard({ navigation }) {
         </View>
     )
 
-    const renderCreditHours = students.map(studentsum => studentsum.CreditHours).reduce((a, b) => a + b)
+    // int, total number of students
+    const numOfStudents = studentsData.length // this one is for card
 
-    const renderGradePoints2 = students.map(studentsum => studentsum.GradePoints).reduce((a, b) => a + b)
+    // array, total grade points of every student
+    const renderGradePoints = studentsData.map(
+        e => e.results.map(f => f.GradePoints).reduce((a, b) => a + b))
+    const renderCreditHours = studentsData.map(
+        e => e.results.map(f => f.CreditHours).reduce((a, b) => a + b))
 
-    const renderGradePoints1 = students.reduce((total, currentValue) => total = total + currentValue.GradePoints)
+    const renderCGPA = renderGradePoints.map((e, index) => e / renderCreditHours[index]) // this can be used for pie chart
+    const totalStudentsCGPA = renderCGPA.map(e => e).reduce((a, b) => a + b)
+    const averageCGPA = totalStudentsCGPA / numOfStudents // this one is for card
 
-    const renderGradePoints = (
-        Object.keys(students).map((key) => {
-            return (
-                <Text>{students[key].GradePoints}</Text>
-            )
+    // int, total grade points of all student
+    const totalGradePoints = renderGradePoints.reduce((a, b) => a + b)
+    const averageGradePoints = totalGradePoints / numOfStudents // this one is for card
+
+    // average GPA for every sem, this one is for line chart
+    const renderCountSemester = _.uniqBy(_.flatMap(studentsData, 'results'), 'Semester')
+    const averageSGPAlabels = renderCountSemester.map(e => "Sem " + e.Semester) // use this for line chart
+    // const resultsAllStudents = _.map(studentsData, 'results')  --- i gave up, just gonna input sgpa into every user
+    const allStudentSGPA = studentsData.map(e => e.SGPA.map(f => f.GPA))
+    const totalSGPA = allStudentSGPA.reduce((a, b) => a.map((c, i) => c + b[i]));
+    const averageSGPAdata = totalSGPA.map(e => e / numOfStudents) // use this for line chart
+
+
+    // this one is for bar chart
+    const allSubject = _.flatMap(studentsData, 'results')
+    const countGradeFreq = _.countBy(allSubject.map(key => key.Grades))
+    const GradeFreqdata = _.values(countGradeFreq)
+    const GradeFreqlabels = _.keys(countGradeFreq)
+
+    // this one is for pie chart
+    function renderCGPArange() {
+        let arrayCGPArange = []
+        let cgpacat = ''
+        let val = {}
+        let a = []
+        renderCGPA.map(e => {
+            if (e >= 3.70) { cgpacat = "3.70 - 4.00" }
+            else if (e >= 3.30 && e <= 3.69) { cgpacat = "3.30 - 3.69" }
+            else if (e >= 2.70 && e <= 3.29) { cgpacat = "2.70 - 3.29" }
+            else if (e >= 2.00 && e <= 2.69) { cgpacat = "2.00 - 2.69" }
+            else if (e >= 0.00 && e <= 1.99) { cgpacat = "0.00 - 1.99" }
+            arrayCGPArange.push(cgpacat)
+        })
+        let countCGPArange = _.countBy(arrayCGPArange)
+        let xVal = _.keys(countCGPArange)
+        let yVal = _.values(countCGPArange)
+
+        xVal.map((e, index) => {
+            val = {
+                x: xVal[index],
+                y: yVal[index],
+                label: xVal[index]
+            }
+            a.push(val)
+        })
+
+        return a
+    }
+    const CGPArangedata = renderCGPArange()
+
+    // for table, column "highest grade" and "average grade"
+    const gradeRank = {
+        'A+': 1,
+        'A': 2,
+        'A-': 3,
+        'B+': 4,
+        'B': 5,
+        'B-': 6,
+        'C+': 7,
+        'C': 8,
+        'C-': 9,
+        'D+': 10,
+        'D': 11,
+        'F': 12
+    }
+
+    const gradeRank2 = ['A+', 'A', 'A-', 'B+', 'B', 'B-', 'C+', 'C', 'C-', 'D+', 'D', 'F']
+
+    function compareRank(left, right){
+        return gradeRank[left.Grades] - gradeRank[right.Grades]
+    }
+
+    function getSortedSubjectArray(course) {
+        const subjectArray = studentsData.map(e => _.find(e.results, { CourseCode: course }))
+        const sortedSubjectArray = subjectArray.sort(compareRank)
+        // const sortedSubjectArray = _.sortBy(subjectArray, item => gradeRank.indexOf(item.name)) // cant do this w duplicates of grade
+        // const sortedSubjectArray = _.map(gradeRank2, rankItem => _.find(subjectArray, item => item.Grades === rankItem));
+        // const sortedSubjectArray = _.sortBy(subjectArray, e => gradeRank[e.Grades])
+        // const sortedSubjectArray = _.orderBy(subjectArray, e => gradeRank[e.Grades], ['asc'])
+        return sortedSubjectArray
+    }
+
+    const getHighestGrade = (course) => {
+        const highestGrade = getSortedSubjectArray(course)[0].Grades
+        return highestGrade
+    }
+
+    const getCommonGrade = (course) => {
+        const commonGradeFreq = _.countBy(getSortedSubjectArray(course), "Grades")
+        const commonGrade = _.maxBy(_.keys(commonGradeFreq), o => commonGradeFreq[o]);
+        const uncommonGrade = _.minBy(_.keys(commonGradeFreq), o => commonGradeFreq[o]);
+        if (commonGrade === "undefined") {
+            return uncommonGrade
         }
-        )
-    )
+        else {
+            return commonGrade
+        }
+    }
+
+
+    const subjectArray = studentsData.map(e => _.find(e.results, { CourseCode: "GIG1002" }))
+
+    // const sortedSubjectArray = _.orderBy(subjectArray, function (obj) {
+    //     return gradeRank[obj.Grades]
+    // }, ['asc'])
+    // const sortedSubjectArray = _.orderBy(subjectArray, o => gradeRank[o.Grades], ['asc'])
+    // const highestSubject = _.maxBy(sortedSubjectArray, 'Grades')
+    // const highestSubject = sortedSubjectArray[0].Grades
+
+    // // for table, column "average grade"
+    // const commonGradeFreq = _.countBy(sortedSubjectArray.map(key => key.Grades))
+    // const commonGrade = _.maxBy(_.keys(commonGradeFreq), o => commonGradeFreq[o]);
+
+    // for table, initial value
+    const listOfSubjects = _.uniqBy(_.flatMap(studentsData, 'results'), 'CourseCode')
+    const initialListOfSubjects = []
+    listOfSubjects.map((e, index) => {
+        const HGval = getHighestGrade(e.CourseCode)
+        const CGval = getCommonGrade(e.CourseCode)
+
+        const val = {
+            Semester: e.Semester,
+            CourseCode: e.CourseCode,
+            Subject: e.Subject,
+            CreditHours: e.CreditHours,
+            // HighestGrade: '',
+            // CommonGrade: '',
+            HighestGrade: HGval,
+            CommonGrade: CGval
+        }
+        initialListOfSubjects.push(val)
+    })
+
+
 
     return (
 
         // console.log(Object.keys(students)),
-        // console.log(students),
+        // console.log(students), 
+        // console.log(studentsData.filter(a => a.StudentID === 1)),
+        // console.log(studentsData.filter(a => a.GroupID.includes(2) === true)), //will be using for filter group
 
+        // console.log(renderGradePoints),
+        // console.log(renderCreditHours),
+        // console.log(renderCGPA),
+
+        // console.log(totalStudentsCGPA),
+        // console.log(averageCGPA),
+        // console.log(averageGradePoints),
+
+        // line chart
+        // console.log(allStudentSGPA),
+        // console.log(totalSGPA),
+        // console.log(averageSGPAlabels),
+        // console.log(averageSGPAdata),
+
+        // bar chart
+        // console.log(_.flatMap(studentsData, 'results')),
+        // console.log(countGradeFreq),
+
+        // pie chart
+        // console.log(CGPArangedata),
+
+        // table initial value
+        // console.log(listOfSubjects),
+        console.log(initialListOfSubjects),
+        // console.log(getSortedSubjectArray("WIA1002")),
+        console.log(getHighestGrade("GIG1004")),
+        console.log(getCommonGrade("GIG1004")),
+
+        // console.log(takfaham),
+        // console.log(susunTakFaham),
+
+        // table, column "Highest Grade"
+        // console.log(subjectArray),
+        // console.log(sortedSubjectArray),
+        // console.log(highestSubject),
+        // console.log(highestSubject.Grades),
+
+        // table, column "Typical Grade"
+        // console.log(commonGradeFreq),
+        // console.log(commonGrade),
 
         <View style={globalStyles.container}>
 
