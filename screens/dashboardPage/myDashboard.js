@@ -830,7 +830,8 @@ export default function myDashboard({ navigation }) {
   const SGPAdata = sgpaList.map(key => key.GPA)
   const SGPAlabels = sgpaList.map(key => key.Label)
 
-  const countGradeFreq = _.countBy(resultsList.map(key => key.Grades))
+  const sortedResultsList = _.sortBy(resultsList, e => gradeRank[e.Grades], ['asc'])
+  const countGradeFreq = _.countBy(sortedResultsList.map(key => key.Grades))
   const GradeFreqdata = _.values(countGradeFreq)
   const GradeFreqlabels = _.keys(countGradeFreq)
 

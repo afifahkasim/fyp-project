@@ -32,7 +32,7 @@ import Tooltip from '../../shared/header';
 import { Ionicons } from '@expo/vector-icons';
 import { Rect, Text as TextSVG, Svg } from "react-native-svg";
 import { MaterialCommunityIcons } from '@expo/vector-icons';
-import _, { isUndefined } from "lodash";
+import _, { initial, isUndefined } from "lodash";
 import { StatusBar } from 'expo-status-bar';
 import { VictoryPie, VictoryLegend } from 'victory-native';
 
@@ -430,124 +430,137 @@ export default function groupDashboard({ navigation }) {
 
     ]
 
-    let studentsDataTable = [
-        {
-            Semester: 1,
-            CourseCode: "GIG1001",
-            Subject: "THE ISLAMIC AND ASIAN CIVILIZATION",
-            CreditHours: 2,
-            Passed: 18,
-            Failed: 0
-        },
-        {
-            Semester: 1,
-            CourseCode: "WIA1001",
-            Subject: "INFORMATION SYSTEMS",
-            CreditHours: 3,
-            Passed: 18,
-            Failed: 0
-        },
-        {
-            Semester: 1,
-            CourseCode: "WIX1001",
-            Subject: "COMPUTING MATHEMATICS I",
-            CreditHours: 3,
-            Passed: 18,
-            Failed: 0
-        },
-        {
-            Semester: 1,
-            CourseCode: "WIX1002",
-            Subject: "FUNDAMENTALS OF PROGRAMMING",
-            CreditHours: 5,
-            Passed: 18,
-            Failed: 0
-        },
-        {
-            Semester: 1,
-            CourseCode: "WIX1003",
-            Subject: "COMPUTER SYSTEMS AND ORGANIZATION",
-            CreditHours: 3,
-            Passed: 18,
-            Failed: 0
-        },
-        {
-            Semester: 2,
-            CourseCode: "GIG1002",
-            Subject: "ETHNIC RELATIONS",
-            CreditHours: 2,
-            Passed: 18,
-            Failed: 0
-        },
-        {
-            Semester: 2,
-            CourseCode: "GIG1005",
-            Subject: "SOCIAL ENGAGEMENT",
-            CreditHours: 2,
-            Passed: 18,
-            Failed: 0
-        },
-        {
-            Semester: 2,
-            CourseCode: "WIA1002",
-            Subject: "DATA STRUCTURE",
-            CreditHours: 5,
-            Passed: 3,
-            Failed: 15
-        },
-        {
-            Semester: 2,
-            CourseCode: "WIA1003",
-            Subject: "COMPUTER SYSTEM ARCHITECTURE",
-            CreditHours: 3,
-            Passed: 15,
-            Failed: 3
-        },
-        {
-            Semester: 2,
-            CourseCode: "WIA1004",
-            Subject: "FUNDAMENTALS OF ARTIFICIAL INTELLIGENCE",
-            CreditHours: 3,
-            Passed: 17,
-            Failed: 1
-        },
-        {
-            Semester: 2,
-            CourseCode: "WIA1005",
-            Subject: "NETWORK TECHNOLOGY FOUNDATION",
-            CreditHours: 4,
-            Passed: 18,
-            Failed: 0
+    // for table, column "highest grade" and "average grade"
+    const gradeRank = {
+        'A+': 1,
+        'A': 2,
+        'A-': 3,
+        'B+': 4,
+        'B': 5,
+        'B-': 6,
+        'C+': 7,
+        'C': 8,
+        'C-': 9,
+        'D+': 10,
+        'D': 11,
+        'F': 12
+    }
+
+    function compareRank(left, right) {
+        return gradeRank[left.Grades] - gradeRank[right.Grades]
+    }
+
+    function getSortedSubjectArray(course) {
+        const subjectArray = studentsData.map(e => _.find(e.results, { CourseCode: course }))
+        const sortedSubjectArray = subjectArray.sort(compareRank)
+        // const sortedSubjectArray = _.sortBy(subjectArray, item => gradeRank.indexOf(item.name)) // cant do this w duplicates of grade
+        // const sortedSubjectArray = _.map(gradeRank2, rankItem => _.find(subjectArray, item => item.Grades === rankItem));
+        // const sortedSubjectArray = _.sortBy(subjectArray, e => gradeRank[e.Grades])
+        // const sortedSubjectArray = _.orderBy(subjectArray, e => gradeRank[e.Grades], ['asc'])
+        return sortedSubjectArray
+    }
+
+    const getHighestGrade = (course) => {
+        const highestGrade = getSortedSubjectArray(course)[0].Grades
+        return highestGrade
+    }
+
+    const getAverageGrade = (course) => {
+        const averageGradeFreq = _.countBy(getSortedSubjectArray(course), "Grades")
+        const averageGrade = _.maxBy(_.keys(averageGradeFreq), o => averageGradeFreq[o]);
+        const nonaverageGrade = _.minBy(_.keys(averageGradeFreq), o => averageGradeFreq[o]);
+        if (averageGrade === "undefined") {
+            return nonaverageGrade
         }
-    ]
+        else {
+            return averageGrade
+        }
+    }
 
 
+    const subjectArray = studentsData.map(e => _.find(e.results, { CourseCode: "GIG1002" }))
+
+    // const sortedSubjectArray = _.orderBy(subjectArray, function (obj) {
+    //     return gradeRank[obj.Grades]
+    // }, ['asc'])
+    // const sortedSubjectArray = _.orderBy(subjectArray, o => gradeRank[o.Grades], ['asc'])
+    // const highestSubject = _.maxBy(sortedSubjectArray, 'Grades')
+    // const highestSubject = sortedSubjectArray[0].Grades
+
+    // // for table, column "average grade"
+    // const averageGradeFreq = _.countBy(sortedSubjectArray.map(key => key.Grades))
+    // const averageGrade = _.maxBy(_.keys(averageGradeFreq), o => averageGradeFreq[o]);
+
+    // for table, initial value
+    const listOfSubjects = _.uniqBy(_.flatMap(studentsData, 'results'), 'CourseCode')
+    const getInitialListOfSubjects = () => {
+        const initialListOfSubjects = []
+        listOfSubjects.map((e, index) => {
+            const HGval = getHighestGrade(e.CourseCode)
+            const AGval = getAverageGrade(e.CourseCode)
+
+            const val = {
+                Semester: e.Semester,
+                CourseCode: e.CourseCode,
+                Subject: e.Subject,
+                CreditHours: e.CreditHours,
+                HighestGrade: HGval,
+                AverageGrade: AGval
+            }
+            initialListOfSubjects.push(val)
+        })
+        return initialListOfSubjects
+    }
 
     const [columns, setColumns] = useState([
         "Semester",
         "CourseCode",
         "Subject",
         "CreditHours",
-        "Passed",
-        "Failed"
+        "HighestGrade",
+        "AverageGrade"
     ])
     const [cosmeticColumns, setCosmeticColumns] = useState([
         "Sem",
         "Course\nCode",
         "Subject",
         "Credit\nHours",
-        "Passed",
-        "Failed"
+        "Highest\nGrade",
+        "Average\nGrade"
     ])
     const [direction, setDirection] = useState(null)
     const [selectedColumn, setSelectedColumn] = useState(null)
-    const [studentsTable, setStudentsTable] = useState(studentsDataTable)
+    const [studentsTable, setStudentsTable] = useState(getInitialListOfSubjects())
     const [students, setStudents] = useState(studentsData)
 
     function setSelectColumnByName(name) {
         let column = students.filter(a => a.name == name)
         setSelectedColumn(column[0])
     }
+
+    const sortTable = (column) => {
+        const newDirection = direction === "desc" ? "asc" : "desc"
+        const sortedData1 = _.orderBy(studentsTable, [column], [newDirection])
+        const sortedData2 = _.orderBy(studentsTable, function (obj) {
+            return gradeRank[obj.HighestGrade]
+        }, [newDirection])
+        const sortedData3 = _.orderBy(studentsTable, function (obj) {
+            return gradeRank[obj.AverageGrade]
+        }, [newDirection])
+
+        setSelectedColumn(column)
+        setDirection(newDirection)
+        if (column === "HighestGrade") {
+            setStudentsTable(sortedData2)
+        }
+        else if (column === "AverageGrade") {
+            setStudentsTable(sortedData3)
+        }
+        else {
+            setStudentsTable(sortedData1)
+        }
+    }
+
 
     function processCategoryDataToDisplay() {
         var cgpacat = ''
@@ -685,13 +698,6 @@ export default function groupDashboard({ navigation }) {
         )
     }
 
-    const sortTable = (column) => {
-        const newDirection = direction === "desc" ? "asc" : "desc"
-        const sortedData = _.orderBy(studentsTable, [column], [newDirection])
-        setSelectedColumn(column)
-        setDirection(newDirection)
-        setStudentsTable(sortedData)
-    }
 
     const renderHeader = () => (
         <View style={styles.cardContainer}>
@@ -751,14 +757,14 @@ export default function groupDashboard({ navigation }) {
 
                 <View style={styles.cardInner}>
                     <DashboardCard>
-                        <Text style={styles.cardText}>3.21</Text>
+                        <Text style={styles.cardText}>{averageCGPA}</Text>
                         <Text style={styles.cardSubtext}>Average CGPA</Text>
                     </DashboardCard>
                 </View>
 
                 <View style={styles.cardInner}>
                     <DashboardCard>
-                        <Text style={styles.cardText}>326.90</Text>
+                        <Text style={styles.cardText}>{averageGradePoints}</Text>
                         <Text style={styles.cardSubtext}>Avg. Grade Points</Text>
                     </DashboardCard>
                 </View>
@@ -767,7 +773,19 @@ export default function groupDashboard({ navigation }) {
             <DashboardCard>
                 <Text style={styles.chartTitle}>Average GPA vs Semester</Text>
                 <LineChart
-                    data={GPAbySem}
+                    data={{
+                        labels: averageSGPAlabels,
+                        datasets: [
+                            {
+                                data: averageSGPAdata
+                            },
+                            {
+                                // to set max value
+                                data: [4.00],
+                                withDots: false
+                            }
+                        ]
+                    }}
                     width={Dimensions.get('window').width - 40} // from react-native
                     height={220}
                     fromZero={true}
@@ -843,7 +861,12 @@ export default function groupDashboard({ navigation }) {
 
                 <Text style={styles.chartTitle}># of Subjects vs Grade</Text>
                 <BarChart
-                    data={SubjectbyGrade}
+                    data={{
+                        labels: GradeFreqlabels,
+                        datasets: [{
+                            data: GradeFreqdata
+                        }]
+                    }}
                     width={Dimensions.get('window').width - 50} // from react-native
                     height={220}
                     fromZero={true}
@@ -884,7 +907,7 @@ export default function groupDashboard({ navigation }) {
 
             <View style={styles.cardInner}>
                 <DashboardCard>
-                    <Text style={styles.cardText}>32</Text>
+                    <Text style={styles.cardText}>{listOfSubjects.length}</Text>
                     <Text style={styles.cardSubtext}>Total Subjects</Text>
                 </DashboardCard>
             </View>
@@ -930,8 +953,8 @@ export default function groupDashboard({ navigation }) {
                 <Text style={styles.columnRowTxt}>{item.CourseCode}</Text>
                 <Text style={styles.columnRowTxt} adjustsFontSizeToFit numberOfLines={3}>{item.Subject}</Text>
                 <Text style={styles.columnRowTxt}>{item.CreditHours}</Text>
-                <Text style={styles.columnRowTxt}>{item.Passed}</Text>
-                <Text style={styles.columnRowTxt}>{item.Failed}</Text>
+                <Text style={styles.columnRowTxt}>{item.HighestGrade}</Text>
+                <Text style={styles.columnRowTxt}>{item.AverageGrade}</Text>
 
             </View>
         )
@@ -954,11 +977,11 @@ export default function groupDashboard({ navigation }) {
 
     const renderCGPA = renderGradePoints.map((e, index) => e / renderCreditHours[index]) // this can be used for pie chart
     const totalStudentsCGPA = renderCGPA.map(e => e).reduce((a, b) => a + b)
-    const averageCGPA = totalStudentsCGPA / numOfStudents // this one is for card
+    const averageCGPA = (totalStudentsCGPA / numOfStudents).toFixed(2) // this one is for card
 
     // int, total grade points of all student
     const totalGradePoints = renderGradePoints.reduce((a, b) => a + b)
-    const averageGradePoints = totalGradePoints / numOfStudents // this one is for card
+    const averageGradePoints = (totalGradePoints / numOfStudents).toFixed(2) // this one is for card
 
     // average GPA for every sem, this one is for line chart
     const renderCountSemester = _.uniqBy(_.flatMap(studentsData, 'results'), 'Semester')
@@ -971,7 +994,8 @@ export default function groupDashboard({ navigation }) {
 
     // this one is for bar chart
     const allSubject = _.flatMap(studentsData, 'results')
-    const countGradeFreq = _.countBy(allSubject.map(key => key.Grades))
+    const sortedAllSubject = _.sortBy(allSubject, e => gradeRank[e.Grades], ['asc'])
+    const countGradeFreq = _.countBy(sortedAllSubject.map(key => key.Grades))
     const GradeFreqdata = _.values(countGradeFreq)
     const GradeFreqlabels = _.keys(countGradeFreq)
 
@@ -1006,88 +1030,7 @@ export default function groupDashboard({ navigation }) {
     }
     const CGPArangedata = renderCGPArange()
 
-    // for table, column "highest grade" and "average grade"
-    const gradeRank = {
-        'A+': 1,
-        'A': 2,
-        'A-': 3,
-        'B+': 4,
-        'B': 5,
-        'B-': 6,
-        'C+': 7,
-        'C': 8,
-        'C-': 9,
-        'D+': 10,
-        'D': 11,
-        'F': 12
-    }
 
-    const gradeRank2 = ['A+', 'A', 'A-', 'B+', 'B', 'B-', 'C+', 'C', 'C-', 'D+', 'D', 'F']
-
-    function compareRank(left, right){
-        return gradeRank[left.Grades] - gradeRank[right.Grades]
-    }
-
-    function getSortedSubjectArray(course) {
-        const subjectArray = studentsData.map(e => _.find(e.results, { CourseCode: course }))
-        const sortedSubjectArray = subjectArray.sort(compareRank)
-        // const sortedSubjectArray = _.sortBy(subjectArray, item => gradeRank.indexOf(item.name)) // cant do this w duplicates of grade
-        // const sortedSubjectArray = _.map(gradeRank2, rankItem => _.find(subjectArray, item => item.Grades === rankItem));
-        // const sortedSubjectArray = _.sortBy(subjectArray, e => gradeRank[e.Grades])
-        // const sortedSubjectArray = _.orderBy(subjectArray, e => gradeRank[e.Grades], ['asc'])
-        return sortedSubjectArray
-    }
-
-    const getHighestGrade = (course) => {
-        const highestGrade = getSortedSubjectArray(course)[0].Grades
-        return highestGrade
-    }
-
-    const getCommonGrade = (course) => {
-        const commonGradeFreq = _.countBy(getSortedSubjectArray(course), "Grades")
-        const commonGrade = _.maxBy(_.keys(commonGradeFreq), o => commonGradeFreq[o]);
-        const uncommonGrade = _.minBy(_.keys(commonGradeFreq), o => commonGradeFreq[o]);
-        if (commonGrade === "undefined") {
-            return uncommonGrade
-        }
-        else {
-            return commonGrade
-        }
-    }
-
-
-    const subjectArray = studentsData.map(e => _.find(e.results, { CourseCode: "GIG1002" }))
-
-    // const sortedSubjectArray = _.orderBy(subjectArray, function (obj) {
-    //     return gradeRank[obj.Grades]
-    // }, ['asc'])
-    // const sortedSubjectArray = _.orderBy(subjectArray, o => gradeRank[o.Grades], ['asc'])
-    // const highestSubject = _.maxBy(sortedSubjectArray, 'Grades')
-    // const highestSubject = sortedSubjectArray[0].Grades
-
-    // // for table, column "average grade"
-    // const commonGradeFreq = _.countBy(sortedSubjectArray.map(key => key.Grades))
-    // const commonGrade = _.maxBy(_.keys(commonGradeFreq), o => commonGradeFreq[o]);
-
-    // for table, initial value
-    const listOfSubjects = _.uniqBy(_.flatMap(studentsData, 'results'), 'CourseCode')
-    const initialListOfSubjects = []
-    listOfSubjects.map((e, index) => {
-        const HGval = getHighestGrade(e.CourseCode)
-        const CGval = getCommonGrade(e.CourseCode)
-
-        const val = {
-            Semester: e.Semester,
-            CourseCode: e.CourseCode,
-            Subject: e.Subject,
-            CreditHours: e.CreditHours,
-            // HighestGrade: '',
-            // CommonGrade: '',
-            HighestGrade: HGval,
-            CommonGrade: CGval
-        }
-        initialListOfSubjects.push(val)
-    })
 
 
 
@@ -1114,17 +1057,19 @@ export default function groupDashboard({ navigation }) {
 
         // bar chart
         // console.log(_.flatMap(studentsData, 'results')),
-        // console.log(countGradeFreq),
+        console.log(sortedAllSubject),
+        console.log(countGradeFreq),
+        console.log(GradeFreqlabels),
 
         // pie chart
         // console.log(CGPArangedata),
 
         // table initial value
         // console.log(listOfSubjects),
-        console.log(initialListOfSubjects),
+        // console.log(studentsTable),
         // console.log(getSortedSubjectArray("WIA1002")),
-        console.log(getHighestGrade("GIG1004")),
-        console.log(getCommonGrade("GIG1004")),
+        // console.log(getHighestGrade("GIG1004")),
+        // console.log(getaverageGrade("GIG1004")),
 
         // console.log(takfaham),
         // console.log(susunTakFaham),
@@ -1136,8 +1081,8 @@ export default function groupDashboard({ navigation }) {
         // console.log(highestSubject.Grades),
 
         // table, column "Typical Grade"
-        // console.log(commonGradeFreq),
-        // console.log(commonGrade),
+        // console.log(averageGradeFreq),
+        // console.log(averageGrade),
 
         <View style={globalStyles.container}>
 
