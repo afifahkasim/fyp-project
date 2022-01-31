@@ -32,7 +32,7 @@ import Tooltip from '../../shared/header';
 import { Ionicons } from '@expo/vector-icons';
 import { Rect, Text as TextSVG, Svg } from "react-native-svg";
 import { MaterialCommunityIcons } from '@expo/vector-icons';
-import _, { initial, isUndefined } from "lodash";
+import _, { initial, isUndefined, values } from "lodash";
 import { StatusBar } from 'expo-status-bar';
 import { VictoryPie, VictoryLegend } from 'victory-native';
 
@@ -477,8 +477,7 @@ export default function groupDashboard({ navigation }) {
         }
     }
 
-
-    const subjectArray = studentsData.map(e => _.find(e.results, { CourseCode: "GIG1002" }))
+    // const subjectArray = studentsData.map(e => _.find(e.results, { CourseCode: "GIG1002" }))
 
     // const sortedSubjectArray = _.orderBy(subjectArray, function (obj) {
     //     return gradeRank[obj.Grades]
@@ -512,6 +511,10 @@ export default function groupDashboard({ navigation }) {
         return initialListOfSubjects
     }
 
+    const initialStudentsTable = getInitialListOfSubjects()
+
+
+
     const [columns, setColumns] = useState([
         "Semester",
         "CourseCode",
@@ -528,14 +531,37 @@ export default function groupDashboard({ navigation }) {
         "Highest\nGrade",
         "Average\nGrade"
     ])
+
+    const allSGPAList = _.flatMap(studentsData, 'SGPA')
+
+    const allResultsList = _.flatMap(studentsData, 'results')
+
     const [direction, setDirection] = useState(null)
     const [selectedColumn, setSelectedColumn] = useState(null)
-    const [studentsTable, setStudentsTable] = useState(getInitialListOfSubjects())
     const [students, setStudents] = useState(studentsData)
 
-    function setSelectColumnByName(name) {
-        let column = students.filter(a => a.name == name)
-        setSelectedColumn(column[0])
+    const [sem, setSem] = useState(null);
+    const [resultsList, setResultsList] = useState(allResultsList)
+    const [studentsTable, setStudentsTable] = useState(initialStudentsTable)
+    const [sgpaList, setSGPAList] = useState(averageSGPAlist)
+    const [sgpaLine, setSGPALine] = useState(allSGPAList)
+
+    const listTab = _.uniqBy(listOfSubjects.map(key => _.pick(key, ['Semester'])), 'Semester')
+
+    const setStatusFilter = Semester => {
+        setResultsList([...allResultsList.filter(e => e.Semester === Semester)]);
+        setStudentsTable([...initialStudentsTable.filter(e => e.Semester === Semester)]);
+        setSGPAList([...averageSGPAlist.filter(e => e.Semester === Semester)]);
+        setSGPALine([...allSGPAList.filter(e => e.Semester === Semester)]);
+        setSem(Semester)
+    }
+
+    const resetStatusFilter = () => {
+        setResultsList(allResultsList);
+        setStudentsTable(initialStudentsTable);
+        setSGPAList(averageSGPAlist);
+        setSGPALine(allSGPAList)
+        setSem(null)
     }
 
     const sortTable = (column) => {
@@ -561,65 +587,167 @@ export default function groupDashboard({ navigation }) {
         }
     }
 
+        // int, total number of students
+        const numOfStudents = studentsData.length // this one is for card
 
-    function processCategoryDataToDisplay() {
-        var cgpacat = ''
-        let chartData = students.map((item) => {
-            var totalGradePoints = (item.results.reduce((a, b) => a + (b.GradePoints || 0), 0)).toFixed(0)
-            var totalCreditHours = item.results.reduce((a, b) => a + (b.CreditHours || 0), 0)
-            var cumulativeGPA = (totalGradePoints / totalCreditHours).toFixed(2)
+        // array, total grade points of every student
+        // const renderGradePoints = studentsData.map(
+        //     e => e.results.map(f => f.GradePoints).reduce((a, b) => a + b))
+        // const renderGradePoints1 = allResultsList.map(f => f.GradePoints).reduce((a, b) => a + b).toFixed(2)
+        // const renderCreditHours = studentsData.map(
+        //     e => e.results.map(f => f.CreditHours).reduce((a, b) => a + b))
+        // const renderCreditHours1 = allResultsList.map(f => f.CreditHours).reduce((a, b) => a + b).toFixed(2)
+        // const averageCGPA1 = (renderGradePoints1 / renderCreditHours1).toFixed(2)
+    
+    
+        // const renderCGPA = renderGradePoints.map((e, index) => e / renderCreditHours[index])
+    
+        const renderCGPA = studentsData.map(e => e.CGPA) // this can be used for pie chart
+        const totalStudentsCGPA = renderCGPA.map(e => e).reduce((a, b) => a + b)
+        const averageCGPA = (totalStudentsCGPA / numOfStudents).toFixed(2) // this one is for card
+    
+        const averageCreditHours = (_.sumBy(resultsList, 'CreditHours') / numOfStudents).toFixed(2)
+        const averageGradePoints = (_.sumBy(resultsList, 'GradePoints') / numOfStudents).toFixed(2) // this one is for card
+    
+        // average GPA for every sem, this one is for line chart
+        const renderCountSemester = _.uniqBy(sgpaLine, 'Semester')
+        const averageSGPAlabels = renderCountSemester.map(e => "Sem " + e.Semester) // use this for line chart
+        // const averageSGPAlabels1 = averageSGPAlist.map(key => "Sem " + key.Semester)
+        // const averageSGPAdata1 = averageSGPAlist.map(key => key.AverageGPA)
+        // const resultsAllStudents = _.map(studentsData, 'results')  --- i gave up, just gonna input sgpa into every user
+    
+    
+        const totalSGPA = sgpaLine.reduce((c, i) => { c[i.Semester] = (c[i.Semester] || 0) + parseFloat(i.GPA); return c }, {});
+        const convertedTotalSGPA = _.values(totalSGPA)
+        const averageSGPAdata = convertedTotalSGPA.map(e => e / numOfStudents) // use this for line chart
+        // array of objects, where [{semester: val, averagesgpa: val}]
+        // will be used as sgpaList's initial val
+        const getAverageSGPA = () => {
+            let val = {}
+            let a = []
+            averageSGPAdata.map((e, index) => {
+                val = {
+                    Semester: index + 1,
+                    AverageGPA: averageSGPAdata[index].toFixed(2)
+                }
+                a.push(val)
+            })
+            return a
+        }
+    
+        const averageSGPAlist = getAverageSGPA()
+    
+    
+        // this one is for bar chart
+        const sortedAllSubject = _.sortBy(resultsList, e => gradeRank[e.Grades], ['asc'])
+        const countGradeFreq = _.countBy(sortedAllSubject.map(key => key.Grades))
+        const GradeFreqdata = _.values(countGradeFreq)
+        const GradeFreqlabels = _.keys(countGradeFreq)
+    
+    
+    
+        // for card "Top Subject" and "Lowest Subject"
+        const sortedAverageSubject = _.orderBy(studentsTable, function (obj) {
+            return gradeRank[obj.AverageGrade]
+        }, ['asc'])
 
-            // console.log("Testing")
-            // console.log(totalGradePoints)
-            // console.log(totalCreditHours)
-            // console.log(cumulativeGPA)
-
-            if (cumulativeGPA >= 3.70) { cgpacat = "3.70 - 4.00" }
-            else if (cumulativeGPA >= 3.30 && cumulativeGPA <= 3.69) { cgpacat = "3.30 - 3.69" }
-            else if (cumulativeGPA >= 2.70 && cumulativeGPA <= 3.29) { cgpacat = "2.70 - 3.29" }
-            else if (cumulativeGPA >= 2.00 && cumulativeGPA <= 2.69) { cgpacat = "2.00 - 2.69" }
-            else if (cumulativeGPA >= 0.00 && cumulativeGPA <= 1.99) { cgpacat = "0.00 - 1.99" }
-
-            return {
-                name: item.StudentName,
-                gender: item.Gender,
-                department: item.Department,
-                totalsem: item.TotalSemester,
-                totalgp: totalGradePoints,
-                totalch: totalCreditHours,
-                cgpa: cumulativeGPA,
-                category: cgpacat
+        // this one is for pie chart
+        function renderCGPArange(arr) {
+            let arrayCGPArange = []
+            let cgpacat = ''
+            let val = {}
+            let a = []
+            if (arr === renderCGPA) {
+                renderCGPA.map(e => {
+                    if (e >= 3.70) { cgpacat = "3.70 - 4.00" }
+                    else if (e >= 3.30 && e <= 3.69) { cgpacat = "3.30 - 3.69" }
+                    else if (e >= 2.70 && e <= 3.29) { cgpacat = "2.70 - 3.29" }
+                    else if (e >= 2.00 && e <= 2.69) { cgpacat = "2.00 - 2.69" }
+                    else if (e >= 0.00 && e <= 1.99) { cgpacat = "0.00 - 1.99" }
+                    arrayCGPArange.push(cgpacat)
+                })
             }
-        })
-
-        let pieData = [
-            { x: "0.00 - 1.99", y: '' },
-            { x: "2.00 - 2.69", y: '' },
-            { x: "2.70 - 3.29", y: '' },
-            { x: "3.30 - 3.69", y: '' },
-            { x: "3.70 - 4.00", y: '' },
-        ]
-
-        var numOfStudents = chartData.length
-        // console.log("Testing lagi")
-        // console.log(numOfStudents)
-
-        let finalChartData = chartData.map((item) => {
-            var numOfCategory = chartData.filter(a => a.category === item.category).length
-            let percentage = (numOfCategory / numOfStudents * 100).toFixed(0)
-            return {
-                y: `${percentage}%`,
-                count: numOfCategory,
-                label: item.category
+            else {
+                sgpaLine.map(f => f.GPA).map(e => {
+                    if (e >= 3.70) { cgpacat = "3.70 - 4.00" }
+                    else if (e >= 3.30 && e <= 3.69) { cgpacat = "3.30 - 3.69" }
+                    else if (e >= 2.70 && e <= 3.29) { cgpacat = "2.70 - 3.29" }
+                    else if (e >= 2.00 && e <= 2.69) { cgpacat = "2.00 - 2.69" }
+                    else if (e >= 0.00 && e <= 1.99) { cgpacat = "0.00 - 1.99" }
+                    arrayCGPArange.push(cgpacat)
+                })
             }
-        })
-
-        return finalChartData
-    }
+            let countCGPArange = _.countBy(arrayCGPArange)
+            let xVal = _.keys(countCGPArange)
+            let yVal = _.values(countCGPArange)
+    
+            xVal.map((e, index) => {
+                let percentage = (yVal[index] / renderCGPA.length * 100).toFixed(0)
+                val = {
+                    x: xVal[index],
+                    y: yVal[index],
+                    label: `${percentage}%\n(${yVal[index]})`,
+                }
+                a.push(val)
+            })
+    
+            return a
+        }
+    
+        const CGPArangedata = renderCGPArange(renderCGPA)
+        const GPArangedata = renderCGPArange(sgpaLine)
+    
+        function renderCGPArangeLegend(arr) {
+            let val = {}
+            let b = []
+            if (arr === renderCGPA) {
+                CGPArangedata.map((e, index) => {
+                    val = {
+                        name: e.x
+                    }
+                    b.push(val)
+                })
+            }
+            else {
+                GPArangedata.map((e, index) => {
+                    val = {
+                        name: e.x
+                    }
+                    b.push(val)
+                })
+            }
+            return b
+        }
+    
+        const CGPArangelegend = renderCGPArangeLegend(renderCGPA)
+        const GPArangelegend = renderCGPArangeLegend(sgpaLine)
 
     const renderPieChart = () => {
-        let chartData = renderCGPArange()
-        let totalStudentCount = chartData.reduce((a, b) => a + (b.count || 0), 0)
+        let chartData = []
+        let chartLegend = [{}]
+        let titleChart = ""
+        let titleLegend = ""
+        let xLegend = null
+        if (sem !== null) {
+            chartData = GPArangedata
+            chartLegend = GPArangelegend
+            titleChart = "# of Students by GPA Range"
+            titleLegend = "GPA Range"
+        }
+        else {
+            chartData = CGPArangedata
+            chartLegend = CGPArangelegend
+            titleChart = "# of Students by CGPA Range"
+            titleLegend = "CGPA Range"
+        }
+        if (chartLegend.length > 1) {
+            xLegend = (Dimensions.get('window').width - 42) / 3.8
+        }
+        else {
+            xLegend = (Dimensions.get('window').width - 42) / 2.7
+        }
+
+        // let totalStudentCount = chartData.reduce((a, b) => a + (b.count || 0), 0)
         // console.log("Check Chart")
         // console.log(chartData)
 
@@ -629,7 +757,7 @@ export default function groupDashboard({ navigation }) {
                     width={Dimensions.get('window').width - 42}
                     height={425}
                     style={{ width: "100%", flexDirection: 'column' }}>
-                    <Text style={styles.chartTitle}># of Students by CGPA Range</Text>
+                    <Text style={styles.chartTitle}>{titleChart}</Text>
 
                     <VictoryPie
                         padAngle={({ datum }) => datum.y}
@@ -639,8 +767,9 @@ export default function groupDashboard({ navigation }) {
                         // radius={({ datum }) => (selectedColumn && selectedColumn.name == datum.name) ? Dimensions.get('window').width * 0.4 : Dimensions.get('window').width * 0.4 - 10}
                         innerRadius={70}
                         labelRadius={({ innerRadius }) => ((Dimensions.get('window').width - 42) * 0.385 + innerRadius) / 2.5}
+
                         style={{
-                            labels: { fill: "white", ...styles.body3 },
+                            labels: { fill: "white", ...styles.body3, fontSize: ({ text }) => text.length > 10 ? 10 : 12 },
                             parent: {
                                 ...styles.shadow,
                             },
@@ -650,22 +779,22 @@ export default function groupDashboard({ navigation }) {
                         height={350}
 
                     />
-                    <VictoryLegend x={(Dimensions.get('window').width - 42) / 4} y={325}
-                        title="CGPA Range"
+                    <VictoryLegend x={xLegend} y={315}
+                        title={titleLegend}
                         centerTitle
                         width={Dimensions.get('window').width}
                         height={425}
                         borderPadding={{ top: 7, bottom: 5, left: 10 }}
                         orientation="horizontal"
                         gutter={25}
-                        itemsPerRow={3}
+                        itemsPerRow={2}
                         style={{
-                            parent: { height: 50 },
+                            parent: {},
                             border: { stroke: "black" },
                             labels: { fontSize: 9, fontFamily: 'nunito-bold' },
                         }}
                         colorScale="cool"
-                        data={CGPArangelegend}
+                        data={chartLegend}
                     />
                 </Svg>
                 <View style={{ position: 'absolute', top: '32.5%', left: "41%" }}>
@@ -679,7 +808,7 @@ export default function groupDashboard({ navigation }) {
 
     const renderHeader = () => (
         <View style={styles.cardContainer}>
-            <View style={styles.filterInner}>
+            {/* <View style={styles.filterInner}>
                 <Card>
                     <View style={{
                         flexDirection: 'row',
@@ -723,7 +852,78 @@ export default function groupDashboard({ navigation }) {
                         <Text style={styles.filterText}>Filter by Dept.</Text>
                         <Ionicons name="arrow-down" size={20} color="black" style={{ alignContent: 'flex-end' }} />
                     </View></Card>
+            </View> */}
+
+            {/* [GroupDashboard] Select Semester Filter */}
+            <View>
+                <ScrollView horizontal={true}
+                    showsHorizontalScrollIndicator={false}>
+                    <View style={styles.listTab}>
+                        <View style={styles.listIcon}>
+                            <Ionicons name="filter-sharp" size={20} color="steelblue" style={{ alignContent: 'flex-end' }} />
+                        </View>
+
+
+                        {/* For when you wake up later, */}
+                        {/* Sini letak butang untuk reset filter, use resetStatusFilter() */}
+                        {/* Default value */}
+                        <TouchableOpacity
+                            style={[
+                                styles.btnTabActive,
+                                {
+                                    width: Dimensions.get('window').width / listTab.length - 50,
+                                    // maxWidth: Dimensions.get('window').width / 3.5
+                                },
+                                sem !== null && styles.btnTab
+                            ]}
+                            onPress={() => resetStatusFilter()}
+                        >
+
+                            {/* By default, active tab style, if unselected, normal tab style */}
+                            <Text style={[styles.textTabActive, sem !== null && styles.textTab]}>
+                                All Semesters
+                            </Text>
+
+                            {/* By default, display icon */}
+                            {sem !== null ?
+                                <View></View>
+                                :
+                                <Ionicons name="checkmark-circle-sharp" size={20} color="black" style={{ alignContent: 'flex-end' }} />
+                            }
+
+                            {/* Filtered value */}
+                        </TouchableOpacity>
+                        {
+                            listTab.map((e, index) => (
+                                <TouchableOpacity
+                                    key={index}
+                                    style={[
+                                        styles.btnTab,
+                                        {
+                                            width: Dimensions.get('window').width / listTab.length - 100,
+                                            // maxWidth: Dimensions.get('window').width / 3.5
+                                        },
+                                        sem === e.Semester && styles.btnTabActive]}
+                                    onPress={() => setStatusFilter(e.Semester)}
+                                >
+
+                                    {/* If unselected, normal tab style, if selected, active tab style */}
+                                    <Text style={[styles.textTab, sem === e.Semester && styles.textTabActive]}>
+                                        Sem {e.Semester}
+                                    </Text>
+
+                                    {/* If selected, display icon */}
+                                    {sem === e.Semester ?
+                                        <Ionicons name="checkmark-circle-sharp" size={20} color="black" style={{ alignContent: 'flex-end' }} />
+                                        :
+                                        <View></View>}
+                                </TouchableOpacity>
+                            ))
+                        }
+                    </View>
+                </ScrollView>
             </View>
+
 
             <View style={{ alignContent: 'center', flexDirection: 'row' }}>
                 <View style={styles.cardInner}>
@@ -735,8 +935,12 @@ export default function groupDashboard({ navigation }) {
 
                 <View style={styles.cardInner}>
                     <DashboardCard>
-                        <Text style={styles.cardText}>{averageCGPA}</Text>
-                        <Text style={styles.cardSubtext}>Average CGPA</Text>
+                        <Text style={styles.cardText}>{sem === null ? averageCGPA : averageSGPAdata[0].toFixed(2)}</Text>
+                        {sem === null ?
+                            <Text style={styles.cardSubtext}>Average CGPA</Text>
+                            :
+                            <Text style={styles.cardSubtext}>Average GPA</Text>
+                        }
                     </DashboardCard>
                 </View>
 
@@ -887,14 +1091,14 @@ export default function groupDashboard({ navigation }) {
 
             <View style={styles.cardInner}>
                 <DashboardCard>
-                    <Text style={styles.cardText}>{listOfSubjects.length}</Text>
+                    <Text style={styles.cardText}>{studentsTable.length}</Text>
                     <Text style={styles.cardSubtext}>Total Subjects Involved</Text>
                 </DashboardCard>
             </View>
 
             <View style={styles.cardInner}>
                 <DashboardCard>
-                    <Text style={styles.cardText}>{sortedAverageSubject[sortedAverageSubject.length-1].CourseCode}</Text>
+                    <Text style={styles.cardText}>{sortedAverageSubject[sortedAverageSubject.length - 1].CourseCode}</Text>
                     <Text style={styles.cardSubtext}>Lowest Average Subject</Text>
                 </DashboardCard>
             </View>
@@ -945,95 +1149,6 @@ export default function groupDashboard({ navigation }) {
 
         </View>
     )
-
-    // int, total number of students
-    const numOfStudents = studentsData.length // this one is for card
-
-    // array, total grade points of every student
-    const renderGradePoints = studentsData.map(
-        e => e.results.map(f => f.GradePoints).reduce((a, b) => a + b))
-    const renderCreditHours = studentsData.map(
-        e => e.results.map(f => f.CreditHours).reduce((a, b) => a + b))
-
-    const renderCGPA = renderGradePoints.map((e, index) => e / renderCreditHours[index]) // this can be used for pie chart
-    const totalStudentsCGPA = renderCGPA.map(e => e).reduce((a, b) => a + b)
-    const averageCGPA = (totalStudentsCGPA / numOfStudents).toFixed(2) // this one is for card
-
-    // int, total grade points of all student
-    const totalGradePoints = renderGradePoints.reduce((a, b) => a + b)
-    const averageGradePoints = (totalGradePoints / numOfStudents).toFixed(2) // this one is for card
-
-    // average GPA for every sem, this one is for line chart
-    const renderCountSemester = _.uniqBy(_.flatMap(studentsData, 'results'), 'Semester')
-    const averageSGPAlabels = renderCountSemester.map(e => "Sem " + e.Semester) // use this for line chart
-    // const resultsAllStudents = _.map(studentsData, 'results')  --- i gave up, just gonna input sgpa into every user
-    const allStudentSGPA = studentsData.map(e => e.SGPA.map(f => f.GPA))
-    const totalSGPA = allStudentSGPA.reduce((a, b) => a.map((c, i) => c + b[i]));
-    const averageSGPAdata = totalSGPA.map(e => e / numOfStudents) // use this for line chart
-
-
-    // this one is for bar chart
-    const allSubject = _.flatMap(studentsData, 'results')
-    const sortedAllSubject = _.sortBy(allSubject, e => gradeRank[e.Grades], ['asc'])
-    const countGradeFreq = _.countBy(sortedAllSubject.map(key => key.Grades))
-    const GradeFreqdata = _.values(countGradeFreq)
-    const GradeFreqlabels = _.keys(countGradeFreq)
-
-    // this one is for pie chart
-    function renderCGPArange() {
-        let arrayCGPArange = []
-        let cgpacat = ''
-        let val = {}
-        let a = []
-        renderCGPA.map(e => {
-            if (e >= 3.70) { cgpacat = "3.70 - 4.00" }
-            else if (e >= 3.30 && e <= 3.69) { cgpacat = "3.30 - 3.69" }
-            else if (e >= 2.70 && e <= 3.29) { cgpacat = "2.70 - 3.29" }
-            else if (e >= 2.00 && e <= 2.69) { cgpacat = "2.00 - 2.69" }
-            else if (e >= 0.00 && e <= 1.99) { cgpacat = "0.00 - 1.99" }
-            arrayCGPArange.push(cgpacat)
-        })
-        let countCGPArange = _.countBy(arrayCGPArange)
-        let xVal = _.keys(countCGPArange)
-        let yVal = _.values(countCGPArange)
-
-        xVal.map((e, index) => {
-            let percentage = (yVal[index] / renderCGPA.length * 100).toFixed(0)
-            val = {
-                x: xVal[index],
-                y: yVal[index],
-                label: `${percentage}%`,
-            }
-            a.push(val)
-        })
-
-        return a
-    }
-
-    const CGPArangedata = renderCGPArange()
-
-    function renderCGPArangeLegend() {
-        let val = {}
-        let b = []
-        CGPArangedata.map((e, index) => {
-            val = {
-                name: e.x
-            }
-            b.push(val)
-        })
-        return b
-    }
-
-    const CGPArangelegend = renderCGPArangeLegend()
-
-    // for card "Top Subject" and "Lowest Subject"
-    const sortedAverageSubject = _.orderBy(studentsTable, function (obj) {
-        return gradeRank[obj.AverageGrade]
-    }, ['asc'])
-
-
-
-
 
 
     return (
@@ -1088,7 +1203,11 @@ export default function groupDashboard({ navigation }) {
         // console.log(averageGrade),
 
         // card, "top subject" and "lowest subject"
-        console.log(sortedAverageSubject),
+        // console.log(sortedAverageSubject),
+
+        // filter, list of semester
+        console.log(sgpaLine.map(e => e.GPA)),
+        console.log(renderCGPA),
 
         <View style={globalStyles.container}>
 
@@ -1129,6 +1248,64 @@ const styles = StyleSheet.create({
         color: "black",
         flex: 1,
     },
+
+    listTab: {
+        flexDirection: 'row',
+        margin: 5,
+        alignItems: 'center',
+        backgroundColor: 'white',
+        borderRadius: 20,
+        elevation: 3,
+        shadowOffset: { width: 1, height: 1 },
+        shadowColor: '#333',
+        shadowOpacity: 0.3,
+        shadowRadius: 2,
+    },
+    listIcon: {
+        marginLeft: 20,
+        marginHorizontal: 10,
+    },
+    btnTab: {
+        backgroundColor: 'white',
+        flexDirection: 'row',
+        alignItems: 'center',
+        // borderWidth: 1,
+        // borderColor: '#444',
+        padding: 10,
+        borderRadius: 20,
+        margin: 5,
+        height: 45,
+    },
+    textTab: {
+        fontFamily: 'nunito-regular',
+        fontWeight: '900',
+        fontSize: 16,
+        textAlign: 'center',
+        color: "black",
+        flex: 1,
+
+    },
+    btnTabActive: {
+        backgroundColor: 'steelblue',
+        flexDirection: 'row',
+        alignItems: 'center',
+        // borderWidth: 1,
+        // borderColor: '#444',
+        padding: 10,
+        borderRadius: 20,
+        margin: 5,
+        height: 45,
+    },
+    textTabActive: {
+        fontFamily: 'nunito-bold',
+        fontWeight: '900',
+        fontSize: 16,
+        textAlign: 'center',
+        color: "black",
+        flex: 1,
+
+    },
+
 
     cardInner: {
         width: Dimensions.get('window').width / 3,
@@ -1216,6 +1393,11 @@ const styles = StyleSheet.create({
         elevation: 3,
     },
     body3: {
+        alignSelf: "center",
+        alignContent: "center",
+        textAlign: "center",
+        flexWrap: 'wrap',
+        flex: 1,
         fontFamily: "nunito-regular",
         fontSize: 16,
         lineHeight: 22
