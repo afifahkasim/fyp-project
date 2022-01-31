@@ -618,81 +618,59 @@ export default function groupDashboard({ navigation }) {
     }
 
     const renderPieChart = () => {
-        let chartData = processCategoryDataToDisplay()
+        let chartData = renderCGPArange()
         let totalStudentCount = chartData.reduce((a, b) => a + (b.count || 0), 0)
         // console.log("Check Chart")
         // console.log(chartData)
 
         return (
-            <View style={{ flex: 1, flexDirection: "row" }}>
-                <Svg width={Dimensions.get('window').width - 42}
-                    height={Dimensions.get('window').width - 22}
-                    style={{ width: "100%" }}>
+            <View style={{ flex: 1, flexDirection: "column" }}>
+                <Svg
+                    width={Dimensions.get('window').width - 42}
+                    height={425}
+                    style={{ width: "100%", flexDirection: 'column' }}>
                     <Text style={styles.chartTitle}># of Students by CGPA Range</Text>
 
                     <VictoryPie
+                        padAngle={({ datum }) => datum.y}
                         standalone={false} // Android workaround
-                        data={[
-                            { x: "0.00 - 1.99", y: 2 },
-                            { x: "2.00 - 2.69", y: 8 },
-                            { x: "2.70 - 3.29", y: 5 },
-                            { x: "3.30 - 3.69", y: 2 },
-                            { x: "3.70 - 4.00", y: 1 },
-                        ]}
+                        data={chartData}
                         labels={({ datum }) => datum.y}
                         // radius={({ datum }) => (selectedColumn && selectedColumn.name == datum.name) ? Dimensions.get('window').width * 0.4 : Dimensions.get('window').width * 0.4 - 10}
                         innerRadius={70}
-                        labelRadius={({ innerRadius }) => ((Dimensions.get('window').width - 42) * 0.45 + innerRadius) / 2.5}
+                        labelRadius={({ innerRadius }) => ((Dimensions.get('window').width - 42) * 0.385 + innerRadius) / 2.5}
                         style={{
-                            labels: { fill: "black", ...styles.body3 },
+                            labels: { fill: "white", ...styles.body3 },
                             parent: {
-                                ...styles.shadow
+                                ...styles.shadow,
                             },
                         }}
+                        colorScale="cool"
                         width={Dimensions.get('window').width - 42}
-                        height={Dimensions.get('window').width - 42}
-                        colorScale="blue"
-                    // events={[{
-                    //     target: "data",
-                    //     eventHandlers: {
-                    //         onPress: () => {
-                    //             return [{
-                    //                 target: "labels",
-                    //                 mutation: (props) => {
-                    //                     let columnName = chartData[props.index].y
-                    //                     setSelectColumnByName(columnName)
-                    //                 }
-                    //             }]
-                    //         }
-                    //     }
-                    // }]}
-
-
+                        height={350}
 
                     />
-                    <VictoryLegend x={60} y={335}
-                        height={Dimensions.get('window').width - 22}
+                    <VictoryLegend x={(Dimensions.get('window').width - 42) / 4} y={325}
+                        title="CGPA Range"
+                        centerTitle
+                        width={Dimensions.get('window').width}
+                        height={425}
                         borderPadding={{ top: 7, bottom: 5, left: 10 }}
                         orientation="horizontal"
                         gutter={25}
                         itemsPerRow={3}
                         style={{
+                            parent: { height: 50 },
                             border: { stroke: "black" },
                             labels: { fontSize: 9, fontFamily: 'nunito-bold' },
                         }}
-                        colorScale="blue"
-                        data={[
-                            { name: "0.00 - 1.99" },
-                            { name: "2.00 - 2.69" },
-                            { name: "2.70 - 3.29" },
-                            { name: "3.30 - 3.69" },
-                            { name: "3.70 - 4.00" },
-                        ]}
+                        colorScale="cool"
+                        data={CGPArangelegend}
                     />
                 </Svg>
-                <View style={{ position: 'absolute', top: '39%', left: "36%" }}>
-                    <Text style={{ ...styles.h1, textAlign: 'center' }}>18</Text>
-                    <Text style={{ ...styles.body3, textAlign: 'center' }}>Total Students</Text>
+                <View style={{ position: 'absolute', top: '32.5%', left: "41%" }}>
+                    <Text style={{ ...styles.h1, textAlign: 'center' }}>{numOfStudents}</Text>
+                    <Text style={{ ...styles.body3, textAlign: 'center' }}>Total{"\n"}Students</Text>
                 </View>
             </View>
         )
@@ -853,9 +831,11 @@ export default function groupDashboard({ navigation }) {
                 />
             </DashboardCard>
 
-            <Card>
+            <DashboardCard>
+                {/* <Card> */}
                 {renderPieChart()}
-            </Card>
+                {/* </Card> */}
+            </DashboardCard>
 
             <DashboardCard>
 
@@ -900,22 +880,22 @@ export default function groupDashboard({ navigation }) {
 
             <View style={styles.cardInner}>
                 <DashboardCard>
-                    <Text style={styles.cardText}>WIE2002</Text>
-                    <Text style={styles.cardSubtext}>Top Subject</Text>
+                    <Text style={styles.cardText}>{sortedAverageSubject[0].CourseCode}</Text>
+                    <Text style={styles.cardSubtext}>Highest Average Subject</Text>
                 </DashboardCard>
             </View>
 
             <View style={styles.cardInner}>
                 <DashboardCard>
                     <Text style={styles.cardText}>{listOfSubjects.length}</Text>
-                    <Text style={styles.cardSubtext}>Total Subjects</Text>
+                    <Text style={styles.cardSubtext}>Total Subjects Involved</Text>
                 </DashboardCard>
             </View>
 
             <View style={styles.cardInner}>
                 <DashboardCard>
-                    <Text style={styles.cardText}>WIA2005</Text>
-                    <Text style={styles.cardSubtext}>Lowest Subject</Text>
+                    <Text style={styles.cardText}>{sortedAverageSubject[sortedAverageSubject.length-1].CourseCode}</Text>
+                    <Text style={styles.cardSubtext}>Lowest Average Subject</Text>
                 </DashboardCard>
             </View>
 
@@ -1018,17 +998,39 @@ export default function groupDashboard({ navigation }) {
         let yVal = _.values(countCGPArange)
 
         xVal.map((e, index) => {
+            let percentage = (yVal[index] / renderCGPA.length * 100).toFixed(0)
             val = {
                 x: xVal[index],
                 y: yVal[index],
-                label: xVal[index]
+                label: `${percentage}%`,
             }
             a.push(val)
         })
 
         return a
     }
+
     const CGPArangedata = renderCGPArange()
+
+    function renderCGPArangeLegend() {
+        let val = {}
+        let b = []
+        CGPArangedata.map((e, index) => {
+            val = {
+                name: e.x
+            }
+            b.push(val)
+        })
+        return b
+    }
+
+    const CGPArangelegend = renderCGPArangeLegend()
+
+    // for card "Top Subject" and "Lowest Subject"
+    const sortedAverageSubject = _.orderBy(studentsTable, function (obj) {
+        return gradeRank[obj.AverageGrade]
+    }, ['asc'])
+
 
 
 
@@ -1057,12 +1059,13 @@ export default function groupDashboard({ navigation }) {
 
         // bar chart
         // console.log(_.flatMap(studentsData, 'results')),
-        console.log(sortedAllSubject),
-        console.log(countGradeFreq),
-        console.log(GradeFreqlabels),
+        // console.log(sortedAllSubject),
+        // console.log(countGradeFreq),
+        // console.log(GradeFreqlabels),
 
         // pie chart
         // console.log(CGPArangedata),
+        // console.log(CGPArangelegend),
 
         // table initial value
         // console.log(listOfSubjects),
@@ -1083,6 +1086,9 @@ export default function groupDashboard({ navigation }) {
         // table, column "Typical Grade"
         // console.log(averageGradeFreq),
         // console.log(averageGrade),
+
+        // card, "top subject" and "lowest subject"
+        console.log(sortedAverageSubject),
 
         <View style={globalStyles.container}>
 
