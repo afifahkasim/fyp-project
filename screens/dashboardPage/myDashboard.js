@@ -285,7 +285,7 @@ export default function myDashboard({ navigation }) {
     const sortedData2 = _.orderBy(resultsTable, function (obj) {
       return gradeRank[obj.Grades]
     }, [newDirection])
-    
+
     setSelectedColumn(column)
     setDirection(newDirection)
     if (column === "Grades") {
@@ -349,12 +349,17 @@ export default function myDashboard({ navigation }) {
           showsHorizontalScrollIndicator={false}>
           <View style={styles.listTab}>
             <View style={styles.listIcon}>
-              <Ionicons name="filter-sharp" size={20} color="steelblue" style={{ alignContent: 'flex-end' }} />
+              <Image
+                source={semester}
+                resizeMode="contain"
+                style={{
+                  width: 30,
+                  height: 30,
+                }}
+              />
+              {/* <Ionicons name="filter-sharp" size={20} color="steelblue" style={{ alignContent: 'flex-end' }} /> */}
             </View>
 
-
-            {/* For when you wake up later, */}
-            {/* Sini letak butang untuk reset filter, use resetStatusFilter() */}
             {/* Default value */}
             <TouchableOpacity
               style={[
@@ -413,17 +418,23 @@ export default function myDashboard({ navigation }) {
         </ScrollView>
       </View>
 
-      {/* [MyDashboard] Remove Graph Filter */}
+      {/* [MyDashboard] Select Graphs Filter */}
       <View>
         <ScrollView horizontal={true}
           showsHorizontalScrollIndicator={false}>
           <View style={styles.listTab}>
             <View style={styles.listIcon}>
-              <Ionicons name="filter-sharp" size={20} color="steelblue" style={{ alignContent: 'flex-end' }} />
+              <Image
+                source={graphs}
+                resizeMode="contain"
+                style={{
+                  width: 30,
+                  height: 30,
+                }}
+              />
+              {/* <Ionicons name="filter-sharp" size={20} color="steelblue" style={{ alignContent: 'flex-end' }} /> */}
             </View>
 
-            {/* For when you wake up later, */}
-            {/* Sini letak butang untuk reset filter, use resetGraphFilter() */}
             {/* Default value */}
             <TouchableOpacity
               style={[
@@ -889,6 +900,8 @@ export default function myDashboard({ navigation }) {
 
 }
 
+const semester = require("../../assets/icons/semester.png");
+const graphs = require("../../assets/icons/graphs.png");
 
 const styles = StyleSheet.create({
   filterInner: {

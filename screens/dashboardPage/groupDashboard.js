@@ -70,7 +70,7 @@ export default function groupDashboard({ navigation }) {
 
 
 
-    const groupData = [
+    const listTab5 = [
         {
             GroupID: 1,
             GroupName: "WIX3003",
@@ -96,7 +96,7 @@ export default function groupDashboard({ navigation }) {
 
     let results = []
 
-    let studentsData = [
+    const studentsData = [
         {
             StudentID: 1,
             GroupID: [1, 2, 3],
@@ -430,6 +430,27 @@ export default function groupDashboard({ navigation }) {
 
     ]
 
+    const [displayStatus, setDisplayStatus] = useState(false)
+
+    const listTab6 = [
+        {
+            Status: false,
+            Name: "Hide Filters"
+        },
+        {
+            Status: true,
+            Name: "Display Filters"
+        }
+    ]
+
+    const [studentsGender, setStudentsGender] = useState(null)
+    const [studentsDepartment, setStudentsDepartment] = useState(null)
+    const [studentsGroup, setStudentsGroup] = useState(1)
+    const [studentsList, setStudentsList] = useState(studentsData)
+
+    const allSGPAList = _.flatMap(studentsList, 'SGPA')
+    const allResultsList = _.flatMap(studentsList, 'results')
+
     // for table, column "highest grade" and "average grade"
     const gradeRank = {
         'A+': 1,
@@ -451,7 +472,7 @@ export default function groupDashboard({ navigation }) {
     }
 
     function getSortedSubjectArray(course) {
-        const subjectArray = studentsData.map(e => _.find(e.results, { CourseCode: course }))
+        const subjectArray = studentsList.map(e => _.find(e.results, { CourseCode: course }))
         const sortedSubjectArray = subjectArray.sort(compareRank)
         // const sortedSubjectArray = _.sortBy(subjectArray, item => gradeRank.indexOf(item.name)) // cant do this w duplicates of grade
         // const sortedSubjectArray = _.map(gradeRank2, rankItem => _.find(subjectArray, item => item.Grades === rankItem));
@@ -477,21 +498,8 @@ export default function groupDashboard({ navigation }) {
         }
     }
 
-    // const subjectArray = studentsData.map(e => _.find(e.results, { CourseCode: "GIG1002" }))
-
-    // const sortedSubjectArray = _.orderBy(subjectArray, function (obj) {
-    //     return gradeRank[obj.Grades]
-    // }, ['asc'])
-    // const sortedSubjectArray = _.orderBy(subjectArray, o => gradeRank[o.Grades], ['asc'])
-    // const highestSubject = _.maxBy(sortedSubjectArray, 'Grades')
-    // const highestSubject = sortedSubjectArray[0].Grades
-
-    // // for table, column "average grade"
-    // const averageGradeFreq = _.countBy(sortedSubjectArray.map(key => key.Grades))
-    // const averageGrade = _.maxBy(_.keys(averageGradeFreq), o => averageGradeFreq[o]);
-
     // for table, initial value
-    const listOfSubjects = _.uniqBy(_.flatMap(studentsData, 'results'), 'CourseCode')
+    const listOfSubjects = _.uniqBy(_.flatMap(studentsList, 'results'), 'CourseCode')
     const getInitialListOfSubjects = () => {
         const initialListOfSubjects = []
         listOfSubjects.map((e, index) => {
@@ -514,6 +522,100 @@ export default function groupDashboard({ navigation }) {
     const initialStudentsTable = getInitialListOfSubjects()
 
 
+    const [sgpaLine, setSGPALine] = useState(allSGPAList)
+    const [resultsList, setResultsList] = useState(allResultsList)
+    const [studentsTable, setStudentsTable] = useState(initialStudentsTable)
+
+
+    // const updateAfterGenderFilter =  () => {
+    //     setSGPALine(allSGPAList)
+    //     setResultsList(allResultsList)
+    //     setStudentsTable(initialStudentsTable)
+    // }
+
+    const setGenderFilter = Gender => {
+        if (studentsList === studentsData) {
+            setStudentsList([...studentsData.filter(e => e.Gender === Gender)]);
+        }
+        else {
+            setStudentsList([...studentsList.filter(e => e.Gender === Gender)]);
+        }
+        setStudentsGender(Gender)
+    }
+
+    const resetGenderFilter = () => {
+        if (studentsDepartment === null) {
+            setStudentsList(studentsData)
+        }
+        else {
+            // setStudentsList([...studentsData.filter(e => e.Department === studentsDepartment)])
+            setStudentsList(studentsData)
+        }
+        setStudentsGender(null)
+    }
+
+    const setDepartmentFilter = Department => {
+        if (studentsList === studentsData) {
+            setStudentsList([...studentsData.filter(e => e.Department === Department)]);
+        }
+        else {
+            setStudentsList([...studentsList.filter(e => e.Department === Department)]);
+        }
+        setStudentsDepartment(Department)
+    }
+
+    const resetDepartmentFilter = () => {
+        if (studentsGender === null) {
+            setStudentsList(studentsData)
+        }
+        else {
+            setStudentsList(studentsList)
+        }
+        setStudentsDepartment(null)
+    }
+
+    const setGroupFilter = GroupID => {
+        setStudentsList([...studentsData.filter(e => e.GroupID.includes(GroupID))])
+        setStudentsDepartment(null)
+        setStudentsGender(null)
+        setStudentsGroup(GroupID)
+    }
+
+    const resetGroupFilter = () => {
+        setStudentsList(studentsData)
+        setStudentsDepartment(null)
+        setStudentsGender(null)
+        setStudentsGroup(1)
+    }
+
+    useEffect(() => {
+        setSGPALine(allSGPAList)
+        setResultsList(allResultsList)
+        setStudentsTable(initialStudentsTable)
+        // setStudentsList(prevState => ({...prevState, studentsData}))
+    }, [studentsList])
+
+
+
+
+
+
+
+
+    // const subjectArray = studentsData.map(e => _.find(e.results, { CourseCode: "GIG1002" }))
+
+    // const sortedSubjectArray = _.orderBy(subjectArray, function (obj) {
+    //     return gradeRank[obj.Grades]
+    // }, ['asc'])
+    // const sortedSubjectArray = _.orderBy(subjectArray, o => gradeRank[o.Grades], ['asc'])
+    // const highestSubject = _.maxBy(sortedSubjectArray, 'Grades')
+    // const highestSubject = sortedSubjectArray[0].Grades
+
+    // // for table, column "average grade"
+    // const averageGradeFreq = _.countBy(sortedSubjectArray.map(key => key.Grades))
+    // const averageGrade = _.maxBy(_.keys(averageGradeFreq), o => averageGradeFreq[o]);
+
+
 
     const [columns, setColumns] = useState([
         "Semester",
@@ -532,26 +634,34 @@ export default function groupDashboard({ navigation }) {
         "Average\nGrade"
     ])
 
-    const allSGPAList = _.flatMap(studentsData, 'SGPA')
 
-    const allResultsList = _.flatMap(studentsData, 'results')
+
+
+
 
     const [direction, setDirection] = useState(null)
     const [selectedColumn, setSelectedColumn] = useState(null)
-    const [students, setStudents] = useState(studentsData)
-
     const [sem, setSem] = useState(null);
-    const [resultsList, setResultsList] = useState(allResultsList)
-    const [studentsTable, setStudentsTable] = useState(initialStudentsTable)
-    const [sgpaList, setSGPAList] = useState(averageSGPAlist)
-    const [sgpaLine, setSGPALine] = useState(allSGPAList)
+    // const [sgpaList, setSGPAList] = useState(averageSGPAlist)
+
+
 
     const listTab = _.uniqBy(listOfSubjects.map(key => _.pick(key, ['Semester'])), 'Semester')
+    // const listTab3 = [
+    //     {
+    //         Gender: "Male"
+    //     },
+    //     {
+    //         Gender: "Female"
+    //     }
+    // ]
+    const listTab3 = _.uniqBy(studentsList.map(key => _.pick(key, ['Gender'])), 'Gender')
+    const listTab4 = _.uniqBy(studentsList.map(key => _.pick(key, ['Department'])), 'Department')
 
     const setStatusFilter = Semester => {
         setResultsList([...allResultsList.filter(e => e.Semester === Semester)]);
         setStudentsTable([...initialStudentsTable.filter(e => e.Semester === Semester)]);
-        setSGPAList([...averageSGPAlist.filter(e => e.Semester === Semester)]);
+        // setSGPAList([...averageSGPAlist.filter(e => e.Semester === Semester)]);
         setSGPALine([...allSGPAList.filter(e => e.Semester === Semester)]);
         setSem(Semester)
     }
@@ -559,9 +669,82 @@ export default function groupDashboard({ navigation }) {
     const resetStatusFilter = () => {
         setResultsList(allResultsList);
         setStudentsTable(initialStudentsTable);
-        setSGPAList(averageSGPAlist);
+        // setSGPAList(averageSGPAlist);
         setSGPALine(allSGPAList)
         setSem(null)
+    }
+
+
+    const [graphStatus, setGraphStatus] = useState(false);
+    const [cards, setCards] = useState(false);
+    const toggleCards = () => {
+        setCards(!cards);
+    };
+
+    const [barChart, setBarChart] = useState(false);
+    const toggleBarChart = () => {
+        setBarChart(!barChart);
+    };
+
+    const [pieChart, setPieChart] = useState(false);
+    const togglePieChart = () => {
+        setPieChart(!pieChart);
+    };
+
+    const [lineChart, setLineChart] = useState(false);
+    const toggleLineChart = () => {
+        setLineChart(!lineChart);
+    };
+
+    const [table, setTable] = useState(false);
+    const toggleTable = () => {
+        setTable(!table);
+    };
+
+    const listTab2 = [
+        {
+            Graph: "Line Chart"
+        },
+        {
+            Graph: "Pie Chart"
+        },
+        {
+            Graph: "Bar Chart"
+        },
+        {
+            Graph: "Cards"
+        },
+        {
+            Graph: "Table"
+        },
+    ]
+
+    const setGraphFilter = Graph => {
+        if (Graph === "Cards") {
+            toggleCards();
+        }
+        if (Graph === "Bar Chart") {
+            toggleBarChart();
+        }
+        if (Graph === "Pie Chart") {
+            togglePieChart();
+        }
+        if (Graph === "Line Chart") {
+            toggleLineChart();
+        }
+        if (Graph === "Table") {
+            toggleTable();
+        }
+        setGraphStatus(true)
+    }
+
+    const resetGraphFilter = () => {
+        setCards(false);
+        setBarChart(false);
+        setPieChart(false);
+        setLineChart(false);
+        setTable(false);
+        setGraphStatus(false)
     }
 
     const sortTable = (column) => {
@@ -587,140 +770,141 @@ export default function groupDashboard({ navigation }) {
         }
     }
 
-        // int, total number of students
-        const numOfStudents = studentsData.length // this one is for card
+    // int, total number of students
+    const numOfStudents = studentsList.length // this one is for card
 
-        // array, total grade points of every student
-        // const renderGradePoints = studentsData.map(
-        //     e => e.results.map(f => f.GradePoints).reduce((a, b) => a + b))
-        // const renderGradePoints1 = allResultsList.map(f => f.GradePoints).reduce((a, b) => a + b).toFixed(2)
-        // const renderCreditHours = studentsData.map(
-        //     e => e.results.map(f => f.CreditHours).reduce((a, b) => a + b))
-        // const renderCreditHours1 = allResultsList.map(f => f.CreditHours).reduce((a, b) => a + b).toFixed(2)
-        // const averageCGPA1 = (renderGradePoints1 / renderCreditHours1).toFixed(2)
-    
-    
-        // const renderCGPA = renderGradePoints.map((e, index) => e / renderCreditHours[index])
-    
-        const renderCGPA = studentsData.map(e => e.CGPA) // this can be used for pie chart
-        const totalStudentsCGPA = renderCGPA.map(e => e).reduce((a, b) => a + b)
-        const averageCGPA = (totalStudentsCGPA / numOfStudents).toFixed(2) // this one is for card
-    
-        const averageCreditHours = (_.sumBy(resultsList, 'CreditHours') / numOfStudents).toFixed(2)
-        const averageGradePoints = (_.sumBy(resultsList, 'GradePoints') / numOfStudents).toFixed(2) // this one is for card
-    
-        // average GPA for every sem, this one is for line chart
-        const renderCountSemester = _.uniqBy(sgpaLine, 'Semester')
-        const averageSGPAlabels = renderCountSemester.map(e => "Sem " + e.Semester) // use this for line chart
-        // const averageSGPAlabels1 = averageSGPAlist.map(key => "Sem " + key.Semester)
-        // const averageSGPAdata1 = averageSGPAlist.map(key => key.AverageGPA)
-        // const resultsAllStudents = _.map(studentsData, 'results')  --- i gave up, just gonna input sgpa into every user
-    
-    
-        const totalSGPA = sgpaLine.reduce((c, i) => { c[i.Semester] = (c[i.Semester] || 0) + parseFloat(i.GPA); return c }, {});
-        const convertedTotalSGPA = _.values(totalSGPA)
-        const averageSGPAdata = convertedTotalSGPA.map(e => e / numOfStudents) // use this for line chart
-        // array of objects, where [{semester: val, averagesgpa: val}]
-        // will be used as sgpaList's initial val
-        const getAverageSGPA = () => {
-            let val = {}
-            let a = []
-            averageSGPAdata.map((e, index) => {
-                val = {
-                    Semester: index + 1,
-                    AverageGPA: averageSGPAdata[index].toFixed(2)
-                }
-                a.push(val)
-            })
-            return a
-        }
-    
-        const averageSGPAlist = getAverageSGPA()
-    
-    
-        // this one is for bar chart
-        const sortedAllSubject = _.sortBy(resultsList, e => gradeRank[e.Grades], ['asc'])
-        const countGradeFreq = _.countBy(sortedAllSubject.map(key => key.Grades))
-        const GradeFreqdata = _.values(countGradeFreq)
-        const GradeFreqlabels = _.keys(countGradeFreq)
-    
-    
-    
-        // for card "Top Subject" and "Lowest Subject"
-        const sortedAverageSubject = _.orderBy(studentsTable, function (obj) {
-            return gradeRank[obj.AverageGrade]
-        }, ['asc'])
+    // array, total grade points of every student
+    // const renderGradePoints = studentsData.map(
+    //     e => e.results.map(f => f.GradePoints).reduce((a, b) => a + b))
+    // const renderGradePoints1 = allResultsList.map(f => f.GradePoints).reduce((a, b) => a + b).toFixed(2)
+    // const renderCreditHours = studentsData.map(
+    //     e => e.results.map(f => f.CreditHours).reduce((a, b) => a + b))
+    // const renderCreditHours1 = allResultsList.map(f => f.CreditHours).reduce((a, b) => a + b).toFixed(2)
+    // const averageCGPA1 = (renderGradePoints1 / renderCreditHours1).toFixed(2)
 
-        // this one is for pie chart
-        function renderCGPArange(arr) {
-            let arrayCGPArange = []
-            let cgpacat = ''
-            let val = {}
-            let a = []
-            if (arr === renderCGPA) {
-                renderCGPA.map(e => {
-                    if (e >= 3.70) { cgpacat = "3.70 - 4.00" }
-                    else if (e >= 3.30 && e <= 3.69) { cgpacat = "3.30 - 3.69" }
-                    else if (e >= 2.70 && e <= 3.29) { cgpacat = "2.70 - 3.29" }
-                    else if (e >= 2.00 && e <= 2.69) { cgpacat = "2.00 - 2.69" }
-                    else if (e >= 0.00 && e <= 1.99) { cgpacat = "0.00 - 1.99" }
-                    arrayCGPArange.push(cgpacat)
-                })
-            }
-            else {
-                sgpaLine.map(f => f.GPA).map(e => {
-                    if (e >= 3.70) { cgpacat = "3.70 - 4.00" }
-                    else if (e >= 3.30 && e <= 3.69) { cgpacat = "3.30 - 3.69" }
-                    else if (e >= 2.70 && e <= 3.29) { cgpacat = "2.70 - 3.29" }
-                    else if (e >= 2.00 && e <= 2.69) { cgpacat = "2.00 - 2.69" }
-                    else if (e >= 0.00 && e <= 1.99) { cgpacat = "0.00 - 1.99" }
-                    arrayCGPArange.push(cgpacat)
-                })
-            }
-            let countCGPArange = _.countBy(arrayCGPArange)
-            let xVal = _.keys(countCGPArange)
-            let yVal = _.values(countCGPArange)
-    
-            xVal.map((e, index) => {
-                let percentage = (yVal[index] / renderCGPA.length * 100).toFixed(0)
-                val = {
-                    x: xVal[index],
-                    y: yVal[index],
-                    label: `${percentage}%\n(${yVal[index]})`,
-                }
-                a.push(val)
+
+    // const renderCGPA = renderGradePoints.map((e, index) => e / renderCreditHours[index])
+
+    const renderCGPA = studentsList.map(e => e.CGPA) // this can be used for pie chart
+    const totalStudentsCGPA = renderCGPA.map(e => e).reduce((a, b) => a + b)
+    const averageCGPA = (totalStudentsCGPA / numOfStudents).toFixed(2) // this one is for card
+
+    const averageCreditHours = (_.sumBy(resultsList, 'CreditHours') / numOfStudents).toFixed(2)
+    const averageGradePoints = (_.sumBy(resultsList, 'GradePoints') / numOfStudents).toFixed(2) // this one is for card
+
+    // average GPA for every sem, this one is for line chart
+    const renderCountSemester = _.uniqBy(sgpaLine, 'Semester')
+    const averageSGPAlabels = renderCountSemester.map(e => "Sem " + e.Semester) // use this for line chart
+    // const averageSGPAlabels1 = averageSGPAlist.map(key => "Sem " + key.Semester)
+    // const averageSGPAdata1 = averageSGPAlist.map(key => key.AverageGPA)
+    // const resultsAllStudents = _.map(studentsData, 'results')  --- i gave up, just gonna input sgpa into every user
+
+
+    const totalSGPA = sgpaLine.reduce((c, i) => { c[i.Semester] = (c[i.Semester] || 0) + parseFloat(i.GPA); return c }, {});
+    const convertedTotalSGPA = _.values(totalSGPA)
+    const averageSGPAdata = convertedTotalSGPA.map(e => e / numOfStudents) // use this for line chart
+
+    // array of objects, where [{semester: val, averagesgpa: val}]
+    // will be used as sgpaList's initial val
+    // const getAverageSGPA = () => {
+    //     let val = {}
+    //     let a = []
+    //     averageSGPAdata.map((e, index) => {
+    //         val = {
+    //             Semester: index + 1,
+    //             AverageGPA: averageSGPAdata[index].toFixed(2)
+    //         }
+    //         a.push(val)
+    //     })
+    //     return a
+    // }
+
+    // const averageSGPAlist = getAverageSGPA()
+
+
+    // this one is for bar chart
+    const sortedAllSubject = _.sortBy(resultsList, e => gradeRank[e.Grades], ['asc'])
+    const countGradeFreq = _.countBy(sortedAllSubject.map(key => key.Grades))
+    const GradeFreqdata = _.values(countGradeFreq)
+    const GradeFreqlabels = _.keys(countGradeFreq)
+
+
+
+    // for card "Top Subject" and "Lowest Subject"
+    const sortedAverageSubject = _.orderBy(studentsTable, function (obj) {
+        return gradeRank[obj.AverageGrade]
+    }, ['asc'])
+
+    // this one is for pie chart
+    function renderCGPArange(arr) {
+        let arrayCGPArange = []
+        let cgpacat = ''
+        let val = {}
+        let a = []
+        if (arr === renderCGPA) {
+            renderCGPA.map(e => {
+                if (e >= 3.70) { cgpacat = "3.70 - 4.00" }
+                else if (e >= 3.30 && e <= 3.69) { cgpacat = "3.30 - 3.69" }
+                else if (e >= 2.70 && e <= 3.29) { cgpacat = "2.70 - 3.29" }
+                else if (e >= 2.00 && e <= 2.69) { cgpacat = "2.00 - 2.69" }
+                else if (e >= 0.00 && e <= 1.99) { cgpacat = "0.00 - 1.99" }
+                arrayCGPArange.push(cgpacat)
             })
-    
-            return a
         }
-    
-        const CGPArangedata = renderCGPArange(renderCGPA)
-        const GPArangedata = renderCGPArange(sgpaLine)
-    
-        function renderCGPArangeLegend(arr) {
-            let val = {}
-            let b = []
-            if (arr === renderCGPA) {
-                CGPArangedata.map((e, index) => {
-                    val = {
-                        name: e.x
-                    }
-                    b.push(val)
-                })
-            }
-            else {
-                GPArangedata.map((e, index) => {
-                    val = {
-                        name: e.x
-                    }
-                    b.push(val)
-                })
-            }
-            return b
+        else {
+            sgpaLine.map(f => f.GPA).map(e => {
+                if (e >= 3.70) { cgpacat = "3.70 - 4.00" }
+                else if (e >= 3.30 && e <= 3.69) { cgpacat = "3.30 - 3.69" }
+                else if (e >= 2.70 && e <= 3.29) { cgpacat = "2.70 - 3.29" }
+                else if (e >= 2.00 && e <= 2.69) { cgpacat = "2.00 - 2.69" }
+                else if (e >= 0.00 && e <= 1.99) { cgpacat = "0.00 - 1.99" }
+                arrayCGPArange.push(cgpacat)
+            })
         }
-    
-        const CGPArangelegend = renderCGPArangeLegend(renderCGPA)
-        const GPArangelegend = renderCGPArangeLegend(sgpaLine)
+        let countCGPArange = _.countBy(arrayCGPArange)
+        let xVal = _.keys(countCGPArange)
+        let yVal = _.values(countCGPArange)
+
+        xVal.map((e, index) => {
+            let percentage = (yVal[index] / renderCGPA.length * 100).toFixed(0)
+            val = {
+                x: xVal[index],
+                y: yVal[index],
+                label: `${percentage}%\n(${yVal[index]})`,
+            }
+            a.push(val)
+        })
+
+        return a
+    }
+
+    const CGPArangedata = renderCGPArange(renderCGPA)
+    const GPArangedata = renderCGPArange(sgpaLine)
+
+    function renderCGPArangeLegend(arr) {
+        let val = {}
+        let b = []
+        if (arr === renderCGPA) {
+            CGPArangedata.map((e, index) => {
+                val = {
+                    name: e.x
+                }
+                b.push(val)
+            })
+        }
+        else {
+            GPArangedata.map((e, index) => {
+                val = {
+                    name: e.x
+                }
+                b.push(val)
+            })
+        }
+        return b
+    }
+
+    const CGPArangelegend = renderCGPArangeLegend(renderCGPA)
+    const GPArangelegend = renderCGPArangeLegend(sgpaLine)
 
     const renderPieChart = () => {
         let chartData = []
@@ -854,66 +1038,44 @@ export default function groupDashboard({ navigation }) {
                     </View></Card>
             </View> */}
 
-            {/* [GroupDashboard] Select Semester Filter */}
+            {/* [GroupDashboard] Select Group Filter */}
             <View>
                 <ScrollView horizontal={true}
                     showsHorizontalScrollIndicator={false}>
                     <View style={styles.listTab}>
                         <View style={styles.listIcon}>
-                            <Ionicons name="filter-sharp" size={20} color="steelblue" style={{ alignContent: 'flex-end' }} />
+                            <Image
+                                source={group}
+                                resizeMode="contain"
+                                style={{
+                                    width: 30,
+                                    height: 30,
+                                }}
+                            />
+                            {/* <Ionicons name="filter-sharp" size={20} color="steelblue" style={{ alignContent: 'flex-end' }} /> */}
                         </View>
 
-
-                        {/* For when you wake up later, */}
-                        {/* Sini letak butang untuk reset filter, use resetStatusFilter() */}
-                        {/* Default value */}
-                        <TouchableOpacity
-                            style={[
-                                styles.btnTabActive,
-                                {
-                                    width: Dimensions.get('window').width / listTab.length - 50,
-                                    // maxWidth: Dimensions.get('window').width / 3.5
-                                },
-                                sem !== null && styles.btnTab
-                            ]}
-                            onPress={() => resetStatusFilter()}
-                        >
-
-                            {/* By default, active tab style, if unselected, normal tab style */}
-                            <Text style={[styles.textTabActive, sem !== null && styles.textTab]}>
-                                All Semesters
-                            </Text>
-
-                            {/* By default, display icon */}
-                            {sem !== null ?
-                                <View></View>
-                                :
-                                <Ionicons name="checkmark-circle-sharp" size={20} color="black" style={{ alignContent: 'flex-end' }} />
-                            }
-
-                            {/* Filtered value */}
-                        </TouchableOpacity>
                         {
-                            listTab.map((e, index) => (
+                            listTab5.map((e, index) => (
                                 <TouchableOpacity
                                     key={index}
                                     style={[
                                         styles.btnTab,
                                         {
-                                            width: Dimensions.get('window').width / listTab.length - 100,
+                                            width: Dimensions.get('window').width / listTab.length - 40,
                                             // maxWidth: Dimensions.get('window').width / 3.5
                                         },
-                                        sem === e.Semester && styles.btnTabActive]}
-                                    onPress={() => setStatusFilter(e.Semester)}
+                                        studentsGroup === e.GroupID && styles.btnTabActive]}
+                                    onPress={() => setGroupFilter(e.GroupID)}
                                 >
 
                                     {/* If unselected, normal tab style, if selected, active tab style */}
-                                    <Text style={[styles.textTab, sem === e.Semester && styles.textTabActive]}>
-                                        Sem {e.Semester}
+                                    <Text style={[styles.textTab, studentsGroup === e.GroupID && styles.textTabActive]}>
+                                        {e.GroupName}
                                     </Text>
 
                                     {/* If selected, display icon */}
-                                    {sem === e.Semester ?
+                                    {studentsGroup === e.GroupID ?
                                         <Ionicons name="checkmark-circle-sharp" size={20} color="black" style={{ alignContent: 'flex-end' }} />
                                         :
                                         <View></View>}
@@ -925,207 +1087,598 @@ export default function groupDashboard({ navigation }) {
             </View>
 
 
-            <View style={{ alignContent: 'center', flexDirection: 'row' }}>
-                <View style={styles.cardInner}>
-                    <DashboardCard>
-                        <Text style={styles.cardText}>{numOfStudents}</Text>
-                        <Text style={styles.cardSubtext}>Total Students</Text>
-                    </DashboardCard>
-                </View>
+            {/* [GroupDashboard] Hide or Display Filter */}
+            <View style={{ alignContent: "center", width: Dimensions.get('window').width, marginHorizontal: 20 }}>
+                <ScrollView horizontal={true}
+                    showsHorizontalScrollIndicator={false}>
+                    <View style={styles.listTab}>
 
-                <View style={styles.cardInner}>
-                    <DashboardCard>
-                        <Text style={styles.cardText}>{sem === null ? averageCGPA : averageSGPAdata[0].toFixed(2)}</Text>
-                        {sem === null ?
-                            <Text style={styles.cardSubtext}>Average CGPA</Text>
-                            :
-                            <Text style={styles.cardSubtext}>Average GPA</Text>
-                        }
-                    </DashboardCard>
-                </View>
-
-                <View style={styles.cardInner}>
-                    <DashboardCard>
-                        <Text style={styles.cardText}>{averageGradePoints}</Text>
-                        <Text style={styles.cardSubtext}>Avg. Grade Points</Text>
-                    </DashboardCard>
-                </View>
-            </View>
-
-            <DashboardCard>
-                <Text style={styles.chartTitle}>Average GPA vs Semester</Text>
-                <LineChart
-                    data={{
-                        labels: averageSGPAlabels,
-                        datasets: [
-                            {
-                                data: averageSGPAdata
-                            },
-                            {
-                                // to set max value
-                                data: [4.00],
-                                withDots: false
-                            }
-                        ]
-                    }}
-                    width={Dimensions.get('window').width - 40} // from react-native
-                    height={220}
-                    fromZero={true}
-                    chartConfig={{
-                        color: "black",
-                        backgroundColor: '#B6D0E2',
-                        backgroundGradientFrom: '#B6D0E2',
-                        backgroundGradientTo: '#B6D0E2',
-                        decimalPlaces: 2, // optional, defaults to 2dp
-                        color: (opacity = 1) => `rgba(0, 0, 0, ${opacity})`,
-                        style: {
-                            borderRadius: 16
-                        },
-
-                    }}
-                    bezier
-                    style={{
-                        marginTop: 15,
-                        marginRight: 10,
-                        borderRadius: 0
-                    }}
-
-                    decorator={() => {
-                        return tooltipPos.visible ? <View>
-                            <Svg>
-                                <Rect x={tooltipPos.x - 15}
-                                    y={tooltipPos.y + 10}
-                                    width="40"
-                                    height="30"
-                                    rx={5}
-                                    fill="black"
-                                    opacity="0.5" />
-                                <TextSVG
-                                    x={tooltipPos.x + 5}
-                                    y={tooltipPos.y + 30}
-                                    fill="white"
-                                    fontSize="16"
-                                    fontWeight="bold"
-                                    textAnchor="middle">
-                                    {tooltipPos.value.toFixed(2)}
-                                </TextSVG>
-                            </Svg>
-                        </View> : null
-                    }}
-
-                    onDataPointClick={(data) => {
-
-                        // check if we have clicked on the same point again
-                        let isSamePoint = (tooltipPos.x === data.x
-                            && tooltipPos.y === data.y)
-
-                        // if clicked on the same point again toggle visibility
-                        // else,render tooltip to new position and update its value
-                        isSamePoint ? setTooltipPos((previousState) => {
-                            return {
-                                ...previousState,
-                                value: data.value,
-                                visible: !previousState.visible
-                            }
-                        })
-                            :
-                            setTooltipPos({ x: data.x, value: data.value, y: data.y, visible: true });
-
-                    }}
-                />
-            </DashboardCard>
-
-            <DashboardCard>
-                {/* <Card> */}
-                {renderPieChart()}
-                {/* </Card> */}
-            </DashboardCard>
-
-            <DashboardCard>
-
-                <Text style={styles.chartTitle}># of Subjects vs Grade</Text>
-                <BarChart
-                    data={{
-                        labels: GradeFreqlabels,
-                        datasets: [{
-                            data: GradeFreqdata
-                        }]
-                    }}
-                    width={Dimensions.get('window').width - 50} // from react-native
-                    height={220}
-                    fromZero={true}
-                    showValuesOnTopOfBars={true}
-
-                    chartConfig={{
-                        backgroundColor: '#B6D0E2',
-                        backgroundGradientFrom: '#B6D0E2',
-                        backgroundGradientTo: '#B6D0E2',
-                        fillShadowGradient: 'black',
-                        fillShadowGradientOpacity: 1,
-                        barPercentage: 0.5,
-                        decimalPlaces: 2, // optional, defaults to 2dp
-                        color: (opacity = 1) => `rgba(0, 0, 0, ${opacity})`,
-                        style: {
-                            borderRadius: 0,
-
-                        },
-
-
-                    }}
-                    bezier
-                    style={{
-                        marginTop: 15,
-                        marginRight: 10,
-                        borderRadius: 0
-                    }}
-
-                />
-            </DashboardCard>
-
-            <View style={styles.cardInner}>
-                <DashboardCard>
-                    <Text style={styles.cardText}>{sortedAverageSubject[0].CourseCode}</Text>
-                    <Text style={styles.cardSubtext}>Highest Average Subject</Text>
-                </DashboardCard>
-            </View>
-
-            <View style={styles.cardInner}>
-                <DashboardCard>
-                    <Text style={styles.cardText}>{studentsTable.length}</Text>
-                    <Text style={styles.cardSubtext}>Total Subjects Involved</Text>
-                </DashboardCard>
-            </View>
-
-            <View style={styles.cardInner}>
-                <DashboardCard>
-                    <Text style={styles.cardText}>{sortedAverageSubject[sortedAverageSubject.length - 1].CourseCode}</Text>
-                    <Text style={styles.cardSubtext}>Lowest Average Subject</Text>
-                </DashboardCard>
-            </View>
-
-
-
-            <View style={styles.tableHeader}>
-                {
-                    columns.map((column, index) => {
                         {
-                            return (
+                            listTab6.map((e, index) => (
                                 <TouchableOpacity
                                     key={index}
-                                    style={styles.columnHeader}
-                                    onPress={() => sortTable(column)}>
-                                    <Text style={styles.columnHeaderTxt}>{cosmeticColumns[index] + " "}
-                                        {selectedColumn === column && <MaterialCommunityIcons
-                                            name={direction === "desc" ? "arrow-down-drop-circle" : "arrow-up-drop-circle"}
-                                        />
-                                        }
+                                    style={[
+                                        styles.btnTab,
+                                        {
+                                            width: Dimensions.get('window').width / listTab.length - 40,
+                                            // maxWidth: Dimensions.get('window').width / 3.5
+                                        },
+                                        displayStatus === e.Status && styles.btnTabActive]}
+                                    onPress={() => setDisplayStatus(e.Status)}
+                                >
+
+                                    {/* If unselected, normal tab style, if selected, active tab style */}
+                                    <Text style={[styles.textTab, displayStatus === e.Status && styles.textTabActive]}>
+                                        {e.Name}
                                     </Text>
+
+                                    {/* If selected, display icon */}
+                                    {displayStatus === e.Status ?
+                                        <Ionicons name="checkmark-circle-sharp" size={20} color="black" style={{ alignContent: 'flex-end' }} />
+                                        :
+                                        <View></View>}
                                 </TouchableOpacity>
-                            )
+                            ))
                         }
-                    })
-                }
+                    </View>
+                </ScrollView>
             </View>
+
+            {/* [GroupDashboard] Select Semester Filter */}
+            {displayStatus !== false ?
+                <View>
+                    <ScrollView horizontal={true}
+                        showsHorizontalScrollIndicator={false}>
+                        <View style={styles.listTab}>
+                            <View style={styles.listIcon}>
+                            <Image
+                                source={semester}
+                                resizeMode="contain"
+                                style={{
+                                    width: 30,
+                                    height: 30,
+                                }}
+                            />
+                                {/* <Ionicons name="filter-sharp" size={20} color="steelblue" style={{ alignContent: 'flex-end' }} /> */}
+                            </View>
+
+
+                            {/* For when you wake up later, */}
+                            {/* Sini letak butang untuk reset filter, use resetStatusFilter() */}
+                            {/* Default value */}
+                            <TouchableOpacity
+                                style={[
+                                    styles.btnTabActive,
+                                    {
+                                        width: Dimensions.get('window').width / listTab.length - 50,
+                                        // maxWidth: Dimensions.get('window').width / 3.5
+                                    },
+                                    sem !== null && styles.btnTab
+                                ]}
+                                onPress={() => resetStatusFilter()}
+                            >
+
+                                {/* By default, active tab style, if unselected, normal tab style */}
+                                <Text style={[styles.textTabActive, sem !== null && styles.textTab]}>
+                                    All Semesters
+                                </Text>
+
+                                {/* By default, display icon */}
+                                {sem !== null ?
+                                    <View></View>
+                                    :
+                                    <Ionicons name="checkmark-circle-sharp" size={20} color="black" style={{ alignContent: 'flex-end' }} />
+                                }
+
+                                {/* Filtered value */}
+                            </TouchableOpacity>
+                            {
+                                listTab.map((e, index) => (
+                                    <TouchableOpacity
+                                        key={index}
+                                        style={[
+                                            styles.btnTab,
+                                            {
+                                                width: Dimensions.get('window').width / listTab.length - 100,
+                                                // maxWidth: Dimensions.get('window').width / 3.5
+                                            },
+                                            sem === e.Semester && styles.btnTabActive]}
+                                        onPress={() => setStatusFilter(e.Semester)}
+                                    >
+
+                                        {/* If unselected, normal tab style, if selected, active tab style */}
+                                        <Text style={[styles.textTab, sem === e.Semester && styles.textTabActive]}>
+                                            Sem {e.Semester}
+                                        </Text>
+
+                                        {/* If selected, display icon */}
+                                        {sem === e.Semester ?
+                                            <Ionicons name="checkmark-circle-sharp" size={20} color="black" style={{ alignContent: 'flex-end' }} />
+                                            :
+                                            <View></View>}
+                                    </TouchableOpacity>
+                                ))
+                            }
+                        </View>
+                    </ScrollView>
+                </View>
+                : <View></View>}
+
+            {/* [GroupDashboard] Select Graph Filter */}
+            {displayStatus !== false ?
+                <View>
+                    <ScrollView horizontal={true}
+                        showsHorizontalScrollIndicator={false}>
+                        <View style={styles.listTab}>
+                            <View style={styles.listIcon}>
+                            <Image
+                                source={graphs}
+                                resizeMode="contain"
+                                style={{
+                                    width: 30,
+                                    height: 30,
+                                }}
+                            />
+                                {/* <Ionicons name="filter-sharp" size={20} color="steelblue" style={{ alignContent: 'flex-end' }} /> */}
+                            </View>
+
+                            {/* For when you wake up later, */}
+                            {/* Sini letak butang untuk reset filter, use resetGraphFilter() */}
+                            {/* Default value */}
+                            <TouchableOpacity
+                                style={[
+                                    styles.btnTabActive,
+                                    {
+                                        width: Dimensions.get('window').width / listTab2.length + 50,
+                                        // maxWidth: Dimensions.get('window').width / 3
+                                    },
+                                    graphStatus === true && styles.btnTab
+                                ]}
+                                onPress={() => resetGraphFilter()}
+                            >
+
+                                {/* By default, active tab style, if unselected, normal tab style */}
+                                <Text style={[styles.textTabActive, graphStatus === true && styles.textTab]}>
+                                    All Graphs
+                                </Text>
+
+                                {/* By default, display icon */}
+                                {graphStatus === true ?
+                                    <View></View>
+                                    :
+                                    <Ionicons name="checkmark-circle-sharp" size={20} color="black" style={{ alignContent: 'flex-end' }} />
+                                }
+
+                                {/* Filtered value */}
+                            </TouchableOpacity>
+                            {
+                                listTab2.map((e, index) => (
+                                    <TouchableOpacity
+                                        key={index}
+                                        style={[
+                                            styles.btnTab,
+                                            {
+                                                width: Dimensions.get('window').width / listTab2.length + 45,
+                                                // maxWidth: Dimensions.get('window').width / 3.5
+                                            },
+                                            (e.Graph === "Cards" && cards === true) && styles.btnTabActive,
+                                            (e.Graph === "Bar Chart" && barChart === true) && styles.btnTabActive,
+                                            (e.Graph === "Pie Chart" && pieChart === true) && styles.btnTabActive,
+                                            (e.Graph === "Line Chart" && lineChart === true) && styles.btnTabActive,
+                                            (e.Graph === "Table" && table === true) && styles.btnTabActive]}
+                                        onPress={() => setGraphFilter(e.Graph)}
+                                    >
+
+                                        {/* If unselected, normal tab style, if selected, active tab style */}
+                                        <Text style={[styles.textTab,
+                                        (e.Graph === "Cards" && cards === true) && styles.textTabActive,
+                                        (e.Graph === "Bar Chart" && barChart === true) && styles.textTabActive,
+                                        (e.Graph === "Pie Chart" && pieChart === true) && styles.textTabActive,
+                                        (e.Graph === "Line Chart" && lineChart === true) && styles.textTabActive,
+                                        (e.Graph === "Table" && table === true) && styles.textTabActive]}>
+                                            {e.Graph}
+                                        </Text>
+
+                                        {/* If selected, display icon */}
+                                        {(e.Graph === "Cards" && cards === true)
+                                            || (e.Graph === "Bar Chart" && barChart === true)
+                                            || (e.Graph === "Line Chart" && lineChart === true)
+                                            || (e.Graph === "Table" && table === true)
+                                            || (e.Graph === "Pie Chart" && pieChart === true) ?
+                                            <Ionicons name="close-circle-sharp" size={20} color="black" style={{ alignContent: 'flex-end' }} />
+                                            :
+                                            <View></View>}
+                                    </TouchableOpacity>
+                                ))
+                            }
+                        </View>
+                    </ScrollView>
+                </View>
+                : <View></View>
+            }
+
+            {/* [GroupDashboard] Select Gender Filter */}
+            {displayStatus !== false ?
+                <View>
+                    <ScrollView horizontal={true}
+                        showsHorizontalScrollIndicator={false}>
+                        <View style={styles.listTab}>
+                            <View style={styles.listIcon}>
+                            <Image
+                                source={gender}
+                                resizeMode="contain"
+                                style={{
+                                    width: 30,
+                                    height: 30,
+                                }}
+                            />
+                                {/* <Ionicons name="filter-sharp" size={20} color="steelblue" style={{ alignContent: 'flex-end' }} /> */}
+                            </View>
+
+                            {/* Default value */}
+                            <TouchableOpacity
+                                style={[
+                                    styles.btnTabActive,
+                                    {
+                                        width: Dimensions.get('window').width / listTab.length - 65,
+                                        // maxWidth: Dimensions.get('window').width / 3.5
+                                    },
+                                    studentsGender !== null && styles.btnTab
+                                ]}
+                                onPress={() => resetGenderFilter()}
+                            >
+
+                                {/* By default, active tab style, if unselected, normal tab style */}
+                                <Text style={[styles.textTabActive, studentsGender !== null && styles.textTab]}>
+                                    All Genders
+                                </Text>
+
+                                {/* By default, display icon */}
+                                {studentsGender !== null ?
+                                    <View></View>
+                                    :
+                                    <Ionicons name="checkmark-circle-sharp" size={20} color="black" style={{ alignContent: 'flex-end' }} />
+                                }
+
+                                {/* Filtered value */}
+                            </TouchableOpacity>
+                            {
+                                listTab3.map((e, index) => (
+                                    <TouchableOpacity
+                                        key={index}
+                                        style={[
+                                            styles.btnTab,
+                                            {
+                                                width: Dimensions.get('window').width / listTab.length - 100,
+                                                // maxWidth: Dimensions.get('window').width / 3.5
+                                            },
+                                            studentsGender === e.Gender && styles.btnTabActive]}
+                                        onPress={() => setGenderFilter(e.Gender)}
+                                    >
+
+                                        {/* If unselected, normal tab style, if selected, active tab style */}
+                                        <Text style={[styles.textTab, studentsGender === e.Gender && styles.textTabActive]}>
+                                            {e.Gender}
+                                        </Text>
+
+                                        {/* If selected, display icon */}
+                                        {studentsGender === e.Gender ?
+                                            <Ionicons name="checkmark-circle-sharp" size={20} color="black" style={{ alignContent: 'flex-end' }} />
+                                            :
+                                            <View></View>}
+                                    </TouchableOpacity>
+                                ))
+                            }
+                        </View>
+                    </ScrollView>
+                </View>
+                : <View></View>
+            }
+
+            {/* [GroupDashboard] Select Department Filter */}
+            {displayStatus !== false ?
+                <View>
+                    <ScrollView horizontal={true}
+                        showsHorizontalScrollIndicator={false}>
+                        <View style={styles.listTab}>
+                            <View style={styles.listIcon}>
+                            <Image
+                                source={department}
+                                resizeMode="contain"
+                                style={{
+                                    width: 30,
+                                    height: 30,
+                                }}
+                            />
+                                {/* <Ionicons name="filter-sharp" size={20} color="steelblue" style={{ alignContent: 'flex-end' }} /> */}
+                            </View>
+
+                            {/* Default value */}
+                            <TouchableOpacity
+                                style={[
+                                    styles.btnTabActive,
+                                    {
+                                        width: Dimensions.get('window').width / listTab.length - 30,
+                                        // maxWidth: Dimensions.get('window').width / 3.5
+                                    },
+                                    studentsDepartment !== null && styles.btnTab
+                                ]}
+                                onPress={() => resetDepartmentFilter()}
+                            >
+
+                                {/* By default, active tab style, if unselected, normal tab style */}
+                                <Text style={[styles.textTabActive, studentsDepartment !== null && styles.textTab]}>
+                                    All Departments
+                                </Text>
+
+                                {/* By default, display icon */}
+                                {studentsDepartment !== null ?
+                                    <View></View>
+                                    :
+                                    <Ionicons name="checkmark-circle-sharp" size={20} color="black" style={{ alignContent: 'flex-end' }} />
+                                }
+
+                                {/* Filtered value */}
+                            </TouchableOpacity>
+                            {
+                                listTab4.map((e, index) => (
+                                    <TouchableOpacity
+                                        key={index}
+                                        style={[
+                                            styles.btnTab,
+                                            {
+                                                width: Dimensions.get('window').width / listTab.length,
+                                                // maxWidth: Dimensions.get('window').width / 3.5
+                                            },
+                                            studentsDepartment === e.Department && styles.btnTabActive]}
+                                        onPress={() => setDepartmentFilter(e.Department)}
+                                    >
+
+                                        {/* If unselected, normal tab style, if selected, active tab style */}
+                                        <Text style={[styles.textTab, studentsDepartment === e.Department && styles.textTabActive]}>
+                                            {e.Department}
+                                        </Text>
+
+                                        {/* If selected, display icon */}
+                                        {studentsDepartment === e.Department ?
+                                            <Ionicons name="checkmark-circle-sharp" size={20} color="black" style={{ alignContent: 'flex-end' }} />
+                                            :
+                                            <View></View>}
+                                    </TouchableOpacity>
+                                ))
+                            }
+                        </View>
+                    </ScrollView>
+                </View>
+                : <View></View>
+            }
+
+
+            {/* [GroupDashboard] Cards for Total Students, Average CGPA/GPA and Average Grade Points */}
+            {(cards === true || graphStatus === false) ?
+                <View style={{ alignContent: 'center', flexDirection: 'row' }}>
+                    <View style={styles.cardInner}>
+                        <DashboardCard>
+                            <Text style={styles.cardText}>{numOfStudents}</Text>
+                            <Text style={styles.cardSubtext}>Total Students</Text>
+                        </DashboardCard>
+                    </View>
+
+                    <View style={styles.cardInner}>
+                        <DashboardCard>
+                            <Text style={styles.cardText}>{sem === null ? averageCGPA : averageSGPAdata[0].toFixed(2)}</Text>
+                            {sem === null ?
+                                <Text style={styles.cardSubtext}>Average CGPA</Text>
+                                :
+                                <Text style={styles.cardSubtext}>Average GPA</Text>
+                            }
+                        </DashboardCard>
+                    </View>
+
+                    <View style={styles.cardInner}>
+                        <DashboardCard>
+                            <Text style={styles.cardText}>{averageGradePoints}</Text>
+                            <Text style={styles.cardSubtext}>Avg. Grade Points</Text>
+                        </DashboardCard>
+                    </View>
+                </View>
+                : <View></View>
+            }
+
+            {/* [GroupDashboard] Line Chart for Average GPA vs Semester */}
+            {((lineChart === true || graphStatus === false) && sem === null) ?
+                <DashboardCard>
+                    <Text style={styles.chartTitle}>Average GPA vs Semester</Text>
+                    <LineChart
+                        data={{
+                            labels: averageSGPAlabels,
+                            datasets: [
+                                {
+                                    data: averageSGPAdata
+                                },
+                                {
+                                    // to set max value
+                                    data: [4.00],
+                                    withDots: false
+                                }
+                            ]
+                        }}
+                        width={Dimensions.get('window').width - 40} // from react-native
+                        height={220}
+                        fromZero={true}
+                        chartConfig={{
+                            color: "black",
+                            backgroundColor: '#B6D0E2',
+                            backgroundGradientFrom: '#B6D0E2',
+                            backgroundGradientTo: '#B6D0E2',
+                            decimalPlaces: 2, // optional, defaults to 2dp
+                            color: (opacity = 1) => `rgba(0, 0, 0, ${opacity})`,
+                            style: {
+                                borderRadius: 16
+                            },
+
+                        }}
+                        bezier
+                        style={{
+                            marginTop: 15,
+                            marginRight: 10,
+                            borderRadius: 0
+                        }}
+
+                        decorator={() => {
+                            return tooltipPos.visible ? <View>
+                                <Svg>
+                                    <Rect x={tooltipPos.x - 15}
+                                        y={tooltipPos.y + 10}
+                                        width="40"
+                                        height="30"
+                                        rx={5}
+                                        fill="black"
+                                        opacity="0.5" />
+                                    <TextSVG
+                                        x={tooltipPos.x + 5}
+                                        y={tooltipPos.y + 30}
+                                        fill="white"
+                                        fontSize="16"
+                                        fontWeight="bold"
+                                        textAnchor="middle">
+                                        {tooltipPos.value.toFixed(2)}
+                                    </TextSVG>
+                                </Svg>
+                            </View> : null
+                        }}
+
+                        onDataPointClick={(data) => {
+
+                            // check if we have clicked on the same point again
+                            let isSamePoint = (tooltipPos.x === data.x
+                                && tooltipPos.y === data.y)
+
+                            // if clicked on the same point again toggle visibility
+                            // else,render tooltip to new position and update its value
+                            isSamePoint ? setTooltipPos((previousState) => {
+                                return {
+                                    ...previousState,
+                                    value: data.value,
+                                    visible: !previousState.visible
+                                }
+                            })
+                                :
+                                setTooltipPos({ x: data.x, value: data.value, y: data.y, visible: true });
+
+                        }}
+                    />
+                </DashboardCard>
+                : <View></View>
+            }
+
+            {/* [GroupDashboard] Pie Chart for Average GPA vs Semester */}
+            {(pieChart === true || graphStatus === false) ?
+                <DashboardCard>
+                    {/* <Card> */}
+                    {renderPieChart()}
+                    {/* </Card> */}
+                </DashboardCard>
+                : <View></View>
+            }
+
+            {/* [GroupDashboard] Bar Chart for Number of Subjects vs Grade */}
+            {(barChart === true || graphStatus === false) ?
+                <DashboardCard>
+                    <Text style={styles.chartTitle}># of Subjects vs Grade</Text>
+                    <BarChart
+                        data={{
+                            labels: GradeFreqlabels,
+                            datasets: [{
+                                data: GradeFreqdata
+                            }]
+                        }}
+                        width={Dimensions.get('window').width - 50} // from react-native
+                        height={220}
+                        fromZero={true}
+                        showValuesOnTopOfBars={true}
+
+                        chartConfig={{
+                            backgroundColor: '#B6D0E2',
+                            backgroundGradientFrom: '#B6D0E2',
+                            backgroundGradientTo: '#B6D0E2',
+                            fillShadowGradient: 'black',
+                            fillShadowGradientOpacity: 1,
+                            barPercentage: 0.5,
+                            decimalPlaces: 2, // optional, defaults to 2dp
+                            color: (opacity = 1) => `rgba(0, 0, 0, ${opacity})`,
+                            style: {
+                                borderRadius: 0,
+
+                            },
+
+
+                        }}
+                        bezier
+                        style={{
+                            marginTop: 15,
+                            marginRight: 10,
+                            borderRadius: 0
+                        }}
+
+                    />
+                </DashboardCard>
+                : <View></View>
+            }
+
+            {/* [GroupDashboard] Cards for "Highest Average Subject", "Total Subjects Involved", "Lowest Average Subject" */}
+            {(cards === true || graphStatus === false) ?
+                <View style={{ alignContent: 'center', flexDirection: 'row' }}>
+                    <View style={styles.cardInner}>
+                        <DashboardCard>
+                            <Text style={styles.cardText}>{sortedAverageSubject[0].CourseCode}</Text>
+                            <Text style={styles.cardSubtext}>Highest Average Subject</Text>
+                        </DashboardCard>
+                    </View>
+
+                    <View style={styles.cardInner}>
+                        <DashboardCard>
+                            <Text style={styles.cardText}>{studentsTable.length}</Text>
+                            <Text style={styles.cardSubtext}>Total Subjects Involved</Text>
+                        </DashboardCard>
+                    </View>
+
+                    <View style={styles.cardInner}>
+                        <DashboardCard>
+                            <Text style={styles.cardText}>{sortedAverageSubject[sortedAverageSubject.length - 1].CourseCode}</Text>
+                            <Text style={styles.cardSubtext}>Lowest Average Subject</Text>
+                        </DashboardCard>
+                    </View>
+                </View>
+                : <View></View>
+            }
+
+
+            {/* [groupDashboard] Table headers for list of subjects */}
+            {(table === true || graphStatus === false) ?
+                <View style={styles.tableHeader}>
+                    {
+                        columns.map((column, index) => {
+                            {
+                                return (
+                                    <TouchableOpacity
+                                        key={index}
+                                        style={styles.columnHeader}
+                                        onPress={() => sortTable(column)}>
+                                        <Text style={styles.columnHeaderTxt}>{cosmeticColumns[index] + " "}
+                                            {selectedColumn === column && <MaterialCommunityIcons
+                                                name={direction === "desc" ? "arrow-down-drop-circle" : "arrow-up-drop-circle"}
+                                            />
+                                            }
+                                        </Text>
+                                    </TouchableOpacity>
+                                )
+                            }
+                        })
+                    }
+                </View>
+                : <View></View>
+            }
 
         </View>
     )
@@ -1205,9 +1758,8 @@ export default function groupDashboard({ navigation }) {
         // card, "top subject" and "lowest subject"
         // console.log(sortedAverageSubject),
 
-        // filter, list of semester
-        console.log(sgpaLine.map(e => e.GPA)),
-        console.log(renderCGPA),
+        // filter
+        console.log(listTab4),
 
         <View style={globalStyles.container}>
 
@@ -1221,7 +1773,7 @@ export default function groupDashboard({ navigation }) {
                     ListHeaderComponent={renderHeader}
                     ListFooterComponent={renderFooter}
                     // stickyHeaderIndices={[0]}
-                    renderItem={renderTable}
+                    renderItem={(table === true || graphStatus === false) && renderTable}
                 />
                 <StatusBar style="auto" />
 
@@ -1232,6 +1784,12 @@ export default function groupDashboard({ navigation }) {
 
 
 }
+
+const group = require("../../assets/icons/group.png");
+const department = require("../../assets/icons/department2.png");
+const semester = require("../../assets/icons/semester.png");
+const graphs = require("../../assets/icons/graphs.png");
+const gender = require("../../assets/icons/gender.png");
 
 
 const styles = StyleSheet.create({
