@@ -52,95 +52,95 @@ LogBox.ignoreLogs(['Setting a timer for a long period of time'])
     ]
 
     const data = [
-      {
-        Semester: 1,
-        CourseCode: "GIG1001",
-        Subject: "THE ISLAMIC AND ASIAN CIVILIZATION",
-        Grades: "A",
-        CreditHours: 2,
-        GradePoints: 8
-      },
-      {
-        Semester: 1,
-        CourseCode: "WIA1001",
-        Subject: "INFORMATION SYSTEMS",
-        Grades: "A-",
-        CreditHours: 3,
-        GradePoints: 11.1
-      },
-      {
-        Semester: 1,
-        CourseCode: "WIX1001",
-        Subject: "COMPUTING MATHEMATICS I",
-        Grades: "A-",
-        CreditHours: 3,
-        GradePoints: 11.1
-      },
-      {
-        Semester: 1,
-        CourseCode: "WIX1002",
-        Subject: "FUNDAMENTALS OF PROGRAMMING",
-        Grades: "A-",
-        CreditHours: 5,
-        GradePoints: 18.5
-      },
-      {
-        Semester: 1,
-        CourseCode: "WIX1003",
-        Subject: "COMPUTER SYSTEMS AND ORGANIZATION",
-        Grades: "A-",
-        CreditHours: 3,
-        GradePoints: 11.1
-      },
+    {
+      Semester: 1,
+      CourseCode: "GIG1001",
+      Subject: "THE ISLAMIC AND ASIAN CIVILIZATION",
+      Grades: "A-",
+      CreditHours: 2,
+      GradePoints: 7.40
+    },
+    {
+      Semester: 1,
+      CourseCode: "WIA1001",
+      Subject: "INFORMATION SYSTEMS",
+      Grades: "B+",
+      CreditHours: 3,
+      GradePoints: 9.90
+    },
+    {
+      Semester: 1,
+      CourseCode: "WIX1001",
+      Subject: "COMPUTING MATHEMATICS I",
+      Grades: "B",
+      CreditHours: 3,
+      GradePoints: 9.0
+    },
+    {
+      Semester: 1,
+      CourseCode: "WIX1002",
+      Subject: "FUNDAMENTALS OF PROGRAMMING",
+      Grades: "A-",
+      CreditHours: 5,
+      GradePoints: 18.5
+    },
+    {
+      Semester: 1,
+      CourseCode: "WIX1003",
+      Subject: "COMPUTER SYSTEMS AND ORGANIZATION",
+      Grades: "A-",
+      CreditHours: 3,
+      GradePoints: 11.1
+    },
 
-      {
-        Semester: 2,
-        CourseCode: "GIG1002",
-        Subject: "ETHNIC RELATIONS",
-        Grades: "A",
-        CreditHours: 2,
-        GradePoints: 8
-      },
-      {
-        Semester: 2,
-        CourseCode: "GIG1005",
-        Subject: "SOCIAL ENGAGEMENT",
-        Grades: "A",
-        CreditHours: 2,
-        GradePoints: 8
-      },
-      {
-        Semester: 2,
-        CourseCode: "WIA1002",
-        Subject: "DATA STRUCTURE",
-        Grades: "C-",
-        CreditHours: 5,
-        GradePoints: 8.5
-      },
-      {
-        Semester: 2,
-        CourseCode: "WIA1003",
-        Subject: "COMPUTER SYSTEM ARCHITECTURE",
-        Grades: "C",
-        CreditHours: 3,
-        GradePoints: 6,
-      },
-      {
-        Semester: 2,
-        CourseCode: "WIA1004",
-        Subject: "FUNDAMENTALS OF ARTIFICIAL INTELLIGENCE",
-        Grades: "B+",
-        CreditHours: 3,
-        GradePoints: 9.9
-      },
-      {
-        Semester: 2,
-        CourseCode: "WIA1005",
-        Subject: "NETWORK TECHNOLOGY FOUNDATION",
-        Grades: "B-",
-        CreditHours: 4,
-        GradePoints: 10.8
-      },
+    {
+      Semester: 2,
+      CourseCode: "GIG1002",
+      Subject: "ETHNIC RELATIONS",
+      Grades: "B+",
+      CreditHours: 2,
+      GradePoints: 6.60
+    },
+    {
+      Semester: 2,
+      CourseCode: "GIG1005",
+      Subject: "SOCIAL ENGAGEMENT",
+      Grades: "A",
+      CreditHours: 2,
+      GradePoints: 8
+    },
+    {
+      Semester: 2,
+      CourseCode: "WIA1002",
+      Subject: "DATA STRUCTURE",
+      Grades: "C",
+      CreditHours: 5,
+      GradePoints: 10.0
+    },
+    {
+      Semester: 2,
+      CourseCode: "WIA1003",
+      Subject: "COMPUTER SYSTEM ARCHITECTURE",
+      Grades: "C+",
+      CreditHours: 3,
+      GradePoints: 6.90,
+    },
+    {
+      Semester: 2,
+      CourseCode: "WIA1004",
+      Subject: "FUNDAMENTALS OF ARTIFICIAL INTELLIGENCE",
+      Grades: "A",
+      CreditHours: 3,
+      GradePoints: 12.0
+    },
+    {
+      Semester: 2,
+      CourseCode: "WIA1005",
+      Subject: "NETWORK TECHNOLOGY FOUNDATION",
+      Grades: "A-",
+      CreditHours: 4,
+      GradePoints: 14.8
+    },
       {
         Semester: 3,
         CourseCode: "GIG1003",
@@ -213,7 +213,7 @@ LogBox.ignoreLogs(['Setting a timer for a long period of time'])
 
   //total grade points
   const totalGradePoints = dataList.reduce(
-  (previousScore, currentScore)=>previousScore+currentScore.GradePoints, 0).toFixed(2);
+  (previousScore, currentScore, index)=>previousScore+currentScore.GradePoints, 0).toFixed(2);
   //console.log("Grade Point:", totalGradePoints);
   
   //total credit hours
@@ -224,6 +224,7 @@ LogBox.ignoreLogs(['Setting a timer for a long period of time'])
   //GPA total
   const GPAtotal = (totalGradePoints / totalCreditHours).toFixed(2); 
   //console.log("GPA:", GPAtotal);
+
 
   const setStatusFilter = Semester => {
    
@@ -251,7 +252,7 @@ LogBox.ignoreLogs(['Setting a timer for a long period of time'])
           <View style ={style.resultcontainer}>
             <Text style={style.resultfont}>
               GPA result for selected semester</Text>
-              <Text style={style.Gpafont}>{GPAtotal}</Text>
+              <Text style={style.Gpafont}> {GPAtotal}</Text>
 
               <View style={style.congratscontainer}>
                 <Text style={style.congratsfont}>Congratulations!</Text>
@@ -369,14 +370,14 @@ const style = StyleSheet.create({
   },
 
   resultcontainer:{
-    backgroundColor:'steelblue',
+    backgroundColor:'#6F8FAF',
     borderRadius:20,
     margin:20,
     alignItems:'center',
   },
 
   congratscontainer:{
-    backgroundColor:'white',
+    backgroundColor:'#f37e50',
     borderRadius:20,
     borderWidth:0.5,
     borderColor:'darkblue',
