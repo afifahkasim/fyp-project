@@ -56,7 +56,6 @@ const UserStack = () => (
     <Screen name="AIPlanner" component={AIPlanner} /> 
     <Screen name="Timetable" component={Timetable} />
 
-
   </Navigator>
 );
 
