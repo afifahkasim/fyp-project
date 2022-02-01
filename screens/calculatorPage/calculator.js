@@ -403,7 +403,7 @@ const [modalOpen,  setModalOpenz] = useState(false);
       <ScrollView>
           <View  style={style.infocontainer}>
              <Button 
-             color="s#6F8FAF"
+             color="steelblue"
              title=" List of grade and method to calculate"
              onPress ={() =>  setModalOpenz (true)}
              > 
