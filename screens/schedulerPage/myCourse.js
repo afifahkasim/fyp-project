@@ -79,7 +79,7 @@ import { StyleSheet,
                 marginBottom:15
                 }}
             />
-<View>
+      <View>
             <View style={{flexDirection:'row', position: 'relative'}}>
                 <View style={style.timecontainer}>
                   <Text></Text>
@@ -102,10 +102,10 @@ import { StyleSheet,
             </View>
 
             <TouchableOpacity >
-          <View style={style.tclass}>
-           <Text>WIE3009 Group K Online</Text>
-          </View>
-        </TouchableOpacity>
+              <View style={style.tclass}>
+              <Text>WIE3009 Group K Online</Text>
+              </View>
+            </TouchableOpacity>
      </View>
 
               <FlatList
@@ -113,8 +113,8 @@ import { StyleSheet,
                 renderItem={item}
                 keyExtractor={(item,index) => index.toString()}
               />
-          </View>
-          </View>
+      </View>
+    </View>
       )
   };
 
