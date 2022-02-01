@@ -41,25 +41,35 @@ import { StyleSheet,
       navigation.navigate('SEPlanner');  
     }
 
-
       return(
        
     <View style={{flex:1}}>
             <Header text="Course Planner" />
-            <View style={{marginBottom:20, marginLeft:20, marginTop:10}}>
+            <View style={style.CPfont}>
                 <Text>Course Planner: 2020/2021 </Text>
+            </View>
+
+            <View style={style.deptcont}>
+                      <Icon
+                        style={{paddingTop: 17}}
+                        name='building'
+                        type='font-awesome-5'
+                        color='steelblue' 
+                        size={15}
+                        />
+                <Text style={style.deptfont}>Department:</Text>
             </View>
 
             
         <Pressable onPress={pressISPlanner}>
               <View style={style.buttonMC}>
-                <Text style={style.buttonText}>Information systems</Text>
+                <Text style={style.buttonText}>Information Systems</Text>
               </View>
         </Pressable>
 
         <Pressable onPress={pressNetworkPlanner}>
               <View style={style.buttonMC}>
-                <Text style={style.buttonText}>Computer system and network</Text>
+                <Text style={style.buttonText}>Computer System and Network</Text>
               </View>
         </Pressable>
         <Pressable onPress={pressDSPlanner}>
@@ -95,18 +105,33 @@ import { StyleSheet,
 
     buttonMC:{
       width: 340,
-      height: 40,
+      height: 50,
       borderRadius: 20,
       alignSelf: 'center',
       backgroundColor: '#6F8FAF',
-      marginTop: 5, 
+      marginVertical:10 
     },
 
     buttonText:{
       alignSelf: 'center',
-      paddingTop: 7,
+      paddingVertical: 12,
       fontSize: 15,
       color:'white'
+    },
+
+    deptfont:{
+      paddingHorizontal: 15, 
+      paddingVertical:15,
+    },
+    deptcont:{
+      marginLeft:20, 
+      flexDirection:'row'
+    },
+
+    CPfont:{
+      marginBottom:20, 
+      marginLeft:20, 
+      marginTop:10
     },
 
   })
