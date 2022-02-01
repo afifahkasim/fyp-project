@@ -337,32 +337,32 @@ const GradepointsSem6 = data.reduce((prev, current) => {
 //cari total credit hour
 const PastCH = data.reduce((prev, current) => {prev += current.CreditHours;
   return prev;}, 0);
-  console.log("pastCH:", PastCH);
+  //console.log("pastCH:", PastCH);
 
 const CurrentCH = current.reduce((prev, current) => {prev += current.CreditHours;
   return prev;}, 0);
-  console.log("currentCH:", CurrentCH);
+  //console.log("currentCH:", CurrentCH);
 
 const totalCH =PastCH + CurrentCH;
-console.log("Total CH past + current:",totalCH);
+//console.log("Total CH past + current:",totalCH);
 
 //cari current Grade point
 const [target, setTarget] = useState("");
 
 const CurrentGP = (CurrentCH * target); 
-console.log("CurrentGP:", CurrentGP);
+//console.log("CurrentGP:", CurrentGP);
 
 //grade point semester lepas
 const PastGP = data.reduce((prev, current) => {prev += current.GradePoints;
   return prev;}, 0);
-  console.log("pastGP:", PastGP);
+  //console.log("pastGP:", PastGP);
 
 const totalGP = (CurrentGP + PastGP).toFixed(2);
-console.log("totalGP:", totalGP);
+//console.log("totalGP:", totalGP);
 
 //cgpa target
 const CGPA = (totalGP/totalCH).toFixed(2);
-console.log("Target:", CGPA);
+//console.log("Target:", CGPA);
 
 
 //recommendation grade:
@@ -556,7 +556,7 @@ const [modalOpen,  setModalOpenz] = useState(false);
       height: 50,
       borderRadius: 20,
       alignSelf: 'center',
-      backgroundColor: 'steelblue',
+      backgroundColor: '#6F8FAF',
       marginTop: 20,  
     },
  
@@ -570,11 +570,11 @@ const [modalOpen,  setModalOpenz] = useState(false);
     showCGPA:{
       height:470,
       width:380,
-      backgroundColor:'#fddfd4',
+      backgroundColor:'white',
       alignSelf:'center',
       borderRadius:20,
       borderWidth:0.5,
-      borderColor:'#f37e50',
+      borderColor:'#6F8FAF',
       marginTop: 30,
     },
 
@@ -583,13 +583,13 @@ const [modalOpen,  setModalOpenz] = useState(false);
       paddingHorizontal: 40,
       paddingTop:15,
       fontSize:15,
-      color:'steelblue'
+      color:'#6F8FAF'
     },
 
     semesterfont:{
       paddingLeft:60,
       paddingVertical:5,
-      color:'steelblue'
+      color:'#6F8FAF'
     },
 
     targetfont:{
@@ -602,14 +602,14 @@ const [modalOpen,  setModalOpenz] = useState(false);
 
     cgpatargetcont:{
       marginHorizontal:100,
-      backgroundColor:'#f37e50',
+      backgroundColor:'#6F8FAF',
       borderRadius:20,
       marginBottom:5,
     },
 
     gpatargetcont:{
       marginHorizontal:100,
-      backgroundColor:'#f37e50',
+      backgroundColor:'#6F8FAF',
       borderRadius:20,
       marginBottom:5,
       marginTop:10,
@@ -618,7 +618,7 @@ const [modalOpen,  setModalOpenz] = useState(false);
     targetcont:{
       marginVertical:5,
       marginHorizontal:20,
-      backgroundColor:'#f37e50',
+      backgroundColor:'#6F8FAF',
       borderRadius:20,
     },
 
