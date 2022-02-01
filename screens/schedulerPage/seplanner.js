@@ -447,7 +447,6 @@ import { StyleSheet,
       position:'relative',
       paddingTop:5
     },
-
     tabletimecontainer:{
       width: 50,  
       height:40, 
