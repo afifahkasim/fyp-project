@@ -15,9 +15,15 @@ import Calculator from "../screens/calculatorPage/calculator";
 import CGPA from "../screens/calculatorPage/CGPA";
 import GPA from "../screens/calculatorPage/GPA";
 import SelfReminder from "../screens/reminderPage/selfReminder";
-//import Taskreminder from "../screens/reminderPage/taskReminder";
 import Coursescheduler from "../screens/schedulerPage/courseScheduler";
 import Mycourse from "../screens/schedulerPage/myCourse";
+import Planner from "../screens/schedulerPage/planner";
+import ISPlanner from "../screens/schedulerPage/isplanner";
+import NetworkPlanner from "../screens/schedulerPage/networkplanner";
+import SEPlanner from "../screens/schedulerPage/seplanner";
+import AIPlanner from "../screens/schedulerPage/aiplanner";
+import DSPlanner from "../screens/schedulerPage/dsplanner";
+import MULPlanner from "../screens/schedulerPage/mulplanner";
 import Timetable from "../screens/timetablePage/timetable";
 
 const { Navigator, Screen } = createStackNavigator();
@@ -41,6 +47,13 @@ const UserStack = () => (
     <Screen name="SelfReminder" component={SelfReminder} />
     <Screen name="Coursescheduler" component={Coursescheduler} />
     <Screen name="Mycourse" component={Mycourse} /> 
+    <Screen name="Planner" component={Planner} /> 
+    <Screen name="ISPlanner" component={ISPlanner} /> 
+    <Screen name="NetworkPlanner" component={NetworkPlanner} /> 
+    <Screen name="DSPlanner" component={DSPlanner} /> 
+    <Screen name="MULPlanner" component={MULPlanner} /> 
+    <Screen name="SEPlanner" component={SEPlanner} /> 
+    <Screen name="AIPlanner" component={AIPlanner} /> 
     <Screen name="Timetable" component={Timetable} />
 
 
