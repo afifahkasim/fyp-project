@@ -27,7 +27,7 @@ import {
 import { AuthContext } from "../../routes/authProvider";
 import DashboardCard from '../../shared/cardDashboard';
 import Card from '../../shared/card';
-import Header from '../../shared/header';
+import DashboardHeader from '../../shared/headerDashboard';
 import Tooltip from '../../shared/header';
 import { Ionicons } from '@expo/vector-icons';
 import { Rect, Text as TextSVG, Svg } from "react-native-svg";
@@ -1062,7 +1062,7 @@ export default function groupDashboard({ navigation }) {
                                     style={[
                                         styles.btnTab,
                                         {
-                                            width: Dimensions.get('window').width / listTab.length - 40,
+                                            width: Dimensions.get('window').width / listTab.length - 20,
                                             // maxWidth: Dimensions.get('window').width / 3.5
                                         },
                                         studentsGroup === e.GroupID && styles.btnTabActive]}
@@ -1763,7 +1763,7 @@ export default function groupDashboard({ navigation }) {
 
         <View style={globalStyles.container}>
 
-            <Header text='Group Dashboard' />
+            <DashboardHeader text='Group Dashboard' />
             <View style={styles.cardContainer}>
                 <FlatList
                     data={studentsTable}

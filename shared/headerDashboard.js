@@ -2,7 +2,7 @@ import React from 'react';
 import { StyleSheet, Text, View, TouchableOpacity, Image } from 'react-native';
 import { useNavigation } from '@react-navigation/native'
 
-export default function Header({ text }) {
+export default function DashboardHeader({ text }) {
 
     const navigation = useNavigation();
     const pressHomepage = () => {
@@ -11,7 +11,7 @@ export default function Header({ text }) {
 
     return (
         <View style={styles.header}>
-            <View style={{ flex: 1, alignItems: 'flex-start', paddingLeft: '7%'}}>
+            <View style={{ flex: 1, alignItems: 'flex-start', paddingTop: '4%', paddingLeft: '7%'}}>
                 <TouchableOpacity
                     style={{
                         flexDirection: 'row',
@@ -33,7 +33,7 @@ export default function Header({ text }) {
 
             <Text style={styles.headerText}>{text}</Text>
 
-            <View style={{ flex: 1, alignItems: 'flex-end', paddingRight: '7%'}}>
+            <View style={{ flex: 1, alignItems: 'flex-end', paddingTop: '4%', paddingRight: '7%'}}>
                 <TouchableOpacity
                     style={{
                         flexDirection: 'row',
@@ -63,13 +63,14 @@ const styles = StyleSheet.create({
     header: {
         flexDirection: 'row',
         width: '100%',
-        height: '10%',
+        height: '13%',
         alignItems: 'center',
         justifyContent: 'center',
         backgroundColor: '#6F8FAF',
     },
 
     headerText: {
+        paddingTop: '4%',
         fontFamily: 'nunito-bold',
         fontWeight: '900',
         fontSize: 22,

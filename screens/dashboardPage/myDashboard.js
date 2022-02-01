@@ -27,7 +27,7 @@ import {
 import { AuthContext } from "../../routes/authProvider";
 import DashboardCard from '../../shared/cardDashboard';
 import Card from '../../shared/card';
-import Header from '../../shared/header';
+import DashboardHeader from '../../shared/headerDashboard';
 import Tooltip from '../../shared/header';
 import { Ionicons } from '@expo/vector-icons';
 import { Rect, Text as TextSVG, Svg } from "react-native-svg";
@@ -877,7 +877,7 @@ export default function myDashboard({ navigation }) {
 
     <View style={globalStyles.container, { height: Dimensions.get('window').height } + 100}>
 
-      <Header text='My Dashboard' />
+      <DashboardHeader text='My Dashboard' />
 
       <View style={styles.cardContainer}>
         <FlatList
