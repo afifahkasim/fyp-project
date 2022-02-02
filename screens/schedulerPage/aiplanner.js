@@ -5,6 +5,7 @@ import firebase from 'firebase/compat/app';
 import 'firebase/compat/firestore';
 import { AuthContext } from "../../routes/authProvider";
 import Header from '../../shared/header';
+import Footer from "../../shared/footer";
 import { StyleSheet, 
     Text, 
     View, 
@@ -19,9 +20,17 @@ import { StyleSheet,
   const db = firebase.firestore();
   LogBox.ignoreLogs(['Setting a timer for a long period of time'])
 
-  export default function AIPlanner(){
+  export default function AIPlanner({navigation}){
 
     const { user, Logout, profile } = useContext(AuthContext);
+    const pressProfile = () => {
+      navigation.navigate('Profile')
+    }
+  
+    const pressHomepage = () => {
+      navigation.navigate('Homepage')
+    }
+
 
     const courseDataIS=[
       {
@@ -345,6 +354,11 @@ import { StyleSheet,
   
     ];
 
+    const [dataList, setDataList] = useState(courseDataIS)   
+    //credit hour calculation
+    const totalCreditHours = dataList.reduce(
+      (p, c)=>p+c.Credit_hour, 0);
+
     const item = ({item}) =>{
       return(
         <View style={{flexDirection:'row'}}>
@@ -365,8 +379,10 @@ import { StyleSheet,
        
     <View style={{flex:1}}>
             <Header text="Course Planner" />
+
             <View style={{marginBottom:20, marginLeft:20, marginTop:10}}>
                 <Text>Course Planner: Artificial Intelligence</Text>
+                <Text>Total Cumulative: {totalCreditHours} Credit Hours</Text>
             </View>
 
             <View style={{flexDirection:'row', position: 'relative'}}>
@@ -385,7 +401,10 @@ import { StyleSheet,
                 data={courseDataIS}
                 renderItem={item}
                 keyExtractor={(item,index) => index.toString()}
+               // style={{marginBottom:60}}
             />
+            {/*<Footer a={pressHomepage} b={pressProfile}/>  */}
+
     </View>
   
       )
@@ -460,5 +479,6 @@ import { StyleSheet,
       position:'relative',
       marginLeft:10
     },
+
 
   })
