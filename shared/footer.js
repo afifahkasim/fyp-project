@@ -2,10 +2,11 @@ import React from 'react';
 import { Dimensions, StyleSheet, Text, View } from 'react-native';
 import { Icon } from 'react-native-elements';
 
-export default function Footer({a, b}) {
-    
+export default function Footer({ a, b }) {
+
     return (
         <View style={style.buttomNavCont}>
+
             <View style={style.buttonNavHome}>
                 <Icon
                     name='home'
