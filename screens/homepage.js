@@ -1,4 +1,4 @@
-import React, { useState, useContext } from 'react';
+import React, { useState, useContext, useEffect  } from 'react';
 import {
   StyleSheet,
   Text,
@@ -9,7 +9,9 @@ import {
   Pressable,
   Linking,
   LogBox,
-  Dimensions
+  Dimensions,
+  Alert,
+  BackHandler,
 } from 'react-native';
 import { Icon } from 'react-native-elements';
 import 'firebase/compat/firestore';
@@ -22,6 +24,7 @@ LogBox.ignoreLogs(['Setting a timer for a long period of time'])
 export default function Homepage({ navigation }) {
   // const {SubmitProfile} = useContext(AuthContext)
   const { user, profile, Logout } = useContext(AuthContext);
+ 
 
   const pressProfile = () => {
     navigation.navigate('Profile')
@@ -108,7 +111,7 @@ export default function Homepage({ navigation }) {
               </View>
             </View>
 
-            <View style={{ height: 220, paddingLeft: 20, marginTop: 10 }}>
+            <View style={{ height: 220, marginTop: 10 }}>
               <ScrollView horizontal={true}
                 showsHorizontalScrollIndicator={false}>
 
@@ -206,7 +209,7 @@ export default function Homepage({ navigation }) {
             </View>
 
             <View style={{ flexDirection: 'row' }}>
-              <Text style={{ fontSize: 20, paddingLeft: 20, fontWeight: '700' }}>
+              <Text style={{ fontSize: 20, paddingLeft: 20, marginTop: 10, fontWeight: '700' }}>
                 Links
               </Text>
               <View style={style.arrow2Button}>
@@ -219,7 +222,7 @@ export default function Homepage({ navigation }) {
               </View>
             </View>
 
-            <View style={{ height: 170, paddingLeft: 20, marginTop: 10 }}>
+            <View style={{ height: 170, marginTop: 10 }}>
               <ScrollView horizontal={true}
                 showsHorizontalScrollIndicator={false}>
 
@@ -351,7 +354,7 @@ export default function Homepage({ navigation }) {
 
 const style = StyleSheet.create({
   container: {
-    maxHeight: Dimensions.get("window").height,
+    //maxHeight: Dimensions.get("window").height,
     // maxWidth: Dimensions.get("window").width,
     flex: 1,
   },
@@ -380,7 +383,6 @@ const style = StyleSheet.create({
 
   quoteFont:{
     fontSize: 15, 
-    //paddingTop: 40, 
     fontWeight:'bold',
     fontStyle:'italic',
     margin:30
@@ -411,13 +413,12 @@ const style = StyleSheet.create({
     width: null,
     height: null,
     resizeMode: 'cover',
-    borderRadius: 20
+    marginLeft:4,
   },
 
   containerModules: {
-    height: 190,
+    height: 210,
     width: 140,
-    paddingRight: 20,
     borderWidth: 1,
     borderRadius: 28,
     borderColor: 'steelblue',
@@ -426,31 +427,10 @@ const style = StyleSheet.create({
 
   textModules: {
     flex: 1,
-    paddingTop: 157,
+    paddingTop: 175,
     paddingLeft: 7,
     position: 'absolute',
     fontWeight: 'bold'
-
-  },
-
-  buttomNavCont: {
-    height: 60,
-    backgroundColor: 'lavender',
-    flexDirection: 'row',
-    borderTopRightRadius: 20,
-    borderTopLeftRadius: 20,
-    position: 'absolute',
-    bottom: 0,
-    width: 412
-  },
-  buttonNavHome: {
-    marginLeft: 210,
-    alignSelf: 'center'
-  },
-
-  buttonNav: {
-    marginLeft: 50,
-    alignSelf: 'center'
   },
 
   arrowButton: {
@@ -466,7 +446,5 @@ const style = StyleSheet.create({
     marginBottom: 4,
     paddingLeft: 300
   },
-
-
 
 })

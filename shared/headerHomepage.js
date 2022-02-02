@@ -12,7 +12,7 @@ export default function HomepageHeader({text}){
 const styles = StyleSheet.create({
     header: {
         backgroundColor: 'steelblue',           //style for the header
-        height: 100,
+        height: 120,
         borderBottomLeftRadius: 0,
         borderBottomRightRadius: 70,
         tintColor: 'mintcream'
@@ -20,7 +20,7 @@ const styles = StyleSheet.create({
 
     headerText: {
         paddingLeft: 30,
-        paddingTop: '10%',
+        paddingTop: '15%',
         fontFamily: 'nunito-bold',
         fontWeight: '900',
         fontSize: 20,
