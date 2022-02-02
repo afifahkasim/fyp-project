@@ -1,4 +1,4 @@
-import React, { useState, useContext } from 'react';
+import React, { useState, useContext, useEffect  } from 'react';
 import {
   StyleSheet,
   Text,
@@ -9,7 +9,9 @@ import {
   Pressable,
   Linking,
   LogBox,
-  Dimensions
+  Dimensions,
+  Alert,
+  BackHandler,
 } from 'react-native';
 import { Icon } from 'react-native-elements';
 import 'firebase/compat/firestore';
@@ -22,6 +24,27 @@ LogBox.ignoreLogs(['Setting a timer for a long period of time'])
 export default function Homepage({ navigation }) {
   // const {SubmitProfile} = useContext(AuthContext)
   const { user, profile, Logout } = useContext(AuthContext);
+  
+    useEffect(() => {
+    const backAction = () => {
+      Alert.alert("Hold on!", "Are you sure you want to exit?", [
+        {
+          text: "Cancel",
+          onPress: () => null,
+          style: "cancel"
+        },
+        { text: "YES", onPress: () => BackHandler.exitApp() }
+      ]);
+      return true;
+    };
+
+    const backHandler = BackHandler.addEventListener(
+      "hardwareBackPress",
+      backAction
+    );
+
+    return () => backHandler.remove();
+  }, []);
 
   const pressProfile = () => {
     navigation.navigate('Profile')
