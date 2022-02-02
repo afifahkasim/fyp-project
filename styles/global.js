@@ -57,7 +57,7 @@ export const globalStyles = StyleSheet.create({
     },
 
     containerRegister: {
-      marginTop: 220,
+      marginTop: 120,
       marginLeft: 40,
       paddingRight: 63
     },
@@ -107,7 +107,7 @@ export const globalStyles = StyleSheet.create({
     },
 
     containerLogin: {
-      marginTop: 350,
+      marginTop: 150,
       paddingLeft: 40,
       paddingRight: 40,
       paddingBottom: 50
