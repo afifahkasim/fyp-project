@@ -11,7 +11,7 @@ export default function Header({ text }) {
 
     return (
         <View style={styles.header}>
-            <View style={{ flex: 1, alignItems: 'flex-start', paddingLeft: '7%'}}>
+            <View style={{ flex: 1, alignItems: 'flex-start', paddingTop: '5%', paddingLeft: '7%'}}>
                 <TouchableOpacity
                     style={{
                         flexDirection: 'row',
@@ -33,7 +33,7 @@ export default function Header({ text }) {
 
             <Text style={styles.headerText}>{text}</Text>
 
-            <View style={{ flex: 1, alignItems: 'flex-end', paddingRight: '7%'}}>
+            <View style={{ flex: 1, alignItems: 'flex-end', paddingTop: '5%', paddingRight: '7%'}}>
                 <TouchableOpacity
                     style={{
                         flexDirection: 'row',
@@ -70,6 +70,7 @@ const styles = StyleSheet.create({
     },
 
     headerText: {
+        paddingTop: '5%',
         fontFamily: 'nunito-bold',
         fontWeight: '900',
         fontSize: 22,
