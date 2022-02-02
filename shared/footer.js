@@ -44,7 +44,7 @@ export default function Footer({a, b}) {
 const style = StyleSheet.create({
     buttomNavCont: {
         height: 60,
-        backgroundColor: 'lavender',
+        backgroundColor: 'white',
         flexDirection: 'row',
         borderTopRightRadius: 20,
         borderTopLeftRadius: 20,
