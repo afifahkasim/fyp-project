@@ -1,5 +1,4 @@
 import React,{useState, useContext}  from 'react';
-import { Icon } from 'react-native-elements';
 import Apikey from "../../database/apiKey";
 import firebase from 'firebase/compat/app';
 import 'firebase/compat/firestore';
@@ -19,7 +18,7 @@ import { StyleSheet,
   const db = firebase.firestore();
   LogBox.ignoreLogs(['Setting a timer for a long period of time'])
 
-  export default function SEPlanner(){
+  export default function SEPlanner({navigation}){
 
     const { user, Logout, profile } = useContext(AuthContext);
 
@@ -345,6 +344,11 @@ import { StyleSheet,
   
     ];
 
+    const [dataList, setDataList] = useState(courseDataIS)   
+    //credit hour calculation
+    const totalCreditHours = dataList.reduce(
+      (p, c)=>p+c.Credit_hour, 0);
+
     const item = ({item}) =>{
       return(
         <View style={{flexDirection:'row'}}>
@@ -365,8 +369,10 @@ import { StyleSheet,
        
     <View style={{flex:1}}>
             <Header text="Course Planner" />
+
             <View style={{marginBottom:20, marginLeft:20, marginTop:10}}>
                 <Text>Course Planner: Software Engineering</Text>
+                <Text>Total Cumulative: {totalCreditHours} Credit Hours</Text>
             </View>
 
             <View style={{flexDirection:'row', position: 'relative'}}>
@@ -385,7 +391,7 @@ import { StyleSheet,
                 data={courseDataIS}
                 renderItem={item}
                 keyExtractor={(item,index) => index.toString()}
-            />
+            />         
     </View>
   
       )
@@ -447,6 +453,7 @@ import { StyleSheet,
       position:'relative',
       paddingTop:5
     },
+
     tabletimecontainer:{
       width: 50,  
       height:40, 
