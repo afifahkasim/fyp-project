@@ -5,6 +5,7 @@ import firebase from 'firebase/compat/app';
 import 'firebase/compat/firestore';
 import { AuthContext } from "../../routes/authProvider";
 import Header from '../../shared/header';
+import TimeTable from '@mikezzb/react-native-timetable';
 //import { CheckBox } from '@react-native-community/checkbox';
 import { StyleSheet, 
     Text, 
@@ -15,7 +16,8 @@ import { StyleSheet,
     ScrollView,
     LogBox,
     Alert,
-   
+   Modal,
+   Button,
    
   } from 'react-native';
 import { CheckBox } from 'react-native-elements/dist/checkbox/CheckBox';
@@ -36,11 +38,11 @@ import { CheckBox } from 'react-native-elements/dist/checkbox/CheckBox';
       Lecture_group: "-",
       Tutorial_group: "WIC",
       Course_name: "The Islamic and Asian Civilization",
-      Course_explanation: "heellloo",
+      Course_explanation: "-",
       Credit_hour: 2,
       Lecturer_name: "PLY",
       Department: "Computer System and Network",
-      Semester: 1,
+      Semester: 2,
       Year: "2020/2021",
       Time: "Thursday, 9-11am",
       startTime: '9:00',
@@ -57,11 +59,11 @@ import { CheckBox } from 'react-native-elements/dist/checkbox/CheckBox';
       Lecture_group: "-",
       Tutorial_group: "WID",
       Course_name: "The Islamic and Asian Civilization",
-      Course_explanation: "heellloo",
+      Course_explanation: "-",
       Credit_hour: 2,
       Lecturer_name: "SSAR",
       Department: "Artificial Intelligence",
-      Semester: 1,
+      Semester: 2,
       Year: "2020/2021",
       Time: "Thursday, 9-11am",
       startTime: '9:00',
@@ -78,7 +80,7 @@ import { CheckBox } from 'react-native-elements/dist/checkbox/CheckBox';
       Lecture_group: "-",
       Tutorial_group: "WIH",
       Course_name: "The Islamic and Asian Civilization",
-      Course_explanation: "heellloo",
+      Course_explanation: "-",
       Credit_hour: 2,
       Lecturer_name: "AAN",
       Department: "Multimedia",
@@ -99,7 +101,7 @@ import { CheckBox } from 'react-native-elements/dist/checkbox/CheckBox';
       Lecture_group: "-",
       Tutorial_group: "WIE",
       Course_name: "The Islamic and Asian Civilization",
-      Course_explanation: "heellloo",
+      Course_explanation: "-",
       Credit_hour: 2,
       Lecturer_name: "AAN",
       Department: "Information Systems",
@@ -120,7 +122,7 @@ import { CheckBox } from 'react-native-elements/dist/checkbox/CheckBox';
       Lecture_group: "-",
       Tutorial_group: "WIF",
       Course_name: "The Islamic and Asian Civilization",
-      Course_explanation: "heellloo",
+      Course_explanation: "-",
       Credit_hour: 2,
       Lecturer_name: "NJ",
       Department: "Software Engineering",
@@ -141,7 +143,7 @@ import { CheckBox } from 'react-native-elements/dist/checkbox/CheckBox';
       Lecture_group: "-",
       Tutorial_group: "WIG",
       Course_name: "The Islamic and Asian Civilization",
-      Course_explanation: "heellloo",
+      Course_explanation: "-",
       Credit_hour: 2,
       Lecturer_name: "NF",
       Department: "Data Science",
@@ -162,7 +164,7 @@ import { CheckBox } from 'react-native-elements/dist/checkbox/CheckBox';
       Lecture_group: "-",
       Tutorial_group: "K, T, L",
       Course_name: "Fun With Robots",
-      Course_explanation: "heellloo",
+      Course_explanation: "-",
       Credit_hour: 2,
       Lecturer_name: "ZH",
       Department: "All Department",
@@ -183,7 +185,7 @@ import { CheckBox } from 'react-native-elements/dist/checkbox/CheckBox';
       Lecture_group: "-",
       Tutorial_group: "K, T, L",
       Course_name: "Mobile Typography Made Easy",
-      Course_explanation: "heellloo",
+      Course_explanation: "-",
       Credit_hour: 2,
       Lecturer_name: "NJ",
       Department: "All Department",
@@ -204,7 +206,7 @@ import { CheckBox } from 'react-native-elements/dist/checkbox/CheckBox';
       Lecture_group: "-",
       Tutorial_group: "K, T, L",
       Course_name: "Mutimedia 360",
-      Course_explanation: "heellloo",
+      Course_explanation: "-",
       Credit_hour: 2,
       Lecturer_name: "NAA",
       Department: "All Department",
@@ -225,7 +227,7 @@ import { CheckBox } from 'react-native-elements/dist/checkbox/CheckBox';
       Lecture_group: "K",
       Tutorial_group: "-",
       Course_name: "Fundamentals Of Programming",
-      Course_explanation: "heellloo",
+      Course_explanation: "This course covers problem solvingtechniques, the basic structure of computer program, the fundamental concepts of object-oriented programming, data types and operations, selection control structures.",
       Credit_hour: 5,
       Lecturer_name: "UO",
       Department: "All Department",
@@ -246,7 +248,7 @@ import { CheckBox } from 'react-native-elements/dist/checkbox/CheckBox';
       Lecture_group: "-",
       Tutorial_group: "T",
       Course_name: "Fundamentals Of Programming",
-      Course_explanation: "heellloo",
+      Course_explanation: "This course covers problem solvingtechniques, the basic structure of computer program, the fundamental concepts of object-oriented programming, data types and operations, selection control structures.",
       Credit_hour: 5,
       Lecturer_name: "UO",
       Department: "All Department",
@@ -267,7 +269,7 @@ import { CheckBox } from 'react-native-elements/dist/checkbox/CheckBox';
       Lecture_group: "K",
       Tutorial_group: "-",
       Course_name: "Computer System and Organizations",
-      Course_explanation: "heellloo",
+      Course_explanation: "This course covers the introduction to computer systems and organization which includes number system, boolean algebra, basic logic gates, function simplification, combinational circuit, latches and flipflop, sequential circuit and addressing mode.",
       Credit_hour: 4,
       Lecturer_name: "NMN",
       Department: "All Department",
@@ -288,7 +290,7 @@ import { CheckBox } from 'react-native-elements/dist/checkbox/CheckBox';
       Lecture_group: "K",
       Tutorial_group: "-",
       Course_name: "Project Management",
-      Course_explanation: "heellloo",
+      Course_explanation: "This course introduces the fundamental of management concepts",
       Credit_hour: 3,
       Lecturer_name: "HSM",
       Department: "All Department",
@@ -309,7 +311,7 @@ import { CheckBox } from 'react-native-elements/dist/checkbox/CheckBox';
       Lecture_group: "K",
       Tutorial_group: "-",
       Course_name: "Project Management",
-      Course_explanation: "heellloo",
+      Course_explanation: "This course introduces the fundamental of management concepts",
       Credit_hour: 3,
       Lecturer_name: "RA",
       Department: "All Department",
@@ -330,7 +332,7 @@ import { CheckBox } from 'react-native-elements/dist/checkbox/CheckBox';
       Lecture_group: "K",
       Tutorial_group: "-",
       Course_name: "Soft Computing",
-      Course_explanation: "heellloo",
+      Course_explanation: "This course introduces data structures in the context of object orientation. Concepts of objectoriented programming covered include class, object, encapsulation, inheritance, and polymorphism",
       Credit_hour: 3,
       Lecturer_name: "WCS",
       Department: "All Department",
@@ -351,7 +353,7 @@ import { CheckBox } from 'react-native-elements/dist/checkbox/CheckBox';
       Lecture_group: "-",
       Tutorial_group: "T1",
       Course_name: "Soft Computing",
-      Course_explanation: "-",
+      Course_explanation: "This course introduces data structures in the context of object orientation. Concepts of objectoriented programming covered include class, object, encapsulation, inheritance, and polymorphism",
       Credit_hour: 3,
       Lecturer_name: "WCS",
       Department: "All Department",
@@ -372,7 +374,7 @@ import { CheckBox } from 'react-native-elements/dist/checkbox/CheckBox';
       Lecture_group: "-",
       Tutorial_group: "T2",
       Course_name: "Soft Computing",
-      Course_explanation: "-",
+      Course_explanation: "This course introduces data structures in the context of object orientation. Concepts of objectoriented programming covered include class, object, encapsulation, inheritance, and polymorphism",
       Credit_hour: 3,
       Lecturer_name: "WCS",
       Department: "All Department",
@@ -393,7 +395,7 @@ import { CheckBox } from 'react-native-elements/dist/checkbox/CheckBox';
       Lecture_group: "-",
       Tutorial_group: "T3",
       Course_name: "Soft Computing",
-      Course_explanation: "-",
+      Course_explanation: "This course introduces data structures in the context of object orientation. Concepts of objectoriented programming covered include class, object, encapsulation, inheritance, and polymorphism",
       Credit_hour: 3,
       Lecturer_name: "MNR",
       Department: "All Department",
@@ -414,7 +416,7 @@ import { CheckBox } from 'react-native-elements/dist/checkbox/CheckBox';
       Lecture_group: "-",
       Tutorial_group: "T4",
       Course_name: "Soft Computing",
-      Course_explanation: "-",
+      Course_explanation: "This course introduces data structures in the context of object orientation. Concepts of objectoriented programming covered include class, object, encapsulation, inheritance, and polymorphism",
       Credit_hour: 3,
       Lecturer_name: "MNR",
       Department: "All Department",
@@ -435,7 +437,7 @@ import { CheckBox } from 'react-native-elements/dist/checkbox/CheckBox';
       Lecture_group: "K1",
       Tutorial_group: "-",
       Course_name: "Data Structure",
-      Course_explanation: "-",
+      Course_explanation: "This course introduces the concept of abstraction in problem solving. Basic data structures, like linked list, stack, queue, and binary tree, are explained in details.",
       Credit_hour: 5,
       Lecturer_name: "LIM",
       Department: "All Department",
@@ -452,8 +454,9 @@ import { CheckBox } from 'react-native-elements/dist/checkbox/CheckBox';
     {
       id:21,
       Course_code: "WIA1002 / WIB1002",
+      courseId: "WIA1002 / WIB1002",
       Lecture_group: "K2",
-      Tutorial_group: "-",
+      Tutorial_group: "This course introduces the concept of abstraction in problem solving. Basic data structures, like linked list, stack, queue, and binary tree, are explained in details.",
       Course_name: "Data Structure",
       Course_explanation: "-",
       Credit_hour: 5,
@@ -462,6 +465,9 @@ import { CheckBox } from 'react-native-elements/dist/checkbox/CheckBox';
       Semester: 2,
       Year: "2020/2021",
       Time: "Tuesday, 9-11am",
+      startTime: '9:00',
+      endTime: '11:00',
+      day: 2,
       Place: "Online",
       Number_Of_Student: "160",
     },
@@ -469,16 +475,20 @@ import { CheckBox } from 'react-native-elements/dist/checkbox/CheckBox';
     {
       id:22,
       Course_code: "WIA1002 / WIB1002",
+      courseId: "WIA1002 / WIB1002",
       Lecture_group: "K1",
       Tutorial_group: "T1",
       Course_name: "Data Structure",
-      Course_explanation: "-",
+      Course_explanation: "This course introduces the concept of abstraction in problem solving. Basic data structures, like linked list, stack, queue, and binary tree, are explained in details.",
       Credit_hour: 5,
       Lecturer_name: "LIM",
       Department: "All Department",
       Semester: 2,
       Year: "2020/2021",
       Time: "Thursday, 11-2pm",
+      startTime: '11:00',
+      endTime: '14:00',
+      day: 4,
       Place: "Online",
       Number_Of_Student: "40",
     },
@@ -486,16 +496,20 @@ import { CheckBox } from 'react-native-elements/dist/checkbox/CheckBox';
     {
       id:23,
       Course_code: "WIA1002 / WIB1002",
+      courseId: "WIA1002 / WIB1002",
       Lecture_group: "K1",
       Tutorial_group: "T2",
       Course_name: "Data Structure",
-      Course_explanation: "-",
+      Course_explanation: "This course introduces the concept of abstraction in problem solving. Basic data structures, like linked list, stack, queue, and binary tree, are explained in details.",
       Credit_hour: 5,
       Lecturer_name: "AD",
       Department: "All Department",
       Semester: 2,
       Year: "2020/2021",
       Time: "Thursday, 11-2pm",
+      startTime: '11:00',
+      endTime: '14:00',
+      day: 4,
       Place: "Online",
       Number_Of_Student: "40",
     },
@@ -503,16 +517,20 @@ import { CheckBox } from 'react-native-elements/dist/checkbox/CheckBox';
     {
       id:24,
       Course_code: "WIA1002 / WIB1002",
+      courseId: "WIA1002 / WIB1002",
       Lecture_group: "K1",
       Tutorial_group: "T3",
       Course_name: "Data Structure",
-      Course_explanation: "-",
+      Course_explanation: "This course introduces the concept of abstraction in problem solving. Basic data structures, like linked list, stack, queue, and binary tree, are explained in details.",
       Credit_hour: 5,
       Lecturer_name: "AD",
       Department: "All Department",
       Semester: 2,
       Year: "2020/2021",
       Time: "Friday, 2-5pm",
+      startTime: '14:00',
+      endTime: '17:00',
+      day: 5,
       Place: "Online",
       Number_Of_Student: "40",
     },
@@ -520,16 +538,20 @@ import { CheckBox } from 'react-native-elements/dist/checkbox/CheckBox';
     {
       id:25,
       Course_code: "WIA1002 / WIB1002",
+      courseId: "WIA1002 / WIB1002",
       Lecture_group: "K1",
       Tutorial_group: "T4",
       Course_name: "Data Structure",
-      Course_explanation: "-",
+      Course_explanation: "This course introduces the concept of abstraction in problem solving. Basic data structures, like linked list, stack, queue, and binary tree, are explained in details.",
       Credit_hour: 5,
       Lecturer_name: "MHN",
       Department: "All Department",
       Semester: 2,
       Year: "2020/2021",
       Time: "Thursday, 11-2pm",
+      startTime: '11:00',
+      endTime: '14:00',
+      day: 4,
       Place: "Online",
       Number_Of_Student: "40",
     },
@@ -537,86 +559,107 @@ import { CheckBox } from 'react-native-elements/dist/checkbox/CheckBox';
     {
       id:26,
       Course_code: "WIA1002 / WIB1002",
+      courseId: "WIA1002 / WIB1002",
       Lecture_group: "K1",
       Tutorial_group: "T5",
       Course_name: "Data Structure",
-      Course_explanation: "-",
+      Course_explanation: "This course introduces the concept of abstraction in problem solving. Basic data structures, like linked list, stack, queue, and binary tree, are explained in details.",
       Credit_hour: 5,
       Lecturer_name: "MHN",
       Department: "All Department",
       Semester: 2,
       Year: "2020/2021",
       Time: "Friday, 2-5pm",
+      startTime: '14:00',
+      endTime: '17:00',
+      day: 5,
       Place: "Online",
       Number_Of_Student: "40",
     },
     {
       id:27,
       Course_code: "WIA1002 / WIB1002",
+      courseId: "WIA1002 / WIB1002",
       Lecture_group: "K2",
       Tutorial_group: "T6",
       Course_name: "Data Structure",
-      Course_explanation: "-",
+      Course_explanation: "This course introduces the concept of abstraction in problem solving. Basic data structures, like linked list, stack, queue, and binary tree, are explained in details.",
       Credit_hour: 5,
       Lecturer_name: "HWL",
       Department: "All Department",
       Semester: 2,
       Year: "2020/2021",
       Time: "Thursday, 11-2pm",
+      startTime: '11:00',
+      endTime: '14:00',
+      day: 4,
       Place: "Online",
       Number_Of_Student: "40",
     },
     {
       id:28,
       Course_code: "WIA1002 / WIB1002",
+      courseId: "WIA1002 / WIB1002",
       Lecture_group: "K2",
       Tutorial_group: "T7",
       Course_name: "Data Structure",
-      Course_explanation: "-",
+      Course_explanation: "This course introduces the concept of abstraction in problem solving. Basic data structures, like linked list, stack, queue, and binary tree, are explained in details.",
       Credit_hour: 5,
       Lecturer_name: "MSS",
       Department: "All Department",
       Semester: 2,
       Year: "2020/2021",
       Time: "Thursday, 11-2pm",
+      startTime: '11:00',
+      endTime: '14:00',
+      day: 4,
       Place: "Online",
       Number_Of_Student: "40",
     },
     {
       id:29,
       Course_code: "WIA1002 / WIB1002",
+      courseId: "WIA1002 / WIB1002",
       Lecture_group: "K2",
       Tutorial_group: "T8",
       Course_name: "Data Structure",
-      Course_explanation: "-",
+      Course_explanation: "This course introduces the concept of abstraction in problem solving. Basic data structures, like linked list, stack, queue, and binary tree, are explained in details.",
       Credit_hour: 5,
       Lecturer_name: "OSY",
       Department: "All Department",
       Semester: 2,
       Year: "2020/2021",
       Time: "Thursday, 11-2pm",
+      startTime: '11:00',
+      endTime: '14:00',
+      day: 4,
       Place: "Online",
       Number_Of_Student: "40",
     },
     {
       id:30,
       Course_code: "WIA1002 / WIB1002",
+      courseId: "WIA1002 / WIB1002",
       Lecture_group: "K2",
       Tutorial_group: "T9",
       Course_name: "Data Structure",
-      Course_explanation: "-",
+      Course_explanation: "This course introduces the concept of abstraction in problem solving. Basic data structures, like linked list, stack, queue, and binary tree, are explained in details.",
       Credit_hour: 5,
       Lecturer_name: "CTK",
       Department: "All Department",
       Semester: 2,
       Year: "2020/2021",
       Time: "Thursday, 11-2pm",
+      startTime: '11:00',
+      endTime: '14:00',
+      day: 4,
       Place: "Online",
       Number_Of_Student: "40",
     },
     {
       id:31,
       Course_code: "WIB1001",
+      courseId: "WIB1001",
       Lecture_group: "K",
       Tutorial_group: "T",
       Course_name: "Fundamental Of Multimedia",
@@ -627,124 +670,156 @@ import { CheckBox } from 'react-native-elements/dist/checkbox/CheckBox';
       Semester: 2,
       Year: "2020/2021",
       Time: "Wednesday, 2-5pm",
+      startTime: '14:00',
+      endTime: '17:00',
+      day: 3,
       Place: "Online",
       Number_Of_Student: "60",
     },
     {
       id:32,
       Course_code: "WIC1001",
+      courseId: "WIC1001",
       Lecture_group: "G1",
       Tutorial_group: "-",
       Course_name: "Advance Network Technology",
-      Course_explanation: "-",
+      Course_explanation: "This course is designed to provide students the overall concept and needs of network technologies in advance level.",
       Credit_hour: 3,
       Lecturer_name: "ATF",
       Department: "Computer System and Network",
       Semester: 2,
       Year: "2020/2021",
       Time: "Tuesday, 9-12pm",
+      startTime: '9:00',
+      endTime: '12:00',
+      day: 2,
       Place: "Online",
       Number_Of_Student: "50",
     },
     {
       id:33,
       Course_code: "WIC2001",
+      courseId: "WIC2001",
       Lecture_group: "G2",
       Tutorial_group: "-",
       Course_name: "Advance Network Technology",
-      Course_explanation: "-",
+      Course_explanation: "This course is designed to provide students the overall concept and needs of network technologies in advance level.",
       Credit_hour: 3,
       Lecturer_name: "NBA",
       Department: "Computer System and Network",
       Semester: 2,
       Year: "2020/2021",
       Time: "Tuesday, 9-12pm",
+      startTime:'9:00',
+      endTime: '12:00',
+      day: 2,
       Place: "Online",
       Number_Of_Student: "50",
     },
     {
       id:34,
       Course_code: "WID2001",
+      courseId: "WID2001",
       Lecture_group: "K",
       Tutorial_group: "-",
       Course_name: "Knowledge Presentation and Reasoning",
-      Course_explanation: "-",
+      Course_explanation: "This course describes the different kinds of knowledge and their related engineering processes.",
       Credit_hour: 3,
       Lecturer_name: "RM",
       Department: "Artificial Intelligence",
       Semester: 2,
       Year: "2020/2021",
       Time: "Tuesday, 9-11am",
+      startTime: '9:00',
+      endTime: '11:00',
+      day: 2,
       Place: "Online",
       Number_Of_Student: "120",
     },
     {
       id:35,
       Course_code: "WID2001",
+      courseId: "WID2001",
       Lecture_group: "T1",
       Tutorial_group: "-",
       Course_name: "Knowledge Presentation and Reasoning",
-      Course_explanation: "-",
+      Course_explanation: "This course describes the different kinds of knowledge and their related engineering processes.",
       Credit_hour: 3,
       Lecturer_name: "RM",
       Department: "Artificial Intelligence",
       Semester: 2,
       Year: "2020/2021",
       Time: "Thursday, 12-1pm",
+      startTime: '12:00',
+      endTime: '13:00',
+      day: 4,
       Place: "Online",
       Number_Of_Student: "60",
     },
     {
       id:36,
       Course_code: "WID2001",
+      courseId: "WID2001",
       Lecture_group: "T2",
       Tutorial_group: "-",
       Course_name: "Knowledge Presentation and Reasoning",
-      Course_explanation: "-",
+      Course_explanation: "This course describes the different kinds of knowledge and their related engineering processes.",
       Credit_hour: 3,
       Lecturer_name: "RM",
       Department: "Artificial Intelligence",
       Semester: 2,
       Year: "2020/2021",
       Time: "Thursday, 1-2pm",
+      startTime: '13:00',
+      endTime: '14:00',
+      day: 4,
       Place: "Online",
       Number_Of_Student: "60",
     },
     {
       id:37,
       Course_code: "WIE2001",
+      courseId: "WIE2001",
       Lecture_group: "K",
       Tutorial_group: "-",
       Course_name: "Trend in Information Systems",
-      Course_explanation: "-",
+      Course_explanation: "Topics under this course heading vary from year to year according to the developments in computer technology and information systems.",
       Credit_hour: 3,
       Lecturer_name: "NMY",
       Department: "Information Systems",
       Semester: 2,
       Year: "2020/2021",
       Time: "Monday, 3-5pm",
+      startTime: '15:00',
+      endTime: '17:00',
+      day: 1,
       Place: "Online",
       Number_Of_Student: "50",
     },
     {
       id:38,
       Course_code: "WIE2001",
+      courseId: "WIE2001",
       Lecture_group: "-",
       Tutorial_group: "T",
       Course_name: "Trend in Information Systems",
-      Course_explanation: "-",
+      Course_explanation: "Topics under this course heading vary from year to year according to the developments in computer technology and information systems.",
       Credit_hour: 3,
       Lecturer_name: "NMY",
       Department: "Information Systems",
       Semester: 2,
       Year: "2020/2021",
       Time: "Tuesday, 2-3pm",
+      startTime: '14:00',
+      endTime: '15:00',
+      day: 2,
       Place: "Online",
       Number_Of_Student: "50",
     },
     {
       id:39,
       Course_code: "WIH2001",
+      courseId: "WIH2001",
       Lecture_group: "K",
       Tutorial_group: "-",
       Course_name: "Data Analytics",
@@ -755,6 +830,9 @@ import { CheckBox } from 'react-native-elements/dist/checkbox/CheckBox';
       Semester: 2,
       Year: "2020/2021",
       Time: "Tuesday, 12-2pm",
+      startTime: '12:00',
+      endTime: '14:00',
+      day: 2,
       Place: "Online",
       Number_Of_Student: "30",
     },
@@ -762,22 +840,27 @@ import { CheckBox } from 'react-native-elements/dist/checkbox/CheckBox';
     {
       id:40,
       Course_code: "WIH2001",
+      courseId: "WIH2001",
       Lecture_group: "-",
       Tutorial_group: "T",
       Course_name: "Data Analytics",
-      Course_explanation: "-",
+      Course_explanation: "This course aims to develop students' ability to describe, explore and analyze data using suitable data analytics techniques",
       Credit_hour: 3,
       Lecturer_name: "HWL",
       Department: "Data Science",
       Semester: 2,
       Year: "2020/2021",
       Time: "Thursday, 9-10am",
+      startTime: '9:00',
+      endTime: '10:00',
+      day: 4,
       Place: "Online",
       Number_Of_Student: "30",
     },
     {
       id:41,
       Course_code: "WIF2001",
+      courseId: "WIF2001",
       Lecture_group: "K1",
       Tutorial_group: "-",
       Course_name: "Human Computer Interaction",
@@ -788,12 +871,16 @@ import { CheckBox } from 'react-native-elements/dist/checkbox/CheckBox';
       Semester: 2,
       Year: "2020/2021",
       Time: "Tuesday, 9-11am",
+      startTime: '9:00',
+      endTime: '11:00',
+      day: 2,
       Place: "Online",
       Number_Of_Student: "100",
     },
     {
       id:42,
       Course_code: "WIG2001",
+      courseId: "WIG2001",
       Lecture_group: "K",
       Tutorial_group: "-",
       Course_name: "Digital Image Processing",
@@ -804,6 +891,9 @@ import { CheckBox } from 'react-native-elements/dist/checkbox/CheckBox';
       Semester: 2,
       Year: "2020/2021",
       Time: "Wednesday, 9-11am",
+      startTime: '9:00',
+      endTime: '11:00',
+      day: 3,
       Place: "Online",
       Number_Of_Student: "50",
     },
@@ -813,17 +903,11 @@ import { CheckBox } from 'react-native-elements/dist/checkbox/CheckBox';
 
   const Tabsem=[
     {
-      Semester: 1,
-    },
-    {
       Semester: 2,
     },
   ];
 
   const Tabyear=[
-    {
-      Year: "2021/2022"
-    },
     {
       Year: "2020/2021"
     },
@@ -851,25 +935,51 @@ import { CheckBox } from 'react-native-elements/dist/checkbox/CheckBox';
     {
       Department: "Data Science"
     },
-  ]
-
-  const pressHendlers = () => {  
-    navigation.navigate('Mycourse');  
-  }
+  ];
 
   const pressPlanner = () => {  
     navigation.navigate('Planner');  
   }
 
+  const [semester, setSemester] = useState(null);
   const [department, setDepartment] = useState(null);
-  const [dataList, setDepartmentList] = useState(courseData) 
-  const [data,setData] =useState(courseData)
+  const [year, setYear] = useState(null);
+
+  const [dataList, setStudentList] = useState(courseData) 
 
   const setStatusFilter = Department => {
    
-    setDepartmentList([...courseData.filter(e => e.Department=== Department)]);
-    setDepartment(Department)
+  if (dataList === courseData) {
+      setStudentList([...courseData.filter(e => e.Department === Department)]);
   }
+  else {
+    setStudentList([...courseData.filter(e => e.Department === Department)]);
+  }
+  setDepartment(Department)
+}
+
+  const setSemesterFilter = Semester => {
+  if (dataList === courseData) {
+      setStudentList([...courseData.filter(e => e.Semester === Semester)]);
+  }
+  else {
+    setStudentList([...courseData.filter(e => e.Semester === Semester)]);
+  }
+  setSemester(Semester)
+  }
+
+  const setYearFilter = Year => {
+    if (dataList === courseData) {
+      setStudentList([...courseData.filter(e => e.Year === Year)]);
+  }
+  else {
+    setStudentList([...courseData.filter(e => e.Year === Year)]);
+  }
+  setYear(Year)
+  }
+
+
+  const [data,setData] =useState(courseData)
 
   const onChangeValue = (itemSelected, index) => {
     const newData = data.map(item => {
@@ -886,8 +996,6 @@ import { CheckBox } from 'react-native-elements/dist/checkbox/CheckBox';
     })
     setData(newData)
   }
-
-  
 
   const renderItem = ({item, index}) => { 
     return (
@@ -917,9 +1025,6 @@ import { CheckBox } from 'react-native-elements/dist/checkbox/CheckBox';
             color='#517fa4' 
             size={40}
             onPress={() => onChangeValue (item, index)}
-           // onPress={() => navigation.navigate('Mycourse', {
-           //   paramKey: item.Course_name
-           // })} 
           />       
       </View>
 
@@ -936,6 +1041,9 @@ import { CheckBox } from 'react-native-elements/dist/checkbox/CheckBox';
     </View>
     )} 
 
+const [modalOpenz, setModalOpensz] = useState(false);
+
+/*Display selected course */
     const onPressShowItems =() =>{
       const listSelected = data.filter(item => item.selected == true);
       let contentAlert ='';
@@ -946,7 +1054,21 @@ import { CheckBox } from 'react-native-elements/dist/checkbox/CheckBox';
         "Courses",
         contentAlert,
         );
+        //console.log(listSelected)
     }
+
+     const listSelected = data.filter(item => item.selected == true); 
+     console.log(listSelected)
+
+ /*   const setModalOpensz =() =>{
+      const listSelected = data.filter(item => item.selected == true);
+      let contentPlanner ='';
+      listSelected.forEach(item => {
+        contentPlanner = contentPlanner + "- " + item.courseId + "\n"
+      })
+ console.log(contentPlanner)
+    }
+    */
 
     return(
       <View style={{flex:1}}>
@@ -967,12 +1089,49 @@ import { CheckBox } from 'react-native-elements/dist/checkbox/CheckBox';
           </TouchableOpacity>
 
           <TouchableOpacity
-            onPress= {pressHendlers}
+            //onPress= {pressHendlers}
+            onPress ={() =>  setModalOpensz (true)}
             style={style.buttonSC}>
             <Text  style={style.buttonText}>Timetable</Text>
           </TouchableOpacity>
+
+          <Modal
+              transparent ={true}
+              visible={modalOpenz}
+            >
+              <View style={style.modalCont}>
+                <View style={style.modalcont1}> 
+                    <Text style={style.textDetail}>
+                      Timetable
+                    </Text>
+
+{/*Timetable Planner*/}
+
+                <View style ={{height: 615, paddingTop:10}}>
+                <TimeTable
+                  events={listSelected}
+                  eventOnPress={(item) => Alert.alert( 
+                    item.Course_code,
+                      item.Course_name 
+                     + "\n"+ "Credit hour: " + item.Credit_hour
+                     + "\n"+ "Synopsis: " + item.Course_explanation
+                       )}
+                  />
+                </View>
+                    <View  style={style.closeinfocontainer}>
+                        <Button 
+                        color="steelblue"
+                        title="Close"
+                          onPress ={() => setModalOpensz (false)}
+                        > 
+                        </Button>
+                    </View>
+                </View>
+              </View>
+            </Modal>
         </View>
 
+{/*grey line */}
         <View
               style={{
                 borderBottomColor: 'lightgrey',
@@ -980,28 +1139,75 @@ import { CheckBox } from 'react-native-elements/dist/checkbox/CheckBox';
                 marginTop: 5,
                 width: 380,
                 alignSelf: 'center',
-                marginBottom:15
+                marginBottom:5
                 }}
             />
 
-        <View style={{flexDirection: 'row'}}>
+
+{/* Year and semester*/}
+
+<View style={{flexDirection: 'row'}}>
           <Icon
-              style={{paddingLeft: 20}}
-              name='building'
+              style={{paddingLeft: 20, paddingTop:15}}
+              name='calendar-alt'
               type='font-awesome-5'
               color='steelblue' 
               size={15}
             />
-          <Text style={{paddingLeft: 10}} >Department:</Text>
-          
-        </View>    
+          <Text style={{paddingLeft: 10, paddingTop:15, marginRight: 5}} >Year:</Text>       
 
         <ScrollView horizontal={true}
                         showsHorizontalScrollIndicator={false}>
             <View style={style.listTab}>
               {
-                Tabdep.map(e =>(
+                Tabyear.map((e, index) =>(
                   <TouchableOpacity 
+                  key={index}
+                  style={[style.btnTab, 
+                   year === e.Year && style.btnTabActive
+                  ]}
+                  onPress={() => setYearFilter(e.Year)}
+                  >
+                    <Text style={style.textTab}>{e.Year}</Text>
+                  </TouchableOpacity>
+                ))
+              }
+
+              {
+                Tabsem.map((e, index) =>(
+                  <TouchableOpacity 
+                  key={index}
+                  style={[style.btnTab, 
+                   semester === e.Semester && style.btnTabActive
+                  ]}
+                  onPress={() => setSemesterFilter(e.Semester)}
+                  >
+                    <Text style={style.textTab}> Semester {e.Semester}</Text>
+                  </TouchableOpacity>
+                ))
+              }
+            </View>
+        </ScrollView>   
+        </View> 
+
+{/* Department filter*/}
+        <View style={{flexDirection: 'row'}}>
+          <Icon
+              style={{paddingLeft: 20, paddingTop:15}}
+              name='building'
+              type='font-awesome-5'
+              color='steelblue' 
+              size={15}
+            />
+          <Text style={{paddingLeft: 10, paddingTop: 15, marginRight: 5}} >Department:</Text>
+          
+        <ScrollView horizontal={true}
+                        showsHorizontalScrollIndicator={false}>
+            <View style={style.listTab}>
+              {
+                Tabdep.map((e, index) =>(
+                  <TouchableOpacity 
+                  key={index}
                   style={[style.btnTab, department === e.Department && style.btnTabActive]}
                   onPress={() => setStatusFilter(e.Department)}
                   >
@@ -1011,6 +1217,7 @@ import { CheckBox } from 'react-native-elements/dist/checkbox/CheckBox';
               }
             </View>
         </ScrollView>
+    </View>
 
           <FlatList
           data = {dataList}
@@ -1078,7 +1285,6 @@ import { CheckBox } from 'react-native-elements/dist/checkbox/CheckBox';
 
     listTab:{
       flexDirection:'row',
-      marginBottom:20
     },
     
     btnTab:{
@@ -1100,6 +1306,36 @@ import { CheckBox } from 'react-native-elements/dist/checkbox/CheckBox';
     
     btnTabActive:{
       backgroundColor:'steelblue'
+    },
+
+    modalopen:{
+      marginBottom:10, 
+      alignItems:'center', 
+      marginTop:10
+    },
+
+    modalCont:{
+      backgroundColor:'#000000aa', 
+      flex: 1
+    },
+    modalcont1:{
+      backgroundColor:'white', 
+      margin:10, 
+      height:750, 
+      borderRadius: 10
+    },
+    closeinfocontainer:{
+      width:200,
+      height: 40,
+      alignSelf: 'center',
+      marginTop: 50,  
+    },
+    
+    textDetail:{
+      fontSize: 15, 
+      paddingTop: 20, 
+      paddingLeft: 20,
+      fontWeight: 'bold',
     },
   
     });
