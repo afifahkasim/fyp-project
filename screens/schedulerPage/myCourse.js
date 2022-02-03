@@ -16,8 +16,6 @@ import { StyleSheet,
     LogBox,
     Alert, 
     StatusBar,
- 
-   
   } from 'react-native';
 
   if (!firebase.apps.length) { firebase.initializeApp(Apikey.firebaseConfig); }
