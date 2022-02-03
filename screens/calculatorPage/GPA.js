@@ -271,8 +271,9 @@ LogBox.ignoreLogs(['Setting a timer for a long period of time'])
                         showsHorizontalScrollIndicator={false}>
             <View style={style.listTab}>
               {
-                listTab.map(e =>(
+                listTab.map((e, index) =>(
                   <TouchableOpacity 
+                  key={index}
                   style={[style.btnTab, semester === e.Semester && style.btnTabActive]}
                   onPress={() => setStatusFilter(e.Semester)}
                   >
