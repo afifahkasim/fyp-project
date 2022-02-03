@@ -1,17 +1,21 @@
-import React,{useState, useContext}  from 'react';
+import React,{useState, useContext, useEffect}  from 'react';
 import { Icon } from 'react-native-elements';
 import Apikey from "../../database/apiKey";
 import firebase from 'firebase/compat/app';
 import 'firebase/compat/firestore';
 import { AuthContext } from "../../routes/authProvider";
 import Header from '../../shared/header';
+import Footer from "../../shared/footer";
 import { StyleSheet, 
     Text, 
     View, 
     LogBox,
-    Pressable
+    Pressable,
+    BackHandler,
+    Alert,
    
   } from 'react-native';
+import { CheckBox } from 'react-native-elements/dist/checkbox/CheckBox';
 
   if (!firebase.apps.length) { firebase.initializeApp(Apikey.firebaseConfig); }
 
@@ -21,7 +25,13 @@ import { StyleSheet,
   export default function Planner({navigation}){
 
     const { user, Logout, profile } = useContext(AuthContext);
-  
+
+    const pressProfile = () => {
+      navigation.navigate('Profile')
+    }
+    const pressHomepage = () => {
+      navigation.navigate('Homepage')
+    }
     const pressISPlanner = () => {  
       navigation.navigate('ISPlanner');  
     }
@@ -41,10 +51,12 @@ import { StyleSheet,
       navigation.navigate('SEPlanner');  
     }
 
+
       return(
        
     <View style={{flex:1}}>
             <Header text="Course Planner" />
+
             <View style={style.CPfont}>
                 <Text>Course Planner: 2020/2021 </Text>
             </View>
@@ -59,8 +71,7 @@ import { StyleSheet,
                         />
                 <Text style={style.deptfont}>Department:</Text>
             </View>
-
-            
+ 
         <Pressable onPress={pressISPlanner}>
               <View style={style.buttonMC}>
                 <Text style={style.buttonText}>Information Systems</Text>
@@ -95,7 +106,7 @@ import { StyleSheet,
                 <Text style={style.buttonText}>Software Engineering</Text>
               </View>
         </Pressable>
-
+        {/*<Footer a={pressHomepage} b={pressProfile}/>  */}
     </View>
   
       )
@@ -134,4 +145,5 @@ import { StyleSheet,
       marginTop:10
     },
 
+   
   })
