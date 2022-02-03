@@ -814,7 +814,7 @@ import { StyleSheet,
     ];
 
 //const onPressShowItems = Coursescheduler()
-console.log(onPressShowItems)
+//console.log(onPressShowItems)
 
     const dataa = [
       {
