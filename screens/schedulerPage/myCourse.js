@@ -28,7 +28,6 @@ import { StyleSheet,
   export default function Mycourse({navigation, route}){
 
     const { user, Logout, profile } = useContext(AuthContext);
-
     const [data,setData] =useState(courseData)
     const courseData=[
       {
