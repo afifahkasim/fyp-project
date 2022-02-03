@@ -247,46 +247,46 @@ LogBox.ignoreLogs(['Setting a timer for a long period of time'])
 const GradepointsSem1 = data.reduce((prev, current) => {
  if ( current.Semester <= 1) prev += current.GradePoints;
  return prev;}, 0);
-//console.log("GP sem1: ", GradepointsSem1);
+
 
 const CreditHoursSem1 = data.reduce((prev, current) => {
   if (current.Semester <= 1) prev = prev + current.CreditHours;
   return prev;}, 0);
-//console.log("CH sem1: ", CreditHoursSem1);
+
 
 const CGPAsem1 = (GradepointsSem1/ CreditHoursSem1).toFixed(2); 
-//console.log("cgpa sem1: ", CGPAsem1)
+
 
 
 //Semester 2
 const GradepointsSem2 = data.reduce((prev, current ) => {
   if (current.Semester <= 2 ) prev = prev + current.GradePoints ;
   return prev;}, 0);
- //console.log("GP sem2: ", GradepointsSem2);
+ 
 
  const CreditHoursSem2  = data.reduce(( prev, current) => {
   if (current.Semester <= 2 )
     prev = prev + current.CreditHours;
   return prev ;}, 0);
-  //console.log("CH sem2: ", CreditHoursSem2);
+ 
 
  const CGPAsem2 = (GradepointsSem2/ CreditHoursSem2).toFixed(2); 
- // console.log("Cgpa sem2: ", CGPAsem2);
+ 
 
 
  //Semester 3 
 const GradepointsSem3 = data.reduce((prev, current) => {
   if (current.Semester <= 3) prev += current.GradePoints;
   return prev;},  0);
- //console.log("sem3", GradepointsSem3);
+ 
 
  const CreditHoursSem3 =data.reduce((prev, current) => {
   if (current.Semester <= 3) prev += current.CreditHours;
   return prev;}, 0);
- //console.log("CH sem3: ", CreditHoursSem3);
+
 
  const CGPAsem3 = (GradepointsSem3/ CreditHoursSem3 ).toFixed(2); 
- // console.log("Cgpa sem3: ", CGPAsem3);
+
 
   //Semester 4
 const GradepointsSem4 = data.reduce((prev, current) => {
@@ -337,32 +337,30 @@ const GradepointsSem6 = data.reduce((prev, current) => {
 //cari total credit hour
 const PastCH = data.reduce((prev, current) => {prev += current.CreditHours;
   return prev;}, 0);
-  //console.log("pastCH:", PastCH);
+ 
 
 const CurrentCH = current.reduce((prev, current) => {prev += current.CreditHours;
   return prev;}, 0);
-  //console.log("currentCH:", CurrentCH);
 
 const totalCH =PastCH + CurrentCH;
-//console.log("Total CH past + current:",totalCH);
+
 
 //cari current Grade point
 const [target, setTarget] = useState("");
 
 const CurrentGP = (CurrentCH * target); 
-//console.log("CurrentGP:", CurrentGP);
+
 
 //grade point semester lepas
 const PastGP = data.reduce((prev, current) => {prev += current.GradePoints;
   return prev;}, 0);
-  //console.log("pastGP:", PastGP);
+  
 
 const totalGP = (CurrentGP + PastGP).toFixed(2);
-//console.log("totalGP:", totalGP);
+
 
 //cgpa target
 const CGPA = (totalGP/totalCH).toFixed(2);
-//console.log("Target:", CGPA);
 
 
 //recommendation grade:
@@ -384,8 +382,6 @@ const [message,setMessage] = useState("helllllllooo")
       setMessage(" ")
     }
   })
-
-
 
 
 const [modalOpen,  setModalOpenz] = useState(false);
@@ -482,16 +478,18 @@ const [modalOpen,  setModalOpenz] = useState(false);
           <View>
           <Pressable onPress={GPAPressHandler}>
               <View style={style.frontcalbutton}>
+              <Icon
+                        style={{paddingTop: 17, paddingRight:20}}
+                        name='calendar-alt'
+                        type='font-awesome-5'
+                        color='pink' 
+                        size={15}
+                        
+                        />
                 <Text style={style.frontcaltext}>Semester Result</Text>
               </View>
           </Pressable>
-{/* 
-          <Pressable onPress={CGPAPressHandler}>
-              <View style={style.frontcalbutton}>
-                <Text style={style.frontcaltext}>GPA calculator</Text>
-              </View>
-          </Pressable>
-*/}        
+
           </View>
 
           <View style={style.showCGPA}>
@@ -558,6 +556,8 @@ const [modalOpen,  setModalOpenz] = useState(false);
       alignSelf: 'center',
       backgroundColor: '#6F8FAF',
       marginTop: 20,  
+      flexDirection:'row',
+      paddingLeft:70
     },
  
     frontcaltext:{
@@ -583,13 +583,13 @@ const [modalOpen,  setModalOpenz] = useState(false);
       paddingHorizontal: 40,
       paddingTop:15,
       fontSize:15,
-      color:'#6F8FAF'
+      color:'steelblue'
     },
 
     semesterfont:{
       paddingLeft:60,
       paddingVertical:5,
-      color:'#6F8FAF'
+      color:'steelblue'
     },
 
     targetfont:{
