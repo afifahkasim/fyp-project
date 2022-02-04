@@ -1751,7 +1751,6 @@ export default function groupDashboard({ navigation }) {
 
         // filter
         // console.log(listTab4),
-        Alert.alert("Development still in progress.", "The data displayed in this page is only for simulation, and does not belong to this account or anyone else."),
 
         <View style={globalStyles.container}>
 

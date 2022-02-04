@@ -7,7 +7,8 @@ import {
   ScrollView,
   Dimensions,
   FlatList,
-  SafeAreaView
+  SafeAreaView,
+  Alert
 } from 'react-native';
 import { globalStyles } from '../../styles/global';
 import Apikey from "../../database/apiKey";
@@ -38,20 +39,20 @@ export default function myDashboard({ navigation }) {
   const { user, Logout, profile } = useContext(AuthContext);
   let [tooltipPos, setTooltipPos] = useState({ x: 0, y: 0, visible: false, value: 0 })
 
-  const [studentsData, setStudentsData] = useState([]);
+//   const [studentsData, setStudentsData] = useState([]);
 
-  useEffect(() => {
-    const unsubscribe = db.collection('studentsData').onSnapshot((snapshot) =>
-        setGroups(
-            snapshot.docs.map(doc => ({
-                id: doc.id, // the group id, second column
-                data: doc.data() // the third column
-            }))
-        )
-    );
+//   useEffect(() => {
+//     const unsubscribe = db.collection('studentsData').onSnapshot((snapshot) =>
+//         setGroups(
+//             snapshot.docs.map(doc => ({
+//                 id: doc.id, // the group id, second column
+//                 data: doc.data() // the third column
+//             }))
+//         )
+//     );
 
-    return unsubscribe;
-}, []);
+//     return unsubscribe;
+// }, []);
 
 
   // Semester, Course Code, Subject, Grades, Credit Hours, Grade Points

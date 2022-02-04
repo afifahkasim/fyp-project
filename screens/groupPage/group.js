@@ -39,6 +39,7 @@ const Group = ({ navigation }) => {
 
     const copyToClipboard = (id) => {
         Clipboard.setString(id);
+        Alert.alert("Copy successful.", "Group ID copied to clipboard.");
     };
 
 
@@ -198,7 +199,9 @@ const Group = ({ navigation }) => {
                                         <GroupCard2
                                             icon={view}
                                             value="View Group Members"
-                                            onPress={() => console.log(member.map(user => user.memberName))}
+                                            onPress={() => {
+                                                Alert.alert("UI not available yet.", "We apologize for the inconvenience."),
+                                                console.log(member.map(user => user.memberName))}}
                                         />
 
                                         <GroupCard2
@@ -241,7 +244,9 @@ const Group = ({ navigation }) => {
                                         <GroupCard2
                                             icon={join_by_id}
                                             value="Join Group by Request Access"
-                                            onPress={() => copyToClipboard(id)}
+                                            onPress={() => 
+                                                Alert.alert("UI not available yet.", "We apologize for the inconvenience.")
+                                                }
                                         />
                                     </View>
                                     :
