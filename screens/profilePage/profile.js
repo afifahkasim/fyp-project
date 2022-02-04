@@ -209,12 +209,12 @@ export default function Profile({ navigation }) {
           onPress={pressResetPassword}
         />
 
-        <LineDivider />
+        {/* <LineDivider />
         <ProfileCard2
           icon={submit_feedback}
           value="Submit Feedback"
           onPress={pressSubmitFeedback}
-        />
+        /> */}
 
         <LineDivider />
         <ProfileCard2

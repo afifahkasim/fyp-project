@@ -45,6 +45,10 @@ const editProfile = ({ navigation }) => {
   ]
 
   let intakeChoice = [{
+    label: '2021/2022',
+    value: 'Session 2021/2022',
+  },
+  {
     label: '2020/2021',
     value: 'Session 2020/2021',
   },
@@ -158,7 +162,7 @@ const editProfile = ({ navigation }) => {
     });
 
     console.log("Did it get here?")
-    
+
     if (!result.cancelled) {
       setImage(result.uri);
       uploadImage(result.uri)
@@ -217,15 +221,19 @@ const editProfile = ({ navigation }) => {
                   style={globalStyles.input}
                 />
                 <Text style={globalStyles.errorText}>{formikProps.touched.name && formikProps.errors.name}</Text>
-                
-                <Text>Matrics ID:</Text>
-                <TextInput
-                  onChangeText={formikProps.handleChange('matricsid')}
-                  value={formikProps.values.matricsid}
-                  style={globalStyles.input}
-                />
-                <Text style={globalStyles.errorText}>{formikProps.touched.matricsid && formikProps.errors.matricsid}</Text>
-                
+
+                {profile.matricsid === "" ?
+                  <View>
+                    <Text>Matrics ID:</Text>
+                    <TextInput
+                      onChangeText={formikProps.handleChange('matricsid')}
+                      value={formikProps.values.matricsid}
+                      style={globalStyles.input}
+                    />
+                    <Text style={globalStyles.errorText}>{formikProps.touched.matricsid && formikProps.errors.matricsid}</Text>
+                  </View>
+                  : <View></View>}
+
                 <Text>Gender:</Text>
                 <RNPickerSelect
                   placeholder={
@@ -250,53 +258,60 @@ const editProfile = ({ navigation }) => {
                   }}
                 />
 
-                <Text>Intake Session:</Text>
-                <RNPickerSelect
-                  placeholder={
-                    {
-                      label: 'Select session',
-                      value: null,
-                      color: '#9EA0A4',
-                    }}
-                  items={intakeChoice}
-                  style={{
-                    ...pickerSelectStyles,
-                    iconContainer: {
-                      top: 10,
-                      right: 12,
-                    },
-                  }}
-                  onValueChange={formikProps.handleChange('session')}
-                  value={formikProps.values.session}
-                  useNativeAndroidPickerStyle={false}
-                  Icon={() => {
-                    return <Ionicons name="md-arrow-down" size={24} color="gray" />;
-                  }}
-                />
+                {profile.session === "" ?
+                  <View>
+                    <Text>Intake Session:</Text>
+                    <RNPickerSelect
+                      placeholder={
+                        {
+                          label: 'Select session',
+                          value: null,
+                          color: '#9EA0A4',
+                        }}
+                      items={intakeChoice}
+                      style={{
+                        ...pickerSelectStyles,
+                        iconContainer: {
+                          top: 10,
+                          right: 12,
+                        },
+                      }}
+                      onValueChange={formikProps.handleChange('session')}
+                      value={formikProps.values.session}
+                      useNativeAndroidPickerStyle={false}
+                      Icon={() => {
+                        return <Ionicons name="md-arrow-down" size={24} color="gray" />;
+                      }}
+                    />
+                  </View> : <View></View>}
 
-                <Text>Semester:</Text>
-                <RNPickerSelect
-                  placeholder={
-                    {
-                      label: 'Select semester',
-                      value: null,
-                      color: '#9EA0A4',
-                    }}
-                  items={semesterChoice}
-                  style={{
-                    ...pickerSelectStyles,
-                    iconContainer: {
-                      top: 10,
-                      right: 12,
-                    },
-                  }}
-                  onValueChange={formikProps.handleChange('semester')}
-                  value={formikProps.values.semester}
-                  useNativeAndroidPickerStyle={false}
-                  Icon={() => {
-                    return <Ionicons name="md-arrow-down" size={24} color="gray" />;
-                  }}
-                />
+                {profile.semester === "" ?
+                  <View>
+                    <Text>Semester:</Text>
+                    <RNPickerSelect
+                      placeholder={
+                        {
+                          label: 'Select semester',
+                          value: null,
+                          color: '#9EA0A4',
+                        }}
+                      items={semesterChoice}
+                      style={{
+                        ...pickerSelectStyles,
+                        iconContainer: {
+                          top: 10,
+                          right: 12,
+                        },
+                      }}
+                      onValueChange={formikProps.handleChange('semester')}
+                      value={formikProps.values.semester}
+                      useNativeAndroidPickerStyle={false}
+                      Icon={() => {
+                        return <Ionicons name="md-arrow-down" size={24} color="gray" />;
+                      }}
+                    />
+                  </View> : <View></View>}
+
 
                 <Text>Department:</Text>
                 <RNPickerSelect

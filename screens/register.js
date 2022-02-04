@@ -44,7 +44,7 @@ export default function Register({ navigation }) {
                 <Text style={globalStyles.textRegister}>Register</Text>
 
                 <TextInput
-                  placeholder='Full Name'
+                  placeholder='Name'
                   placeholderTextColor='lightgrey'
                   style={globalStyles.inputRegister}
                   onChangeText={formikProps.handleChange('name')}
@@ -56,7 +56,7 @@ export default function Register({ navigation }) {
                 </Text>
 
                 <TextInput
-                  placeholder='Siswamail / Personal Mail'
+                  placeholder='Siswamail'
                   placeholderTextColor='lightgrey'
                   style={globalStyles.inputRegister}
                   onChangeText={formikProps.handleChange('email')}

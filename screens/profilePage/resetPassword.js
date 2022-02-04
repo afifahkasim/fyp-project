@@ -10,14 +10,6 @@ import firebase from 'firebase/compat/app';
 import 'firebase/compat/firestore';
 import { AuthContext } from '../../routes/authProvider';
 import { Formik } from 'formik';
-import * as yup from 'yup';
-
-const reviewSchema = yup.object({
-  email: yup.string().required().min(4),
-  password: yup.string().required().min(8),
-  password: yup.string().required().min(4)
-
-});
 
 
 //check if firebase not init,so init from config file
@@ -25,14 +17,15 @@ if (!firebase.apps.length) { firebase.initializeApp(Apikey.firebaseConfig); }
 const db = firebase.firestore();
 
 const resetPassword = ({ navigation }) => {
-    const { profile } = useContext(AuthContext);
+    const { profile, ResetPassword } = useContext(AuthContext);
+
 
     const resetPassword = async () => {
         await profile.updatePassword(newPassword).then(function() {
-            // Update successful.
+            console.log(newPassword);
           }).catch(function(error) {
-            // An error happened.
-          });
+            console.log("Error.")
+        });
     }
 
     return (
@@ -43,10 +36,12 @@ const resetPassword = ({ navigation }) => {
                     <View style={styles.containerLogin}>
                         <Formik
                             initialValues={{ email: '', password: '' }}
-                            validationSchema={reviewSchema}
                             onSubmit={(values, actions) => {
                                 // actions contain some methods to call on form
+                                console.log("Hello?");
+                                console.log(values.email);
                                 actions.resetForm();
+                                ResetPassword(values.email);
                             }}>
                             {/* Formik provides these props automatically (any name accepted) */}
                             {(formikProps) => (
@@ -54,7 +49,7 @@ const resetPassword = ({ navigation }) => {
                                     <Text style={styles.textRegister}>Reset Password</Text>
 
                                     <TextInput
-                                        placeholder='Siswamail / Personal Mail'
+                                        placeholder='Siswamail'
                                         placeholderTextColor='#6F8FAF'
                                         style={styles.inputLogin}
                                         // this handles/changes the state behind the scenes for us
@@ -63,14 +58,14 @@ const resetPassword = ({ navigation }) => {
                                         value={formikProps.values.email}
                                         onBlur={formikProps.handleBlur('email')} />
 
-                                    <TextInput
+                                    {/* <TextInput
                                         placeholder='New Password'
                                         placeholderTextColor='#6F8FAF'
                                         style={styles.inputLogin}
                                         secureTextEntry={true}
                                         onChangeText={formikProps.handleChange('password')}
                                         value={formikProps.values.password}
-                                        onBlur={formikProps.handleBlur('password')} />
+                                        onBlur={formikProps.handleBlur('password')} /> */}
 
                                     <CenterButton text='Reset' onPress={formikProps.handleSubmit} />
 

@@ -7,28 +7,19 @@ import {
     ScrollView,
     Dimensions,
     FlatList,
-    SafeAreaView
+    Alert,
 } from 'react-native';
 import { globalStyles } from '../../styles/global';
-import CenterButton from "../../shared/buttonCenter";
-import { Formik } from 'formik';
-import * as yup from 'yup';
 import Apikey from "../../database/apiKey";
 import firebase from 'firebase/compat/app';
 import 'firebase/compat/firestore';
 import {
     LineChart,
     BarChart,
-    PieChart,
-    ProgressChart,
-    ContributionGraph,
-    StackedBarChart
 } from "react-native-chart-kit";
 import { AuthContext } from "../../routes/authProvider";
 import DashboardCard from '../../shared/cardDashboard';
-import Card from '../../shared/card';
 import DashboardHeader from '../../shared/headerDashboard';
-import Tooltip from '../../shared/header';
 import { Ionicons } from '@expo/vector-icons';
 import { Rect, Text as TextSVG, Svg } from "react-native-svg";
 import { MaterialCommunityIcons } from '@expo/vector-icons';
@@ -1759,7 +1750,8 @@ export default function groupDashboard({ navigation }) {
         // console.log(sortedAverageSubject),
 
         // filter
-        console.log(listTab4),
+        // console.log(listTab4),
+        Alert.alert("Development still in progress.", "The data displayed in this page is only for simulation, and does not belong to this account or anyone else."),
 
         <View style={globalStyles.container}>
 
