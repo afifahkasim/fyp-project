@@ -370,7 +370,7 @@ const [message,setMessage] = useState("helllllllooo")
     let mm = target;
 
     if(mm <= 3.0){
-      setMessage("Minimum 1 A in any sujects")
+      setMessage("Minimum 1 A in any subjects")
     }
     else if (3.0 < mm <= 3.5){
       setMessage("Minimum 3 A in any subjects")
