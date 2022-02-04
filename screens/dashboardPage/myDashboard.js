@@ -10,32 +10,21 @@ import {
   SafeAreaView
 } from 'react-native';
 import { globalStyles } from '../../styles/global';
-import CenterButton from "../../shared/buttonCenter";
-import { Formik } from 'formik';
-import * as yup from 'yup';
 import Apikey from "../../database/apiKey";
 import firebase from 'firebase/compat/app';
 import 'firebase/compat/firestore';
 import {
   LineChart,
   BarChart,
-  PieChart,
-  ProgressChart,
-  ContributionGraph,
-  StackedBarChart
 } from "react-native-chart-kit";
 import { AuthContext } from "../../routes/authProvider";
 import DashboardCard from '../../shared/cardDashboard';
-import Card from '../../shared/card';
 import DashboardHeader from '../../shared/headerDashboard';
-import Tooltip from '../../shared/header';
 import { Ionicons } from '@expo/vector-icons';
 import { Rect, Text as TextSVG, Svg } from "react-native-svg";
 import { MaterialCommunityIcons } from '@expo/vector-icons';
 import _, { isNull, xorBy } from "lodash";
 import { StatusBar } from 'expo-status-bar';
-import SelectDropdown from 'react-native-select-dropdown';
-import FontAwesome from "react-native-vector-icons/FontAwesome";
 
 
 //check if firebase not init,so init from config file
@@ -49,35 +38,21 @@ export default function myDashboard({ navigation }) {
   const { user, Logout, profile } = useContext(AuthContext);
   let [tooltipPos, setTooltipPos] = useState({ x: 0, y: 0, visible: false, value: 0 })
 
+  const [studentsData, setStudentsData] = useState([]);
 
+  useEffect(() => {
+    const unsubscribe = db.collection('studentsData').onSnapshot((snapshot) =>
+        setGroups(
+            snapshot.docs.map(doc => ({
+                id: doc.id, // the group id, second column
+                data: doc.data() // the third column
+            }))
+        )
+    );
 
-  // all here is for filter category (filter semester, grades, graph)
-  // const [selectedCategoryId, setSelectedCategoryId] = React.useState(1)
-  // const [selectedMenuType, setSelectedMenuType] = React.useState(1)
-  // const [menuList, setMenuList] = React.useState([])
+    return unsubscribe;
+}, []);
 
-  // React.useEffect(() => {
-  //   handleChangeCategory(selectedCategoryId, selectedMenuType)
-  // }, [])
-
-  // // Handler
-
-  // function handleChangeCategory(semId, menuTypeId) {
-  //   // Find the menu based on the menuTypeId
-  //   let selectedSem = dummyData.menu.find(a => a.id == menuTypeId)
-
-  //   // Set the menu based on the categoryId
-  //   setMenuList(selectedSem?.list.filter(a => a.results.
-  //     includes(semId)))
-
-  // }
-
-  // <TouchableOpacity onPress={() => {
-  //   setSelectedMenuType(item.id)
-  //   handleChangeCategory(selectedCategoryId, item.id)
-  // }}>
-
-  // </TouchableOpacity>
 
   // Semester, Course Code, Subject, Grades, Credit Hours, Grade Points
 

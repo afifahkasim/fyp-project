@@ -7,8 +7,6 @@ import Header from '../../shared/header'
 import { globalStyles } from '../../styles/global'
 import Apikey from "../../database/apiKey";
 import { FontAwesome } from '@expo/vector-icons';
-import firebase from 'firebase/compat/app';
-import 'firebase/compat/firestore';
 import { Formik } from 'formik';
 import { MaterialIcons } from '@expo/vector-icons';
 import * as Clipboard from 'expo-clipboard';
@@ -19,7 +17,8 @@ import GroupCard2 from '../../shared/cardGroup2';
 import FilterCard from '../../shared/cardFilter';
 import RNPickerSelect, { defaultStyles } from 'react-native-picker-select';
 import { Ionicons } from '@expo/vector-icons';
-
+import firebase from 'firebase/compat/app';
+import 'firebase/compat/firestore';
 
 
 //check if firebase not init,so init from config file
