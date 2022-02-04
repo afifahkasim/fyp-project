@@ -6,7 +6,7 @@ import 'firebase/compat/firestore';
 import { AuthContext } from "../../routes/authProvider";
 import Header from '../../shared/header';
 import TimeTable from '@mikezzb/react-native-timetable';
-//import { CheckBox } from '@react-native-community/checkbox';
+//import CheckBox from '@react-native-community/checkbox';
 import { StyleSheet, 
     Text, 
     View,
@@ -20,7 +20,7 @@ import { StyleSheet,
    Button,
    
   } from 'react-native';
-import { CheckBox } from 'react-native-elements/dist/checkbox/CheckBox';
+//import { CheckBox } from 'react-native-elements/dist/checkbox/CheckBox';
 
   if (!firebase.apps.length) { firebase.initializeApp(Apikey.firebaseConfig); }
 
@@ -991,7 +991,7 @@ import { CheckBox } from 'react-native-elements/dist/checkbox/CheckBox';
       }
       return{
         ...item,
-        selected: item.selected
+        selected: item.selected,
       }
     })
     setData(newData)
@@ -1022,7 +1022,7 @@ import { CheckBox } from 'react-native-elements/dist/checkbox/CheckBox';
           <Icon
             name='plus'
             type='evilicon'
-            color='#517fa4' 
+            color='#8bc34a' 
             size={40}
             onPress={() => onChangeValue (item, index)}
           />       
@@ -1054,21 +1054,10 @@ const [modalOpenz, setModalOpensz] = useState(false);
         "Courses",
         contentAlert,
         );
-        //console.log(listSelected)
     }
 
      const listSelected = data.filter(item => item.selected == true); 
      console.log(listSelected)
-
- /*   const setModalOpensz =() =>{
-      const listSelected = data.filter(item => item.selected == true);
-      let contentPlanner ='';
-      listSelected.forEach(item => {
-        contentPlanner = contentPlanner + "- " + item.courseId + "\n"
-      })
- console.log(contentPlanner)
-    }
-    */
 
     return(
       <View style={{flex:1}}>
@@ -1151,7 +1140,7 @@ const [modalOpenz, setModalOpensz] = useState(false);
               style={{paddingLeft: 20, paddingTop:15}}
               name='calendar-alt'
               type='font-awesome-5'
-              color='steelblue' 
+              color='pink' 
               size={15}
             />
           <Text style={{paddingLeft: 10, paddingTop:15, marginRight: 5}} >Year:</Text>       
@@ -1196,7 +1185,7 @@ const [modalOpenz, setModalOpensz] = useState(false);
               style={{paddingLeft: 20, paddingTop:15}}
               name='building'
               type='font-awesome-5'
-              color='steelblue' 
+              color='#194d33' 
               size={15}
             />
           <Text style={{paddingLeft: 10, paddingTop: 15, marginRight: 5}} >Department:</Text>
