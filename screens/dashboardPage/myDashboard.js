@@ -28,6 +28,7 @@ import _, { isNull, xorBy } from "lodash";
 import { StatusBar } from 'expo-status-bar';
 
 
+
 //check if firebase not init,so init from config file
 if (!firebase.apps.length) { firebase.initializeApp(Apikey.firebaseConfig); }
 
@@ -35,24 +36,188 @@ const db = firebase.firestore();
 LogBox.ignoreLogs(['Setting a timer for a long period of time'])
 
 
+
 export default function myDashboard({ navigation }) {
   const { user, Logout, profile } = useContext(AuthContext);
   let [tooltipPos, setTooltipPos] = useState({ x: 0, y: 0, visible: false, value: 0 })
 
-//   const [studentsData, setStudentsData] = useState([]);
+  const [testResults, setTestResults] = useState([
+    {
+      Semester: '',
+      CourseCode: "",
+      Subject: "",
+      Grades: "",
+      CreditHours: '',
+      GradePoints: ''
+    }
+  ]);
 
-//   useEffect(() => {
-//     const unsubscribe = db.collection('studentsData').onSnapshot((snapshot) =>
-//         setGroups(
-//             snapshot.docs.map(doc => ({
-//                 id: doc.id, // the group id, second column
-//                 data: doc.data() // the third column
-//             }))
-//         )
-//     );
+  const [testSGPA, setTestSGPA] = useState([
+    {
+      Semester: '',
+      GPA: ''
+    }
+  ]);
 
-//     return unsubscribe;
-// }, []);
+  // const unsubscribe = db.collection('studentsData').doc(profile.matricsid).collection('results').get()
+  //   .then(querySnapshot =>
+  //     querySnapshot.forEach((doc) => {
+  //       console.log(doc.data());
+  //       return null;
+  //     })
+  // ); 
+  // console.log returns array of data correctly but if you setstate the doc.data() nanti crash
+
+  // const unsubscribe = db.collection('studentsData').doc(profile.matricsid).collection('results').onSnapshot((snapshot) =>
+  //   snapshot.docs.map(doc => doc.data())
+  // );
+  // prints [Function anonymous]
+
+  //   const doc = async() => await db.collection('studentsData').doc(profile.matricsid).collection('results').get().then((snapshot) =>
+  //   setTestResults(snapshot.docs.map(doc => doc.data()))
+  // );
+  // infinite loop of updating lolz
+
+  // const unsubscribe = db.collection('studentsData').doc(profile.matricsid).collection('results').get().then((snapshot) =>
+  //   snapshot.docs.map(doc => doc.data())
+  // );
+  // prints promise error like below
+
+  // let arr = []
+  // const doc = async () => {
+  //   const ref = db.collection('studentsData').doc(profile.matricsid).collection('results')
+  //   await ref.get().then((snapshot) =>
+  //    snapshot.docs.map(doc => arr.push(doc.data()))
+  //   )
+  //   return arr
+  // };
+  // prints Promise {
+  //   "_U": 0,
+  //   "_V": 0,
+  //   "_W": null,
+  //   "_X": null,
+  // }
+
+  useEffect(() => {
+    const unsubscribe = db.collection('studentsData').doc(profile.matricsid).collection('results').get().then((snapshot) =>
+      setTestResults(
+        snapshot.docs.map(doc => ({
+          Semester: doc.data().Semester,
+          CourseCode: doc.data().CourseCode,
+          Subject: doc.data().Subject,
+          Grades: doc.data().Grades,
+          CreditHours: parseFloat(doc.data().CreditHours),
+          GradePoints: parseFloat(doc.data().GradePoints)
+        }))
+      )
+
+    );
+
+    return unsubscribe;
+  }, []);
+
+  useEffect(() => {
+    const unsubscribe2 = db.collection('studentsData').doc(profile.matricsid).collection('SGPA').get().then((snapshot) =>
+      setTestSGPA(
+        snapshot.docs.map(doc => ({
+          Semester: doc.data().Semester,
+          Label: "Sem " + doc.data().Semester,
+          GPA: parseFloat(doc.data().GPA),
+        }))
+      )
+
+    );
+
+    return unsubscribe2;
+  }, []);
+
+  // returns pretty much the same result as below
+
+  // useEffect(() => {
+  //   const unsubscribe = db.collection('studentsData').doc(profile.matricsid).collection('results').onSnapshot((snapshot) =>
+  //     setTestResults(
+  //       // snapshot.docs.map(doc => ({
+  //       //     id: doc.id, // the group id, second column
+  //       //     data: doc.data() // the third column
+  //       // }))
+  //       snapshot.docs.map(doc => doc.data())
+  //     )
+  //   );
+
+  //   return unsubscribe;
+  // }, []);
+  // runs twice :( i want it to be the initial state
+
+  // const doc = async() => {
+  //   await db.collection('studentsData').doc(profile.matricsid).collection('results').onSnapshot((snapshot) =>
+  //     setTestResults(
+  //       // snapshot.docs.map(doc => ({
+  //       //     id: doc.id, // the group id, second column
+  //       //     data: doc.data() // the third column
+  //       // }))
+  //       snapshot.docs.map(doc => doc.data())
+  //     )
+  //   );
+  // }
+
+
+
+
+  // let arr = []
+  // const unsubscribe = db.collection('studentsData').doc(profile.matricsid).collection('results')
+  // const doc = async () => {
+  //   try {
+  //     await unsubscribe.get().then((querySnapshot => {
+  //       querySnapshot.forEach((doc) => {
+  //         arr.push(doc.data())
+  //         // console.log(doc.data())
+  //       })
+  //     }))
+  //     // console.log(arr)
+  //     return arr
+  //   } catch (e) {
+  //     console.log('[authProvider.js] Error importing results data.');
+  //     console.log(e);
+
+  //   }
+  // }
+
+
+
+  // useEffect(() => {
+  // const unsubscribe = db.collection("studentsData/" + profile.matricsid + "/results").get()
+  //   .then(doc => {
+  //     console.log("hehe");
+  //   }).catch(error => {
+  //     console.log("Nope nice try ", error)
+  //   })
+
+  // return unsubscribe;
+  // }, []);
+
+  // const studentRef = db.collection('studentsData/' + profile.matricsid).doc('results');
+  // const unsubscribe = async() => await studentRef.get();
+  // if (!unsubscribe.exists) {
+  //   console.log("No such student data.");
+  // } else {
+  //   console.log('Document data: ', doc.data())
+  // }
+
+  // const doc = db.collection("studentsData/" + profile.matricsid + "/results").get()
+
+  // const unsubscribe = db.collection("studentsData/" + profile.matricsid + "/results").onSnapshot(
+  //   (snapshot) => snapshot.docs.map(doc => ({
+  //     doc
+  //   }))
+
+  // )
+
+  // const docsSnap = getDocs(collection(db, "studentsData/" + profile.matricsid + "/results"));
+
+  // docsSnap.forEach((doc) => {
+  //   console.log(doc.data()); // "doc1", "doc2" and "doc3"
+  // });
+
 
 
   // Semester, Course Code, Subject, Grades, Credit Hours, Grade Points
@@ -179,6 +344,8 @@ export default function myDashboard({ navigation }) {
     },
   ])
 
+
+
   const Semester = [
     {
       id: 1,
@@ -197,12 +364,36 @@ export default function myDashboard({ navigation }) {
   const [selectedColumn, setSelectedColumn] = useState(null)
 
   const [sem, setSem] = useState(null);
+
+  // below is for synchronous calls (hardcoded data)
   const [resultsList, setResultsList] = useState(results)
   const [resultsTable, setResultsTable] = useState(results)
-  const [sgpaList, setSGPAList] = useState(sgpa)
 
+  const [sgpaList, setSGPAList] = useState(sgpa)
   const listTab = sgpa.map(key => _.pick(key, ['Semester']))
   // will return a similar format to listTab dalam GPA.js
+
+  // ==============================================
+
+  // below is for asynchronous calls (firebase)
+  // if you want to uncomment this, please uncomment renderGradePoints1 & totalCreditHours1 & related useEffect() as well as listTab semester's width
+  // const [resultsList, setResultsList] = useState(testResults)
+  // const [resultsTable, setResultsTable] = useState(testResults)
+
+  // useEffect(() => {
+  //   setResultsList(testResults)
+  //   setResultsTable(testResults)
+  // }, [testResults]);
+
+  // const [sgpaList, setSGPAList] = useState(testSGPA)
+  // const [listTab, setListTab] = useState([1, 2])
+
+  // useEffect(() => {
+  //   setSGPAList(testSGPA)
+  //   setListTab(testSGPA.map(key => _.pick(key, ['Semester'])))
+  // }, [testSGPA])
+
+  // ============================================
 
   const [graphStatus, setGraphStatus] = useState(false);
   const [cards, setCards] = useState(false);
@@ -275,13 +466,30 @@ export default function myDashboard({ navigation }) {
   const setStatusFilter = Semester => {
     setResultsList([...results.filter(e => e.Semester === Semester)]);
     setResultsTable([...results.filter(e => e.Semester === Semester)]);
+    // works for synchronous calls (dummy data), obv not for asynchronous calls (firebase data)
+
+    // setResultsList([...testResults.filter(e => e.Semester === Semester)]);
+    // setResultsTable([...testResults.filter(e => e.Semester === Semester)]);
+    // not working, returns blank data
+
+    // useEffect(() => {
+    //   setResultsList([...testResults.filter(e => e.Semester === Semester)]);
+    //   setResultsTable([...testResults.filter(e => e.Semester === Semester)]);
+    // }, [testResults]);
+    // not working, returns "invalid hook call"
+
+
+
     setSGPAList([...sgpa.filter(e => e.Semester === Semester)]);
     setSem(Semester)
   }
 
+
   const resetStatusFilter = () => {
     setResultsList(results);
     setResultsTable(results);
+    // setResultsList(testResults);
+    // setResultsTable(testResults);
     setSGPAList(sgpa);
     setSem(null)
   }
@@ -341,7 +549,8 @@ export default function myDashboard({ navigation }) {
               style={[
                 styles.btnTabActive,
                 {
-                  width: Dimensions.get('window').width / listTab.length - 50,
+                  width: Dimensions.get('window').width / listTab.length - 50
+                  // width: Dimensions.get('window').width / listTab.length + 25,
                   // maxWidth: Dimensions.get('window').width / 3.5
                 },
                 sem !== null && styles.btnTab
@@ -371,6 +580,7 @@ export default function myDashboard({ navigation }) {
                     styles.btnTab,
                     {
                       width: Dimensions.get('window').width / listTab.length - 100,
+                      // width: Dimensions.get('window').width / listTab.length,
                       // maxWidth: Dimensions.get('window').width / 3.5
                     },
                     sem === e.Semester && styles.btnTabActive]}
@@ -565,7 +775,10 @@ export default function myDashboard({ navigation }) {
         <View style={{ flexDirection: 'row' }}>
           <View style={styles.cardInner}>
             <DashboardCard>
-              <Text style={styles.cardText}>{totalCreditHours.toFixed(0)}</Text>
+              <Text style={styles.cardText}>
+                {totalCreditHours.toFixed(2)}
+                {/* {totalCreditHours1} */}
+              </Text>
               <Text style={styles.cardSubtext}>Total Credit Hours</Text>
             </DashboardCard>
           </View>
@@ -584,7 +797,10 @@ export default function myDashboard({ navigation }) {
 
           <View style={styles.cardInner}>
             <DashboardCard>
-              <Text style={styles.cardText}>{renderGradePoints.toFixed(2)}</Text>
+              <Text style={styles.cardText}>
+                {renderGradePoints.toFixed(2)}
+                {/* {renderGradePoints1} */}
+              </Text>
               <Text style={styles.cardSubtext}>Total Grade Points</Text>
             </DashboardCard>
           </View>
@@ -810,6 +1026,15 @@ export default function myDashboard({ navigation }) {
     </View>
   )
 
+  // the const and useeffect below is for firebase. edit @ line chart, bar chart & cards for better results
+  // const [renderGradePoints1, setRenderGradePoints1] = useState(0);
+  // const [totalCreditHours1, setTotalCreditHours1] = useState(0);
+
+  // useEffect(() => {
+  //   setRenderGradePoints1(_.ceil(resultsList.map(resultSum => resultSum.GradePoints).reduce((a, b) => a + b), 2))
+  //   setTotalCreditHours1(_.ceil(resultsList.reduce((a, b) => a + (b.CreditHours || 0), 0), 2))
+  // }, [resultsList]);
+
 
   const renderGradePoints = resultsList.map(resultSum => resultSum.GradePoints).reduce((a, b) => a + b)
   const totalCreditHours = resultsList.reduce((a, b) => a + (b.CreditHours || 0), 0)
@@ -830,26 +1055,40 @@ export default function myDashboard({ navigation }) {
 
     // console.log(Object.keys(results)), just to see the array of keys 
     // console.log(renderGradePoints2), this one is working
-    console.log(renderGradePoints.toFixed(2)), // working. used for the card "Total Grade Points"
-    console.log(totalCreditHours.toFixed(0)), // working. used for the card "Total Credit Hours"
-    console.log(cummulativeGPA.toFixed(2)), // working. used for the card "CGPA"
+    // console.log(renderGradePoints.toFixed(2)), // working. used for the card "Total Grade Points"
+    // console.log(totalCreditHours.toFixed(0)), // working. used for the card "Total Credit Hours"
+    // console.log(cummulativeGPA.toFixed(2)), // working. used for the card "CGPA"
 
     // testing working value to be inserted into line chart data
     // console.log(Semester[0].GPA), // returns one value but not in const
     // console.log(Object.keys(Semester).map(key => Semester[key])), // doesn't work, returns array of objects
-    console.log(Semester.map(key => key.GPA)), // returns array value so this is most ideal, but not in const "GPABySem". solution is to put this directly into linechart data={{}} instead
+    // console.log(Semester.map(key => key.GPA)), // returns array value so this is most ideal, but not in const "GPABySem". solution is to put this directly into linechart data={{}} instead
 
     // testing working value to be inserted into bar chart data
-    console.log(results.map(key => key.Grades)), // returns sorted array of available grades. prob usable for bar chart labels
-    console.log(listTab),
+    // console.log(results.map(key => key.Grades)), // returns sorted array of available grades. prob usable for bar chart labels
+    // console.log(listTab),
 
-    console.log(_.keys(countGradeFreq)), // _.keys(array), returns in array all the key (unique values) of array. working. used.
-    console.log(_.values(countGradeFreq)), // _.values(array), returns in array all the key freq of array+. working. used.
+    // console.log(_.keys(countGradeFreq)), // _.keys(array), returns in array all the key (unique values) of array. working. used.
+    // console.log(_.values(countGradeFreq)), // _.values(array), returns in array all the key freq of array+. working. used.
 
     // testing working value to be inserted into cards before table
-    console.log(listOfSubjects[0]), // return the first value of a descending order array. working. used for the card "Best Subject"
-    console.log(listOfSubjects.length), // return length of array. working. used for the card "Total Subjects"
-    console.log(listOfSubjects[listOfSubjects.length - 1]), // return the last value of a descending order array. working. used for the card "Worst Subject"
+    // console.log(listOfSubjects[0]), // return the first value of a descending order array. working. used for the card "Best Subject"
+    // console.log(listOfSubjects.length), // return length of array. working. used for the card "Total Subjects"
+    // console.log(listOfSubjects[listOfSubjects.length - 1]), // return the last value of a descending order array. working. used for the card "Worst Subject"
+
+    // console.log(doc),
+    console.log("=========\nStarting a new run\n============="),
+    console.log(results),
+    console.log("=========\nAbove: Dummy data initialized in .js\nBelow: Students data retrieved from database\n=========="),
+    console.log(testResults),
+    console.log("=========\nTesting student data\n========="),
+    console.log(testResults[0]),
+    console.log(testResults[testResults.length - 1]),
+    console.log("=========\nTesting SGPA student data\n========="),
+    console.log(testSGPA),
+    // console.log(unsubscribe),
+    // console.log(doc()),
+
 
     <View style={globalStyles.container, { height: Dimensions.get('window').height } + 100}>
 

@@ -1,5 +1,5 @@
 import React, { useLayoutEffect, useState, useContext, useEffect } from 'react'
-import { StyleSheet, Text, View, ScrollView } from 'react-native'
+import { StyleSheet, Text, View, ScrollView, Alert, Dimensions, TextInput } from 'react-native'
 import CenterButton from '../../shared/buttonCenter'
 import Card from '../../shared/card'
 import Header from '../../shared/header'
@@ -19,7 +19,7 @@ const db = firebase.firestore();
 const joinGroup = ({ navigation }) => {
     const [groups, setGroups] = useState([]);
     const [input, setInput] = useState("");
-    const { user, profile } = useContext(AuthContext);
+    const { user, profile, JoinGroup } = useContext(AuthContext);
     // const memberList = {
     //     memberName: profile.name,
     //     memberID: profile.userid,
@@ -62,98 +62,7 @@ const joinGroup = ({ navigation }) => {
         return unsubscribe;
     }, []);
 
-    // const testData = db.collection('groups').doc('LeiwPA6DqVtHKB2lPrKK');
-    // const testie = async () => await testData.get();
-    // if (!testie.exists) {
-    //     console.log('No got onezzzzz');
-    // } else {
-    //     console.log('Document data:', testie.data());
-    // }
-
-    // const docsArr = (db, collection) => {
-    //     return db
-    //       .collection(collection)
-    //       .get()
-    //       .then(snapshot => snapshot.docs.map(x => x.data()))
-    //   }
-
-    //   ;
-    //   (async () => {
-    //     const arr = await docsArr(db, 'groups')
-    //     console.log(arr)
-    //   })()
-
-    // const unsubscribe = db.collection('groups').onSnapshot((snapshot) => 
-    //     snapshot.docs.map(doc => ({
-    //     id: doc.id, // the group id, second column
-    //     data: doc.data() // the third column
-    //     }))
-    // );
-
-    // const updateLah = () => {
-    //     console.log('-----------'),
-    //     groups.map(({id, data: { member } }) =>
-    //         (
-    //             memberList = member.setMemberList(memberList),
-    //             console.log(memberList)
-    //         )
-    //     )
-    // }
-
-
-    /// TRYING THIS OUTTTTTTTT MAINLY
-    // db.collection("groups").doc('LeiwPA6DqVtHKB2lPrKK')
-    // .get()
-    // .then(function(doc) {
-    //   if (doc.exists) {
-    //     // setMemberList(memberList => {
-    //     //     return [
-    //     //         (doc.data().member),
-    //     //         ...memberList
-    //     //     ];
-    //     // });
-    //     // console.log("Document data:", memberList);
-
-    //     // const data = () => doc.data().member,
-    //     // setMemberList(data => {
-    //     //     return [
-    //     //         memberList,
-    //     //         ...data
-    //     //     ];
-    //     // });
-    //     // console.log("Document data:", memberList);
-
-    //     console.log("Document data:", doc.data().member);
-    //   } else {
-    //     // doc.data() will be undefined in this case
-    //     console.log("No such document!");
-    //   }
-    // }).catch(function(error) {
-    //   console.log("Error getting document:", error);
-    // });
-
-    // const docsArr = (db, collection) => {
-    //     return db
-    //       .collection(collection)
-    //       .get()
-    //       .then((snapshot) => {
-    //           const doc = snapshot.docs[0];
-    //           const docid = doc.id;
-    //           const docdata = doc.data();
-
-    //           console.log(docid);
-    //           console.log(docdata);
-
-    //       }).catch((error) => console.log(error.message));
-    //     }
-
-    //       async () => {
-    //             const arr = await docsArr(db, 'groups')
-    //             console.log('asdjfkanskjdf ETESTING')
-    //             console.log(arr)}
-
-    // sini update groups.id with member
-    const joinGroup = async () => {
+    const joinGroup = async (abc) => {
         // db.collection("groups").doc(input)
         // .get()
         // .then(function(doc) {
@@ -173,35 +82,65 @@ const joinGroup = ({ navigation }) => {
         // });
 
         // LeiwPA6DqVtHKB2lPrKK
-        await db.collection('groups').doc(input).update({
+        await db.collection('groups').doc(abc).update({
             member: firebase.firestore.FieldValue.arrayUnion(memberList)
         }).then(() => {
+            Alert.alert("Congratulations!", "You have joined the group.")
             navigation.goBack()
         })
-            .catch((error) => alert(error.message));
+            .catch((error) => {
+                Alert.alert("Failed to join group.", "Please make sure that you have entered the correct group ID.")
+                console.log('[authProvider.js] Error joining group.');
+                console.log(error);
+            }
+            );
     }
 
 
     return (
-        console.log('--------------'),
-        // console.log(profile),
-        console.log('[This is joinGroup.js]'),
-        console.log(memberList),
         <View style={globalStyles.container}>
             <Header text='Join Group' />
-            <ScrollView>
+            <View style={{ alignItems: 'center', justifyContent: 'center', height: Dimensions.get("window").height - 100 }}>
                 <Card>
-                    <Input
-                        placeholder="Enter the group ID"
-                        value={input}
-                        onChangeText={(text) => setInput(text)}
-                        leftIcon={
-                            <FontAwesome style={{ marginRight: 5 }} name="users" size={24} color="black" />
-                        }
-                    />
+                    <View style={styles.containerLogin}>
+                        <Formik
+                            initialValues={{ gpid: '' }}
+                            onSubmit={(values, actions) => {
+                                // actions contain some methods to call on form
+                                actions.resetForm();
+                                // setInput(values.gpid);
+                                joinGroup(values.gpid);
+                            }}>
+                            {/* Formik provides these props automatically (any name accepted) */}
+                            {(formikProps) => (
+                                <View>
+                                    <Text style={styles.textRegister}>Join Group by ID</Text>
+
+                                    <TextInput
+                                        placeholder='Enter Group ID'
+                                        placeholderTextColor='#6F8FAF'
+                                        style={styles.inputLogin}
+                                        // this handles/changes the state behind the scenes for us
+                                        onChangeText={formikProps.handleChange('gpid')}
+                                        // this
+                                        value={formikProps.values.gpid}
+                                        onBlur={formikProps.handleBlur('gpid')} />
+
+                                        
+
+                                    <CenterButton text='Submit' onPress={formikProps.handleSubmit} />
+
+                                </View>
+                            )}
+                        </Formik>
+
+
+                    </View>
+
+
                 </Card>
-                <CenterButton text='Submit' onPress={joinGroup} />
-            </ScrollView>
+            </View>
+
         </View>
     )
 }
@@ -209,5 +148,28 @@ const joinGroup = ({ navigation }) => {
 export default joinGroup
 
 const styles = StyleSheet.create({
+    containerLogin: {
+        marginTop: 10,
+        paddingLeft: 40,
+        paddingRight: 40,
+        paddingBottom: 10
+    },
+    textRegister: {
+        fontFamily: "nunito-bold",
+        color: "black",
+        fontSize: 36,
+        textAlign: "center"
+    },
+    inputLogin: {
+        borderRadius: 10,
+        borderColor: "black",
+        borderWidth: 1,
+        padding: 10,
+        marginVertical: 10,
+        marginRight: 10,
+        width: "100%",
+        height: 50,
+        color: "black"
+    },
 
 })

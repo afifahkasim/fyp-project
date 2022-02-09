@@ -259,7 +259,7 @@ const Group = ({ navigation }) => {
                     ))
                     : displayStatus === 2 ?
                         groups.map(({ id, data: { groupName, member } }) => (
-                            <View>
+                            <View key={id}>
 
                                 {
                                     member.some(user => user.memberID === profile.userid) !== true ?
@@ -316,7 +316,7 @@ const Group = ({ navigation }) => {
                         ))
                         :
                         groups.map(({ id, data: { groupName, member } }) => (
-                            <View>
+                            <View key={id}>
                                 {
                                     member.some(user => user.memberID === profile.userid) === true ?
                                         <View key={id} style={styles.groupSectionContainer}>

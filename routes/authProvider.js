@@ -5,11 +5,13 @@ import firebase from 'firebase/compat/app';
 import 'firebase/compat/auth';
 import 'firebase/compat/firestore'
 
+
 if (!firebase.apps.length) { firebase.initializeApp(Apikey.firebaseConfig); }
 const db = firebase.firestore();
 export const AuthContext = createContext();
 
 export const AuthProvider = ({ children }) => {
+    
     const [user, setUser] = useState(null);
     const [profile, setProfile] = useState(null);
 
@@ -27,7 +29,8 @@ export const AuthProvider = ({ children }) => {
                         console.log('[authProvider.js] Logging in successful.')
 
                     } catch (e) {
-                        Alert.alert("Login failed. Please check for any errors in your email.")
+                        Alert.alert("Failed to login.", "Please check for any errors in your email or password.")
+                        // Alert.alert("Failed to login.", "Please check for any errors in your email." + e)
                         console.log('[authProvider.js] Logging in failed.');
                         console.log(e);
                     }
@@ -75,6 +78,36 @@ export const AuthProvider = ({ children }) => {
                         Alert.alert("Password reset failed.", "Please enter the correct e-mail of your account.")
                         console.log("[authProvider.js Error resetting password.");
                         console.log(e)
+                    }
+                },
+                AddGroup: async (input, memberList) => {
+                    try {
+                        await db.collection('groups').add({
+                            groupName: input,
+                            member: memberList
+                        }).then(() => {
+                            navigation.goBack()
+                        })
+                    } catch (e) {
+                        Alert.alert("Failed to add group.", "Please make sure that you have entered a group name.")
+                        console.log('[authProvider.js] Error adding group.');
+                        console.log(e);
+
+                    }
+                },
+                JoinGroup: async (input, memberList) => {
+                    try {
+                        await db.collection('groups').doc(input).update({
+                            member: firebase.firestore.FieldValue.arrayUnion(memberList)
+                        }).then(() => {
+                            Alert.alert("Congratulations!", "You have joined the group.")
+                            navigation.goBack()
+                        })
+                    } catch (e) {
+                        Alert.alert("Failed to join group.", "Please make sure that you have entered the correct group ID.")
+                        console.log('[authProvider.js] Error joining group.');
+                        console.log(e);
+
                     }
                 },
             }}

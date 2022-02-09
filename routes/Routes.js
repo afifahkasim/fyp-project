@@ -60,7 +60,6 @@ const Routes = () => {
 
   if (fontsLoaded) {
     return (
-      console.log(fontsLoaded),
       console.log('[Routes.js] No issues with starting.'),
       <NavigationContainer>
         {user ? <UserStack /> : <GuestStack />}
