@@ -19,26 +19,16 @@ const db = firebase.firestore();
 const resetPassword = ({ navigation }) => {
     const { profile, ResetPassword } = useContext(AuthContext);
 
-
-    const resetPassword = async () => {
-        await profile.updatePassword(newPassword).then(function() {
-            console.log(newPassword);
-          }).catch(function(error) {
-            console.log("Error.")
-        });
-    }
-
     return (
         <View style={globalStyles.container}>
             <Header text='Reset Password' />
-            <View style={{ alignItems: 'center', justifyContent: 'center', height: Dimensions.get("window").height-100 }}>
+            <View style={{ alignItems: 'center', justifyContent: 'center', height: Dimensions.get("window").height - 100 }}>
                 <Card>
                     <View style={styles.containerLogin}>
                         <Formik
                             initialValues={{ email: '', password: '' }}
                             onSubmit={(values, actions) => {
                                 // actions contain some methods to call on form
-                                console.log("Hello?");
                                 console.log(values.email);
                                 actions.resetForm();
                                 ResetPassword(values.email);
@@ -57,15 +47,6 @@ const resetPassword = ({ navigation }) => {
                                         // this
                                         value={formikProps.values.email}
                                         onBlur={formikProps.handleBlur('email')} />
-
-                                    {/* <TextInput
-                                        placeholder='New Password'
-                                        placeholderTextColor='#6F8FAF'
-                                        style={styles.inputLogin}
-                                        secureTextEntry={true}
-                                        onChangeText={formikProps.handleChange('password')}
-                                        value={formikProps.values.password}
-                                        onBlur={formikProps.handleBlur('password')} /> */}
 
                                     <CenterButton text='Reset' onPress={formikProps.handleSubmit} />
 
@@ -110,5 +91,5 @@ const styles = StyleSheet.create({
         width: "100%",
         height: 50,
         color: "black"
-      },
+    },
 })
