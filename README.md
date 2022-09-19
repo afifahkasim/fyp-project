@@ -24,12 +24,24 @@ A breakdown of task distribution between Fatin Natasha and Afifah -- the pink bo
 ## Demonstration
 ### Individual Dashboard
 
+https://user-images.githubusercontent.com/27907746/190956603-e201e3b4-3683-4121-b9c2-90d6fecf2004.mp4
+
+
 ### Group Dashboard
+
+https://user-images.githubusercontent.com/27907746/190956761-08768f22-b586-4164-b748-2e9f53ca1c76.mp4
+
+
 ### Profile
 
+https://user-images.githubusercontent.com/27907746/190956582-3f48c4e2-045f-48be-b10a-1246a34915f2.mp4
 
-https://user-images.githubusercontent.com/27907746/190955782-969cc10f-17f9-448a-bf13-d7eb67621b75.mp4
 
 
 ### Add, Edit or Remove Group
+
+
+https://user-images.githubusercontent.com/27907746/190957019-227f47d2-77df-48bd-898f-9ddd8da9158b.mp4
+
+
 
