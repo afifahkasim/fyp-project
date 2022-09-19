@@ -16,7 +16,7 @@ Developed in React Native.
 
 
 ### Functional Decomposition Diagram
-A breakdown of task distribution between Fatin Natasha and Afifah -- the pink border boxes are Fatin Natasha's task, whereas the blue border boxes are Afifah's task.
+A breakdown of task distribution between Fatin Natasha and Afifah -- the pink border boxes are Fatin Natasha's task (listed as no. 6 to 9 in features), whereas the blue border boxes are Afifah's task (listed as no. 1 to 5 in features).
 
 ![fdd paling latest](https://user-images.githubusercontent.com/27907746/190951335-991a9d06-42e5-44b1-a079-bbcde405e1cd.png)
 
